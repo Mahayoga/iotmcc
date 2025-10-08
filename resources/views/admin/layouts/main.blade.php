@@ -26,7 +26,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Title -->
-    <title>Admin Agrofilia Permata</title>
+    <title>Agrofilia Permata</title>
     
     <!-- Theme Color -->
     <meta name="theme-color" content="#6366f1">
@@ -49,7 +49,11 @@
 
         @include('admin.layouts.sidebar')
 
-        @include('admin.layouts.footer')
+
+         <div class="admin-content">
+            @yield('content')
+        </div>
+
     </div>
 
     <script>
