@@ -50,9 +50,9 @@
     <!-- Main Wrapper -->
     <div class="admin-wrapper" id="admin-wrapper">
 
-        @include('user.layout.navbar.index')
+        @include('admin.layout.navbar.index')
 
-        @include('user.layout.sidebar.index')
+        @include('admin.layout.sidebar.index')
 
         <!-- Floating Hamburger Menu -->
         <button class="hamburger-menu" 
@@ -324,7 +324,7 @@
             </div>
         </main>
 
-        @include('user.layout.footer.index')
+        @include('admin.layout.footer.index')
         </div> <!-- /.admin-wrapper -->
     </div>
 
