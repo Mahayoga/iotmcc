@@ -13,7 +13,7 @@
             </div>
             <div class="d-flex gap-2">
                 <button type="button" class="btn" style="background-color: #BFFF00;">
-                    <i class="bi bi-plus-lg me-2">
+                    <i class="bi bi-plus-lg me-2"></i>
                     New Item
                 </button>
                 <button type="button" class="btn btn-outline-secondary" 
