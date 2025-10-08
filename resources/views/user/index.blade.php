@@ -38,10 +38,11 @@ https://templatemo.com/tm-590-topic-listing
 
     <nav class="navbar navbar-expand-lg">
       <div class="container">
-        <a class="navbar-brand" href="index.html">
-          <i class="bi-back"></i>
-          <span>Topic</span>
+        <a class="navbar-brand">
+          <img src="{{ asset('assets/user/images/iotmcc-icon-trans.png') }}" alt="IoTMCC Logo" width="95" height="65 "
+            class="me-2">
         </a>
+
 
         <div class="d-lg-none ms-auto me-4">
           <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
@@ -66,12 +67,12 @@ https://templatemo.com/tm-590-topic-listing
               <a class="nav-link click-scroll" href="#section_3">How it works</a>
             </li>
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a class="nav-link click-scroll" href="#section_4">FAQs</a>
-            </li>
+            </li> --}}
 
             <li class="nav-item">
-              <a class="nav-link click-scroll" href="#section_5">Contact</a>
+              <a class="nav-link click-scroll" href="#section_5">Lokasi</a>
             </li>
           </ul>
 
@@ -104,14 +105,15 @@ https://templatemo.com/tm-590-topic-listing
                 <div class="d-flex">
                   <div>
                     <h5 class="mb-2">IOTMCC</h5>
-                    <p class="mb-0"> sebuah sistem pintar yang menggunakan teknologi internet (IoT) untuk memantau dan 
-                    mengatur kondisi iklim (seperti suhu, kelembaban, dan ventilasi) di banyak zona atau ruangan yang berbeda 
-                    secara otomatis dan terpusat.</p>
+                    <p class="mb-0"> sebuah sistem pintar yang menggunakan teknologi internet (IoT) untuk memantau dan
+                      mengatur kondisi iklim (seperti suhu, kelembaban, dan ventilasi) di banyak zona atau ruangan yang
+                      berbeda
+                      secara otomatis dan terpusat.</p>
                   </div>
 
                   <span class="badge bg-design rounded-pill ms-auto"></span>
                 </div>
-                <img src="images/topics/undraw_Remote_design_team_re_urdx.png" class="custom-block-image img-fluid"
+                <img src="{{ asset('assets/user/images/vanili-base.webp') }}" class="custom-block-image img-fluid"
                   alt="">
               </a>
             </div>
@@ -126,7 +128,8 @@ https://templatemo.com/tm-590-topic-listing
                   <div>
                     <h5 class="text-white mb-2">Vanili</h5>
                     <p class="text-white">Vanili (Vanilla planifolia) adalah tanaman rempah yang sangat berharga,
-                      sering dijuluki sebagai "Emas Hijau" atau komoditas "berlian hitam" karena nilai ekonominya yang tinggi.</p>
+                      sering dijuluki sebagai "Emas Hijau" atau komoditas "berlian hitam" karena nilai ekonominya yang
+                      tinggi.</p>
 
                     <a href="topics-detail.html" class="btn custom-btn mt-2 mt-lg-3">Learn More</a>
                   </div>
@@ -158,124 +161,124 @@ https://templatemo.com/tm-590-topic-listing
 
 
     <section class="explore-section section-padding" id="section_2">
-  <div class="container">
-    <div class="col-12 text-center">
-      <h2 class="mb-4">Galeri</h2>
-      <p class="text-muted">
-        Kumpulan dokumentasi kegiatan, proyek, dan inovasi dari tim IoT MCC Vanili.
-      </p>
-    </div>
+      <div class="container">
+        <div class="col-12 text-center">
+          <h2 class="mb-4">Galeri</h2>
+          <p class="text-muted">
+            Kumpulan dokumentasi kegiatan, proyek, dan inovasi dari tim IoT MCC Vanili.
+          </p>
+        </div>
 
-    <div class="row">
-      <!-- Item 1 -->
-      <div class="col-lg-4 col-md-6 col-12 mb-4">
-        <div class="custom-block bg-white shadow-lg">
-          <a href="#">
-            <img src="{{ asset('assets/user/images/galeri/vanili-1.jpg') }}" 
-                 class="custom-block-image img-fluid" 
-                 alt="Rancang Alat IoT Pemantau Kelembapan">
-            <div class="p-3">
-              <h5 class="mb-2">Rancang Alat IoT Pemantau Kelembapan</h5>
-              <p class="mb-0">
-                Pengembangan sistem pemantauan kelembapan tanah untuk budidaya vanili.
-              </p>
+        <div class="row">
+          <!-- Item 1 -->
+          <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <div class="custom-block bg-white shadow-lg">
+              <a href="#">
+                <img src="{{ asset('assets/user/images/dummy1.jpg') }}" class="custom-block-image img-fluid"
+                  alt="Rancang Alat IoT Pemantau Kelembapan">
+                <div class="p-3">
+                  <h5 class="mb-2">Rancang Alat IoT Pemantau Kelembapan</h5>
+                  <p class="mb-0">
+                    Pengembangan sistem pemantauan kelembapan tanah untuk budidaya vanili.
+                  </p>
+                </div>
+              </a>
             </div>
-          </a>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <div class="custom-block bg-white shadow-lg">
+              <a href="#">
+                <img src="{{ asset('assets/user/images/dummy1.jpg') }}" class="custom-block-image img-fluid"
+                  alt="Uji Lapangan Sistem IoT">
+                <div class="p-3">
+                  <h5 class="mb-2">Uji Lapangan Sistem IoT</h5>
+                  <p class="mb-0">
+                    Tim melakukan pengujian sensor dan sistem otomatisasi di kebun vanili.
+                  </p>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <div class="custom-block bg-white shadow-lg">
+              <a href="#">
+                <img src="{{ asset('assets/user/images/dummy1.jpg') }}" class="custom-block-image img-fluid"
+                  alt="Presentasi Proyek IoT MCC Vanili">
+                <div class="p-3">
+                  <h5 class="mb-2">Presentasi Proyek IoT MCC Vanili</h5>
+                  <p class="mb-0">
+                    Anggota tim mempresentasikan hasil riset di hadapan dosen dan mitra industri.
+                  </p>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Item 2 -->
-      <div class="col-lg-4 col-md-6 col-12 mb-4">
-        <div class="custom-block bg-white shadow-lg">
-          <a href="#">
-            <img src="{{ asset('assets/user/images/galeri/vanili-2.jpg') }}" 
-                 class="custom-block-image img-fluid" 
-                 alt="Uji Lapangan Sistem IoT">
-            <div class="p-3">
-              <h5 class="mb-2">Uji Lapangan Sistem IoT</h5>
-              <p class="mb-0">
-                Tim melakukan pengujian sensor dan sistem otomatisasi di kebun vanili.
-              </p>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <!-- Item 3 -->
-      <div class="col-lg-4 col-md-6 col-12 mb-4">
-        <div class="custom-block bg-white shadow-lg">
-          <a href="#">
-            <img src="{{ asset('assets/user/images/galeri/vanili-3.jpg') }}" 
-                 class="custom-block-image img-fluid" 
-                 alt="Presentasi Proyek IoT MCC Vanili">
-            <div class="p-3">
-              <h5 class="mb-2">Presentasi Proyek IoT MCC Vanili</h5>
-              <p class="mb-0">
-                Anggota tim mempresentasikan hasil riset di hadapan dosen dan mitra industri.
-              </p>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
 
     <section class="timeline-section section-padding" id="section_3">
-  <div class="section-overlay"></div>
+      <div class="section-overlay"></div>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-12 text-center">
-        <h2 class="text-white mb-4">Bagaimana IoT MCC Berjalan?</h2>
-      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-center">
+            <h2 class="text-white mb-4">Bagaimana IoT MCC Berjalan?</h2>
+          </div>
 
-      <div class="col-lg-10 col-12 mx-auto">
-        <div class="timeline-container">
-          <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
-            <div class="list-progress">
-              <div class="inner"></div>
+          <div class="col-lg-10 col-12 mx-auto">
+            <div class="timeline-container">
+              <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
+                <div class="list-progress">
+                  <div class="inner"></div>
+                </div>
+
+                <li>
+                  <h4 class="text-white mb-3">Perancangan Sistem IoT</h4>
+                  <p class="text-white">
+                    Tim IoT MCC memulai dengan merancang sistem yang mampu memantau dan mengontrol berbagai aspek
+                    budidaya vanili secara otomatis.
+                  </p>
+                  <div class="icon-holder">
+                    <i class="bi-cpu"></i>
+                  </div>
+                </li>
+
+                <li>
+                  <h4 class="text-white mb-3">Pengujian dan Implementasi</h4>
+                  <p class="text-white">
+                    Setelah perancangan, sistem diuji di lapangan untuk memastikan sensor dan aktuator bekerja sesuai
+                    kebutuhan budidaya vanili.
+                  </p>
+                  <div class="icon-holder">
+                    <i class="bi-gear"></i>
+                  </div>
+                </li>
+
+                <li>
+                  <h4 class="text-white mb-3">Pemantauan dan Analisis Data</h4>
+                  <p class="text-white">
+                    Data dari sensor dikumpulkan dan dianalisis untuk meningkatkan efisiensi sistem serta membantu
+                    petani dalam pengambilan keputusan.
+                  </p>
+                  <div class="icon-holder">
+                    <i class="bi-bar-chart"></i>
+                  </div>
+                </li>
+              </ul>
             </div>
-
-            <li>
-              <h4 class="text-white mb-3">Perancangan Sistem IoT</h4>
-              <p class="text-white">
-                Tim IoT MCC memulai dengan merancang sistem yang mampu memantau dan mengontrol berbagai aspek budidaya vanili secara otomatis.
-              </p>
-              <div class="icon-holder">
-                <i class="bi-cpu"></i>
-              </div>
-            </li>
-
-            <li>
-              <h4 class="text-white mb-3">Pengujian dan Implementasi</h4>
-              <p class="text-white">
-                Setelah perancangan, sistem diuji di lapangan untuk memastikan sensor dan aktuator bekerja sesuai kebutuhan budidaya vanili.
-              </p>
-              <div class="icon-holder">
-                <i class="bi-gear"></i>
-              </div>
-            </li>
-
-            <li>
-              <h4 class="text-white mb-3">Pemantauan dan Analisis Data</h4>
-              <p class="text-white">
-                Data dari sensor dikumpulkan dan dianalisis untuk meningkatkan efisiensi sistem serta membantu petani dalam pengambilan keputusan.
-              </p>
-              <div class="icon-holder">
-                <i class="bi-bar-chart"></i>
-              </div>
-            </li>
-          </ul>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
 
-    <section class="faq-section section-padding" id="section_4">
+    {{-- <section class="faq-section section-padding" id="section_4">
       <div class="container">
         <div class="row">
 
@@ -345,71 +348,62 @@ https://templatemo.com/tm-590-topic-listing
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
+ --}}
 
-
-    <section class="contact-section section-padding section-bg" id="section_5">
+    <section class="lokasi-section section-padding section-bg" id="section_5">
       <div class="container">
         <div class="row">
 
           <div class="col-lg-12 col-12 text-center">
-            <h2 class="mb-5">Get in touch</h2>
+            <h2 class="mb-5">Lokasi</h2>
           </div>
 
           <div class="col-lg-5 col-12 mb-4 mb-lg-0">
-            <iframe class="google-map"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2595.065641062665!2d-122.4230416990949!3d37.80335401520422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858127459fabad%3A0x808ba520e5e9edb7!2sFrancisco%20Park!5e1!3m2!1sen!2sth!4v1684340239744!5m2!1sen!2sth"
-              width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3949.73643959526!2d113.71969197484798!3d-8.128293291901382!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd695007abe851f%3A0x984e5c4f84e4956b!2sVanili%20Agrofilia%20Permata!5e0!3m2!1sid!2sid!4v1759897839593!5m2!1sid!2sid"
+              width="100%" height="250" style="border:0; border-radius: 10px;" allowfullscreen="" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">\></iframe>
           </div>
 
           <div class="col-lg-3 col-md-6 col-12 mb-3 mb-lg- mb-md-0 ms-auto">
-            <h4 class="mb-3">Head office</h4>
-
-            <p>Bay St &amp;, Larkin St, San Francisco, CA 94109, United States</p>
-
+            <h4 class="mb-3">Kebun</h4>
+            <p>Area Sawah/Kulon, Baratan, Kec. Patrang, Kabupaten Jember, Jawa Timur</p>
             <hr>
-
             <p class="d-flex align-items-center mb-1">
               <span class="me-2">Phone</span>
-
-              <a href="tel: 305-240-9671" class="site-footer-link">
-                305-240-9671
+              <a href="tel: 0815 9200022" class="site-footer-link">
+                0815 9200022
               </a>
             </p>
 
             <p class="d-flex align-items-center">
               <span class="me-2">Email</span>
 
-              <a href="mailto:info@company.com" class="site-footer-link">
-                info@company.com
+              <a href="mailto:info@permataindonesia.com" class="site-footer-link">
+                info@permataindonesia.com
               </a>
             </p>
           </div>
 
           <div class="col-lg-3 col-md-6 col-12 mx-auto">
-            <h4 class="mb-3">Dubai office</h4>
-
-            <p>Burj Park, Downtown Dubai, United Arab Emirates</p>
-
+            <h4 class="mb-3">Head Office</h4>
+            <p>Jl. Kyai Maja No.7a, RT.4/RW.1, Grogol Sel., Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12130</p>
             <hr>
-
             <p class="d-flex align-items-center mb-1">
               <span class="me-2">Phone</span>
-
-              <a href="tel: 110-220-3400" class="site-footer-link">
-                110-220-3400
+              <a href="tel: 0815 9200022" class="site-footer-link">
+                0815 9200022
               </a>
             </p>
 
             <p class="d-flex align-items-center">
               <span class="me-2">Email</span>
 
-              <a href="mailto:info@company.com" class="site-footer-link">
-                info@company.com
+              <a href="mailto:info@permataindonesia.com" class="site-footer-link">
+                info@permataindonesia.com
               </a>
             </p>
           </div>
@@ -424,7 +418,7 @@ https://templatemo.com/tm-590-topic-listing
       <div class="row">
 
         <div class="col-lg-3 col-12 mb-4 pb-2">
-          <a class="navbar-brand mb-2" href="index.html">
+          <a class="navbar-brand mb-2" href="">
             <i class="bi-back"></i>
             <span>Topic</span>
           </a>
@@ -438,16 +432,20 @@ https://templatemo.com/tm-590-topic-listing
               <a href="#" class="site-footer-link">Home</a>
             </li>
 
+             <li class="site-footer-link-item">
+              <a href="#" class="site-footer-link">Galeri</a>
+            </li>
+
             <li class="site-footer-link-item">
               <a href="#" class="site-footer-link">How it works</a>
             </li>
 
-            <li class="site-footer-link-item">
+            {{-- <li class="site-footer-link-item">
               <a href="#" class="site-footer-link">FAQs</a>
-            </li>
+            </li> --}}
 
             <li class="site-footer-link-item">
-              <a href="#" class="site-footer-link">Contact</a>
+              <a href="#" class="site-footer-link">Lokasi</a>
             </li>
           </ul>
         </div>
@@ -462,8 +460,8 @@ https://templatemo.com/tm-590-topic-listing
           </p>
 
           <p class="text-white d-flex">
-            <a href="mailto:info@company.com" class="site-footer-link">
-              info@company.com
+            <a href="mailto:pengaduan@permataindonesia.com" class="site-footer-link">
+              pengaduan@permataindonesia.com
             </a>
           </p>
         </div>
