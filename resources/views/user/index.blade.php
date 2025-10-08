@@ -44,7 +44,7 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link click-scroll" href="#section_3">How it works</a>
+              <a class="nav-link click-scroll" href="#section_3">Mekanisme</a>
             </li>
 
             {{-- <li class="nav-item">
@@ -92,7 +92,7 @@
 
                   <span class="badge bg-design rounded-pill ms-auto"></span>
                 </div>
-                <img src="{{ asset('assets/user/images/vanili-base.webp') }}" class="custom-block-image img-fluid"
+                <img src="{{ asset('assets/user/images/IOT-bgn.jpg') }}" class="custom-block-image img-fluid"
                   alt="">
               </a>
             </div>
@@ -101,7 +101,7 @@
           <div class="col-lg-6 col-12">
             <div class="custom-block custom-block-overlay">
               <div class="d-flex flex-column h-100">
-                <img src="images/businesswoman-using-tablet-analysis.jpg" class="custom-block-image img-fluid" alt="">
+                <img src="{{ asset( 'assets/user/images/vanili-base.webp') }}" class="custom-block-image img-fluid" alt="">
 
                 <div class="custom-block-overlay-text d-flex">
                   <div>
@@ -109,8 +109,6 @@
                     <p class="text-white">Vanili (Vanilla planifolia) adalah tanaman rempah yang sangat berharga,
                       sering dijuluki sebagai "Emas Hijau" atau komoditas "berlian hitam" karena nilai ekonominya yang
                       tinggi.</p>
-
-                    <a href="topics-detail.html" class="btn custom-btn mt-2 mt-lg-3">Learn More</a>
                   </div>
 
                   <span class="badge bg-finance rounded-pill ms-auto"></span>
@@ -200,7 +198,7 @@
       </div>
     </section>
 
-    <!-- Timeline Section -->
+    <!-- Mekanisme Section -->
     <section class="timeline-section section-padding" id="section_3">
       <div class="section-overlay"></div>
       <div class="container">
@@ -395,8 +393,7 @@
 
         <div class="col-lg-3 col-12 mb-4 pb-2">
           <a class="navbar-brand mb-2" href="">
-            <i class="bi-back"></i>
-            <span>Topic</span>
+             <img src="{{ asset('assets/user/images/iotmcc-fullicon.png') }}" alt="IoTMCC Logo" width="250" height="150" class="me-2">
           </a>
         </div>
 
@@ -413,7 +410,7 @@
             </li>
 
             <li class="site-footer-link-item">
-              <a href="#" class="site-footer-link">How it works</a>
+              <a href="#" class="site-footer-link">Mekanisme</a>
             </li>
 
             {{-- <li class="site-footer-link-item">
