@@ -58,13 +58,13 @@ html, body {
   right: 0;
   z-index: 1000;
   background-color: #ffffff;
-  border-bottom: 1px solid #7a7a7a;
+  border-bottom: 1px solid #A4DE02;
 }
 
 .admin-footer {
   background-color: #e8f5e9;
   color: #525252;
-  border-top: 1px solid #c8e6c9;
+  border-top: 1px solid #A4DE02;
 }
 
 
@@ -80,12 +80,12 @@ html, body {
 }
 
 .nav-link:hover:not(.active) {
-  background-color: #ebfff8 !important;
+  background-color: #f0ffc6 !important;
   color: #000000 !important;
 }
 
 .nav-link.active {
-  background-color: #10b981 !important;
+  background-color: #A4DE02 !important;
   color: #fff !important;
 }
 
