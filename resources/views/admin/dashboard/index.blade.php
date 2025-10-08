@@ -12,14 +12,14 @@
                 <p class="text-muted mb-0">Welcome back! Here's what's happening.</p>
             </div>
             <div class="d-flex gap-2">
-                <button type="button" class="btn" style="background-color: #81c784">
-                    <i class="bi bi-plus-lg me-2"></i>
+                <button type="button" class="btn" style="background-color: #BFFF00;">
+                    <i class="bi bi-plus-lg me-2">
                     New Item
                 </button>
                 <button type="button" class="btn btn-outline-secondary" 
                         data-bs-toggle="tooltip" 
                         title="Refresh data">
-                    <i class="bi bi-arrow-clockwise icon-hover"></i>
+                    <i class="bi-arrow-clockwise icon-hover"></i>
                 </button>
                 <button type="button" class="btn btn-outline-secondary" 
                         data-bs-toggle="tooltip" 
