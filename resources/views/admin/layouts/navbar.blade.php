@@ -1,6 +1,6 @@
 <!-- Header -->
 <header class="admin-header">
-  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+  <nav class="navbar navbar-expand-lg" style="background-color: #e8f5e9; border-bottom: 1px solid #c8e6c9;">
     <div class="container-fluid">
       <!-- Logo/Brand - Now first on the left -->
       <a class="navbar-brand d-flex align-items-center" href="./index.html">

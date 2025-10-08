@@ -1,0 +1,53 @@
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+
+.admin-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+.admin-sidebar {
+  width: 260px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  border-right: 1px solid #c8e6c9;
+  padding-top: 70px;
+}
+
+
+.admin-content {
+  flex-grow: 1;
+  margin-left: 260px;
+  overflow-y: auto;
+  height: 100vh;
+  background-color: #f9fafb;
+}
+
+
+.admin-header {
+  position: fixed;
+  top: 0;
+  left: 260px;
+  right: 0;
+  z-index: 1000;
+  background-color: #ffffff;
+  border-bottom: 1px solid #c8e6c9;
+}
+
+
+.admin-footer {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-top: 1px solid #c8e6c9;
+  padding: 10px 20px;
+}

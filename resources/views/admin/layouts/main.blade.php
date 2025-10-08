@@ -26,10 +26,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Title -->
-    <title>Dashboard - Modern Bootstrap Admin</title>
+    <title>Admin Agrofilia Permata</title>
     
     <!-- Theme Color -->
     <meta name="theme-color" content="#6366f1">
+
+    <!-- css -->
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/main-2.css') }}">
+
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="{{ asset('assets/admin/manifest-DTaoG9pG.json') }}">
@@ -41,11 +45,11 @@
 
     <div class="admin-wrapper" id="admin-wrapper">
 
-        @include('admin.layout.navbar')
+        @include('admin.layouts.navbar')
 
-        @include('admin.layout.sidebar')
+        @include('admin.layouts.sidebar')
 
-        @include('admin.layout.footer')
+        @include('admin.layouts.footer')
     </div>
 
     <script>
