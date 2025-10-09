@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
@@ -32,7 +32,12 @@ class AuthenticatedSessionController extends Controller
             'is_logged_in' => true
         ]);
 
-        return redirect()->intended(route('dashboard.index', absolute: false));
+        return response()->json([
+            'status'=> true,
+            'message'=> 'Login Berhasil!'
+        ]);
+        
+        // return redirect()->intended(route('dashboard.index', absolute: false));
     }
 
     /**
