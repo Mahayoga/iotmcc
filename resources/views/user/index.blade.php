@@ -23,7 +23,7 @@
     <nav class="navbar navbar-expand-lg">
       <div class="container">
         <a class="navbar-brand">
-          <img src="{{ asset('assets/user/images/iotmcc-icon-trans.png') }}" alt="IoTMCC Logo" width="95" height="65 "
+          <img src="{{ asset('assets/user/images/icon-iotmcc.png') }}" alt="IoTMCC Logo" width="65" height="65"
             class="me-2">
         </a>
         <div class="d-lg-none ms-auto me-4">
