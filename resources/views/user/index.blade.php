@@ -56,7 +56,11 @@
             </li>
           </ul>
           <div class="d-none d-lg-block">
-            <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+            @if(session('is_logged_in'))
+              <a href="{{ route('dashboard.index') }}" class="btn btn-primary smoothscroll">Dashboard</a>
+            @else
+              <a href="{{ route('login') }}" class="btn btn-primary smoothscroll">Login</a>
+            @endif
           </div>
         </div>
       </div>
