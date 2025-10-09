@@ -80,7 +80,7 @@ html, body {
 }
 
 .nav-link:hover:not(.active) {
-  background-color: #f0ffc6 !important;
+  background-color: #F4FBE5 !important;
   color: #000000 !important;
 }
 
