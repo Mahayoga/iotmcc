@@ -36,7 +36,7 @@
             <div class="my-3">
               <button type="button" class="btn btn-success w-100" onclick="handleLogin()">Login</button>
               <div id="passwordHelpBlock" class="form-text text-end mt-3">
-                <a href="" class="link-secondary link-underline link-underline-opacity-0">Lupa kata sandi?</a>
+                <a href="{{ route('password.request') }}" class="link-secondary link-underline link-underline-opacity-0">Lupa kata sandi?</a>
               </div>
             </div>
           </div>
