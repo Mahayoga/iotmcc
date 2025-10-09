@@ -58,11 +58,5 @@
 
     <a href="{{ route('login') }}" class="back-link">Kembali ke Login</a>
   </div>
-
-  <div id="particles-js"></div>
-  <script src="{{ asset('assets/user/js/particles.js') }}"></script>
-  <script>
-    particlesJS.load('particles-js', '{{ asset('assets/user/js/particles.json') }}');
-  </script>
 </body>
 </html>
