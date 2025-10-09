@@ -44,18 +44,36 @@
       </div>
     </div>
   </div>
-  <div id="particles-js"></div>
+  <div id="particles-js" class="manual-bg-overlay"></div>
+  <div id="footer" class="text-secondary text-center p-4 fs-6 w-100">
+    © {{ date('Y') }} PT. Permata Indo Sejahtera Crafted with ❤️ by Lab KSI Politeknik Negeri Jember
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script src="{{ asset('assets/user/js/particles.js') }}"></script>
   <script>
+    document.getElementById('particles-js').innerHTML += `
+      <div id="manual-overlay"></div>
+      <div class="manual-shape">
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
+          <path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
+        </svg>
+      </div>
+    `;
     particlesJS.load('particles-js', '{{ asset('assets/user/js/particles.json') }}', function() {
       console.log('callback - particles.js config loaded');
+      document.getElementsByClassName('particles-js-canvas-el')[0].setAttribute('height', window.innerHeight / 2.5);
+      document.getElementById('particles-js').style.position = 'absolute';
+      document.getElementById('particles-js').style.zIndex = -1;
     });
   </script>
   <script>
+    $(document).ready(function() {
+      
+    });
+
     function handleLogin() {
       let formData = new FormData();
       let username = document.getElementById('email').value;
