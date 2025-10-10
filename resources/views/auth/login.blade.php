@@ -120,7 +120,10 @@
       Swal.fire({
         title: 'Status',
         text: 'Sedang melakukan login...',
-        icon: 'info'
+        icon: 'info',
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
       });
 
       $.post('{{ route('login') }}', {
@@ -138,8 +141,10 @@
         } else {
           Swal.fire({
             title: "Status",
-            text: "User tidak ada di database kami!",
-            icon: "error"
+            text: data.msg,
+            icon: "error",
+            allowOutsideClick: false,
+            allowEscapeKey: false
           });
         }
       });
