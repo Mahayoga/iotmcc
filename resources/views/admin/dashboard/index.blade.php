@@ -9,35 +9,14 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h1 class="h3 mb-0">Dashboard</h1>
-                <p class="text-muted mb-0">Welcome back! Here's what's happening.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn" style="background-color: #BFFF00;">
-                    <i class="bi bi-plus-lg me-2"></i>
-                    New Item
-                </button>
-                <button type="button" class="btn btn-outline-secondary" 
-                        data-bs-toggle="tooltip" 
-                        title="Refresh data">
-                    <i class="bi-arrow-clockwise icon-hover"></i>
-                </button>
-                <button type="button" class="btn btn-outline-secondary" 
-                        data-bs-toggle="tooltip" 
-                        title="Export data">
-                    <i class="bi bi-download icon-hover"></i>
-                </button>
-                <button type="button" class="btn btn-outline-secondary" 
-                        data-bs-toggle="tooltip" 
-                        title="Settings">
-                    <i class="bi bi-gear icon-hover"></i>
-                </button>
+                <p class="text-muted mb-0">Rekap Gudang Vanili Agrofilia Permata</p>
             </div>
         </div>
 
         <!-- Stats Cards -->
         <div class="row g-4 mb-4">
             <div class="col-xl-3 col-lg-6">
-                <div class="card stats-card">
+                <div class="card stats-card" style="background-color: #DFFFA9">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
@@ -58,7 +37,7 @@
             </div>
 
             <div class="col-xl-3 col-lg-6">
-                <div class="card stats-card">
+                <div class="card stats-card" style="background-color: #C9F658">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
@@ -79,7 +58,7 @@
             </div>
 
             <div class="col-xl-3 col-lg-6">
-                <div class="card stats-card">
+                <div class="card stats-card" style="background-color: #D8FF7E">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
@@ -100,7 +79,96 @@
             </div>
 
             <div class="col-xl-3 col-lg-6">
-                <div class="card stats-card">
+                <div class="card stats-card" style="background-color: #B2FBA5">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="stats-icon bg-info bg-opacity-10 text-info">
+                                    <i class="bi bi-clock-history"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0 text-muted">Avg. Response</h6>
+                                <h3 class="mb-0">2.3s</h3>
+                                <small class="text-success">
+                                    <i class="bi bi-arrow-up"></i> +5.4%
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6">
+                <div class="card stats-card" style="background-color: #C4E759">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="stats-icon bg-info bg-opacity-10 text-info">
+                                    <i class="bi bi-clock-history"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0 text-muted">Avg. Response</h6>
+                                <h3 class="mb-0">2.3s</h3>
+                                <small class="text-success">
+                                    <i class="bi bi-arrow-up"></i> +5.4%
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-xl-3 col-lg-6">
+                <div class="card stats-card" style="background-color: #E4FFB7">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="stats-icon bg-info bg-opacity-10 text-info">
+                                    <i class="bi bi-clock-history"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0 text-muted">Avg. Response</h6>
+                                <h3 class="mb-0">2.3s</h3>
+                                <small class="text-success">
+                                    <i class="bi bi-arrow-up"></i> +5.4%
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="col-xl-3 col-lg-6">
+                <div class="card stats-card" style="background-color: #BEF574">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="stats-icon bg-info bg-opacity-10 text-info">
+                                    <i class="bi bi-clock-history"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0 text-muted">Avg. Response</h6>
+                                <h3 class="mb-0">2.3s</h3>
+                                <small class="text-success">
+                                    <i class="bi bi-arrow-up"></i> +5.4%
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="col-xl-3 col-lg-6">
+                <div class="card stats-card" style="background-color: #D6FF6B">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
