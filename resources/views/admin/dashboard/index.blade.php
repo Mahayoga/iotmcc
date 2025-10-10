@@ -13,92 +13,102 @@
         </div>
       </div>
 
+      <div class="row g-4 mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0 mt-2">Ruangan Perebusan</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-xl-4 col-lg-6 mb-3">
+                  <div class="card stats-card h-100" style="background-color: #DFFFA9">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                          <div class="stats-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-cup-hot"></i>
+                          </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                          <h6 class="mb-0 text-muted">Suhu Tempat Perebusan</h6>
+                          <h3 class="mb-0">78°C</h3>
+                          <small class="text-success">
+                            <i class="bi bi-arrow-up"></i> +3°C
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 mb-3">
+                  <div class="card stats-card h-100" style="background-color: #C9F658">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                          <div class="stats-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-bullseye"></i>
+                          </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                          <h6 class="mb-0 text-muted">Status Perebusan</h6>
+                          <h3 class="mb-0">Standby</h3>
+                          <small class="text-success" id="status-perebusan">
+                            <i class="bi bi-circle-fill"></i> &nbsp;Normal
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 mb-3">
+                  <div class="card stats-card h-100" style="background-color: #D8FF7E">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                          <div class="stats-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-hourglass-split"></i>
+                          </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                          <h6 class="mb-0 text-muted">Waktu Perebusan</h6>
+                          <h3 class="mb-0">59:59</h3>
+                          <small class="text-warning">
+                            <i class="bi bi-clock-history"></i> dimulai sejak 32 menit yang lalu
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {{-- <div class="col-xl-3 col-lg-6 mb-3">
+                  <div class="card stats-card" style="background-color: #B2FBA5">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                          <div class="stats-icon bg-info bg-opacity-10 text-info">
+                            <i class="bi bi-clock-history"></i>
+                          </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                          <h6 class="mb-0 text-muted">Avg. Response</h6>
+                          <h3 class="mb-0">2.3s</h3>
+                          <small class="text-success">
+                            <i class="bi bi-arrow-up"></i> +5.4%
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div> --}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Stats Cards -->
       <div class="row g-4 mb-4">
-        <div class="col-xl-3 col-lg-6">
-          <div class="card stats-card" style="background-color: #DFFFA9">
-            <div class="card-body">
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0">
-                  <div class="stats-icon bg-primary bg-opacity-10 text-primary">
-                    <i class="bi bi-people"></i>
-                  </div>
-                </div>
-                <div class="flex-grow-1 ms-3">
-                  <h6 class="mb-0 text-muted">Total Users</h6>
-                  <h3 class="mb-0">12,426</h3>
-                  <small class="text-success">
-                    <i class="bi bi-arrow-up"></i> +12.5%
-                  </small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-3 col-lg-6">
-          <div class="card stats-card" style="background-color: #C9F658">
-            <div class="card-body">
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0">
-                  <div class="stats-icon bg-success bg-opacity-10 text-success">
-                    <i class="bi bi-graph-up"></i>
-                  </div>
-                </div>
-                <div class="flex-grow-1 ms-3">
-                  <h6 class="mb-0 text-muted">Revenue</h6>
-                  <h3 class="mb-0">$54,320</h3>
-                  <small class="text-success">
-                    <i class="bi bi-arrow-up"></i> +8.2%
-                  </small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-3 col-lg-6">
-          <div class="card stats-card" style="background-color: #D8FF7E">
-            <div class="card-body">
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0">
-                  <div class="stats-icon bg-warning bg-opacity-10 text-warning">
-                    <i class="bi bi-bag-check"></i>
-                  </div>
-                </div>
-                <div class="flex-grow-1 ms-3">
-                  <h6 class="mb-0 text-muted">Orders</h6>
-                  <h3 class="mb-0">1,852</h3>
-                  <small class="text-danger">
-                    <i class="bi bi-arrow-down"></i> -2.1%
-                  </small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-3 col-lg-6">
-          <div class="card stats-card" style="background-color: #B2FBA5">
-            <div class="card-body">
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0">
-                  <div class="stats-icon bg-info bg-opacity-10 text-info">
-                    <i class="bi bi-clock-history"></i>
-                  </div>
-                </div>
-                <div class="flex-grow-1 ms-3">
-                  <h6 class="mb-0 text-muted">Avg. Response</h6>
-                  <h3 class="mb-0">2.3s</h3>
-                  <small class="text-success">
-                    <i class="bi bi-arrow-up"></i> +5.4%
-                  </small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="col-xl-3 col-lg-6">
           <div class="card stats-card" style="background-color: #C4E759">
             <div class="card-body">
