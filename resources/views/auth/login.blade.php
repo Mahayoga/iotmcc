@@ -71,8 +71,22 @@
   </script>
   <script>
     $(document).ready(function() {
-      
+      $('#email').keypress(function(event) {
+        if(event.which == 13) {
+          let username = document.getElementById('email');
+          let password = document.getElementById('password');
+
+          if(username.value == '') {
+            password.focus();
+          }
+          event.preventDefault();
+        }
+      });
     });
+
+    function test() {
+      
+    }
 
     function handleLogin() {
       let formData = new FormData();
