@@ -77,22 +77,51 @@
           let password = document.getElementById('password');
 
           if(username.value == '') {
+            username.focus();
+            return;
+          }
+          if(password.value == '') {
             password.focus();
+            return;
+          }
+          if(username.value != '' && password.value != '') {
+            handleLogin();
+          }
+          event.preventDefault();
+        }
+      });
+      $('#password').keypress(function(event) {
+        if(event.which == 13) {
+          let username = document.getElementById('email');
+          let password = document.getElementById('password');
+
+          if(password.value == '') {
+            password.focus();
+            return;
+          }
+          if(username.value == '') {
+            username.focus();
+            return;
+          }
+          if(username.value != '' && password.value != '') {
+            handleLogin();
           }
           event.preventDefault();
         }
       });
     });
 
-    function test() {
-      
-    }
-
     function handleLogin() {
       let formData = new FormData();
       let username = document.getElementById('email').value;
       let password = document.getElementById('password').value;
       let token = document.getElementById('meta_token').getAttribute('_token');
+
+      Swal.fire({
+        title: 'Status',
+        text: 'Sedang melakukan login...',
+        icon: 'info'
+      });
 
       $.post('{{ route('login') }}', {
         '_token': token,
