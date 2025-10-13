@@ -37,22 +37,22 @@
       <!-- Right Side Icons -->
       <div class="navbar-nav flex-row">
         <!-- Theme Toggle with Alpine.js -->
-        <div x-data="themeSwitch">
+        {{-- <div x-data="themeSwitch">
           <button class="btn btn-outline-secondary me-2" type="button" @click="toggle()" data-bs-toggle="tooltip"
             data-bs-placement="bottom" title="Toggle theme">
             <i class="bi bi-sun-fill" x-show="currentTheme === 'light'"></i>
             <i class="bi bi-moon-fill" x-show="currentTheme === 'dark'"></i>
           </button>
-        </div>
+        </div> --}}
 
         <!-- Fullscreen Toggle -->
-        <button class="btn btn-outline-secondary me-2" type="button" data-fullscreen-toggle data-bs-toggle="tooltip"
+        {{-- <button class="btn btn-outline-secondary me-2" type="button" data-fullscreen-toggle data-bs-toggle="tooltip"
           data-bs-placement="bottom" title="Toggle fullscreen">
           <i class="bi bi-arrows-fullscreen icon-hover"></i>
-        </button>
+        </button> --}}
 
         <!-- Notifications -->
-        <div class="dropdown me-2">
+        {{-- <div class="dropdown me-2">
           <button class="btn btn-outline-secondary position-relative" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             <i class="bi bi-bell"></i>
@@ -72,7 +72,7 @@
             </li>
             <li><a class="dropdown-item text-center" href="#">View all notifications</a></li>
           </ul>
-        </div>
+        </div> --}}
 
         <!-- User Menu -->
         <div class="dropdown">
