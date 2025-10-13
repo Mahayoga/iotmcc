@@ -25,7 +25,7 @@
             <div class="card-body">
               <div class="row gy-4">
 
-                <!-- GUDANG 1 -->
+                <!-- Card Gudang 1 -->
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-1">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -54,7 +54,7 @@
                   </div>
                 </div>
 
-                <!-- GUDANG 2 -->
+                <!-- Card Gudang 2 -->
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-2">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -83,7 +83,7 @@
                   </div>
                 </div>
 
-                <!-- GUDANG 3 -->
+                <!-- Card Gudang 3 -->
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-3">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
