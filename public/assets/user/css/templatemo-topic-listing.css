@@ -30,7 +30,7 @@ https://templatemo.com/tm-590-topic-listing
   --h4-font-size:                 28px;
   --h5-font-size:                 24px;
   --h6-font-size:                 22px;
-  --p-font-size:                  20px;
+  --p-font-size:                  17px;
   --menu-font-size:               14px;
   --btn-font-size:                18px;
   --copyright-font-size:          16px;
@@ -284,11 +284,14 @@ strong {
 }
 
 .sticky-wrapper.is-sticky .navbar {
-  background-color: var(--secondary-color);
+  background-color: var(--secondary-color); 
+  /* background: transparent; */
+
 }
 
 .navbar {
-  background: transparent;
+  /* background: transparent; */
+  background-color: var(--secondary-color); 
   border-bottom: 1px solid rgba(128, 208, 199, 0.35);
   z-index: 9;
 }
@@ -486,11 +489,16 @@ strong {
   HERO        
 -----------------------------------------*/
 .hero-section {
-  background-color: #DFFFA9;
+  /* background-color: #DFFFA9; */
+  background-image: url('../images/background-vanili.jpg');
   position: relative;
   overflow: hidden;
   padding-top: 150px;
   padding-bottom: 150px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border-radius: 0 0 100px 100px;
 }
 
 .hero-section .input-group {
@@ -524,6 +532,7 @@ strong {
   TOPICS              
 -----------------------------------------*/
 .featured-section {
+  /* background-image: url('../images/background-vanili.jpg'); */
   background-color: var(--secondary-color);
   border-radius: 0 0 100px 100px;
   padding-bottom: 100px;
@@ -726,104 +735,86 @@ blockquote {
   TIMELINE              
 -----------------------------------------*/
 .timeline-section {
-  background-image: url('../images/background-vanili.jpg');
-  background-repeat: no-repeat;
-  background-position: center;
+  position: relative;
+  padding: 60px 0;
+  
   background-size: cover;
-  position: relative;
+  background-position: center;
 }
 
-.timeline-container .vertical-scrollable-timeline {
-  list-style-type: none;
-  position: relative;
-  padding-left: 0;
-}
-
-.timeline-container .vertical-scrollable-timeline .list-progress {
-  width: 8px;
-  height: 87%;
-  background-color: var(--primary-color);
+/* Overlay custom */
+.timeline-section .overlay-block {
   position: absolute;
-  left: 52px;
   top: 0;
-  overflow: hidden;
-}
-
-.timeline-container .vertical-scrollable-timeline .list-progress .inner {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-  background-color: var(--secondary-color);
-  width: 100%;
-}
-
-.timeline-container .vertical-scrollable-timeline li {
-  position: relative;
-  padding: 20px 0px 65px 145px;
-}
-
-.timeline-container .vertical-scrollable-timeline li:last-child {
-  padding-bottom: 0;
-}
-
-.timeline-container .vertical-scrollable-timeline li p {
-  line-height: 40px;
-}
-
-.timeline-container .vertical-scrollable-timeline li p:last-child {
-  margin-bottom: 0;
-}
-
-.timeline-container .vertical-scrollable-timeline li .icon-holder {
-  position: absolute;
   left: 0;
-  top: 0;
-  width: 104px;
-  height: 104px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--secondary-color);
-  border-radius: 50%;
-  z-index: 1;
-  transition: 0.4s all;
-}
-
-.timeline-container .vertical-scrollable-timeline li .icon-holder::before {
-  content: "";
-  width: 80px;
-  height: 80px;
-  border: 4px solid #fff;
-  position: absolute;
-  background-color: var(--secondary-color);
-  border-radius: 50%;
-  z-index: -1;
-  transition: 0.4s all;
-}
-
-.timeline-container .vertical-scrollable-timeline li .icon-holder i {
-  font-size: 25px;
-  color: var(--white-color);
-}
-
-.timeline-container .vertical-scrollable-timeline li::before {
-  content: "";
-  position: absolute;
+  width: 100%;
   height: 100%;
-  width: 8px;
-  background-color: transparent;
-  left: 52px;
+  background-color: #DFFFA9;
+  opacity: 0.6; /* bisa disesuaikan */
   z-index: 0;
 }
 
-.timeline-container .vertical-scrollable-timeline li.active .icon-holder {
-  background-color: var(--primary-color);
+/* Pastikan teks berada di atas overlay */
+.timeline-section .container {
+  position: relative;
+  z-index: 1;
 }
 
-.timeline-container .vertical-scrollable-timeline li.active .icon-holder::before {
-  background-color: var(--primary-color);
+/* Horizontal card timeline */
+.timeline-container .timeline-cards {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  padding-left: 0;
+  margin: 0;
 }
+
+.timeline-container .timeline-cards.horizontal-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.timeline-container .timeline-cards .card-item {
+  flex: 0 0 300px;
+}
+
+.timeline-container .timeline-cards .card {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-container .timeline-cards .card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.timeline-container .timeline-cards .card .card-body i {
+  font-size: 30px;
+  margin-bottom: 15px;
+}
+
+.timeline-container .timeline-cards .card h5 {
+  margin-bottom: 10px;
+}
+
+.timeline-container .timeline-cards .card p {
+  color: #ccc;
+  line-height: 1.5;
+}
+
+/* Hide scrollbar */
+.timeline-container .timeline-cards.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+.timeline-container .timeline-cards.horizontal-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+
 
 
 /*---------------------------------------
