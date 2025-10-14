@@ -34,7 +34,7 @@
                           <i class="bi bi-fire fs-4"></i>
                         </div>
                         <div class="ms-2">
-                          <h6 class="mb-0 fw-bold">Gudang 1</h6>
+                          <h6 class="mb-0 fw-bold">Ruang 1</h6>
                           <small class="text-muted">Ruang Perebusan</small>
                         </div>
                       </div>
@@ -63,7 +63,7 @@
                           <i class="bi bi-sun fs-4"></i>
                         </div>
                         <div class="ms-2">
-                          <h6 class="mb-0 fw-bold">Gudang 2</h6>
+                          <h6 class="mb-0 fw-bold">Ruang 2</h6>
                           <small class="text-muted">Ruang Pengeringan</small>
                         </div>
                       </div>
@@ -92,7 +92,7 @@
                           <i class="bi bi-box-seam fs-4"></i>
                         </div>
                         <div class="ms-2">
-                          <h6 class="mb-0 fw-bold">Gudang 3</h6>
+                          <h6 class="mb-0 fw-bold">Ruang 3</h6>
                           <small class="text-light">Ruang Penyimpanan</small>
                         </div>
                       </div>
