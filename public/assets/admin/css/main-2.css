@@ -1,4 +1,5 @@
 html, body {
+  font-family: Poppins, sans-serif;
   height: 100%;
   overflow: hidden;
 }
@@ -85,7 +86,7 @@ html, body {
 }
 
 .nav-link.active {
-  background-color: #A4DE02 !important;
+  background-color: #a9da2e !important;
   color: #fff !important;
 }
 
@@ -98,4 +99,62 @@ html, body {
 .nav-link:hover:not(.active) i {
   color: #000000 !important;
 }
+
+.gudang-box {
+  background: linear-gradient(135deg, #B6E72E 0%, #C6F563 100%);
+  border-radius: 20px;
+  padding: 20px;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(182, 231, 46, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gudang-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 14px rgba(182, 231, 46, 0.45);
+}
+
+.gudang-icon {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.25);
+  color: #000000;
+  backdrop-filter: blur(4px);
+}
+
+.gudang-header h6,
+.gudang-header small,
+.gudang-main h2,
+.gudang-main p,
+.gudang-footer small {
+  color: #000000 !important;
+}
+
+.badge.bg-light {
+  background: rgba(255, 255, 255, 255) !important;
+  border: none;
+}
+
+.gudang-main {
+  position: relative;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.gudang-main::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+}
+
+
 
