@@ -14,8 +14,7 @@
     <meta property="og:type" content="website">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/admin/favicon-CvUZKS4z.svg') }}">
-    <link rel="icon" type="image/png" href="{{ asset('assets/admin/favicon-B_cwPWBd.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('assets/admin/images/icon-iotmcc.png') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     
     <!-- Preconnect to external domains -->

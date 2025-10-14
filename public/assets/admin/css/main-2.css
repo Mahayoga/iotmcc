@@ -1,4 +1,5 @@
 html, body {
+  font-family: Poppins, sans-serif;
   height: 100%;
   overflow: hidden;
 }
@@ -80,12 +81,12 @@ html, body {
 }
 
 .nav-link:hover:not(.active) {
-  background-color: #f0ffc6 !important;
+  background-color: #F4FBE5 !important;
   color: #000000 !important;
 }
 
 .nav-link.active {
-  background-color: #A4DE02 !important;
+  background-color: #a9da2e !important;
   color: #fff !important;
 }
 
@@ -99,3 +100,52 @@ html, body {
   color: #000000 !important;
 }
 
+
+
+.stats-card {
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #B6E72E, #D7FA74);
+  box-shadow: 0 4px 12px rgba(182, 231, 46, 0.3);
+  transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(182, 231, 46, 0.4);
+}
+
+.stats-icon {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  padding: 12px;
+  font-size: 2rem;
+}
+
+.stats-card h6 {
+  color: #4f4f4f;
+  font-weight: 500;
+}
+
+.stats-card h3 {
+  font-weight: 700;
+  color: #1b1b1b;
+}
+
+.text-success {
+  color: #2E7D32 !important;
+}
+
+.text-warning {
+  color: #E65100 !important;
+}
+
+.card-header h5 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  color: #2E7D32;
+}
+
+.card-title {
+  margin-bottom: 0.2rem;
+}

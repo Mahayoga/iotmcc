@@ -3,56 +3,76 @@
   <div class="sidebar-content">
     <nav class="sidebar-nav">
       <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link active" href="./index.html">
-            <i class="bi bi-speedometer2"></i>
-            <span>Dashboard</span>
-          </a>
+        @if(Route::currentRouteName() == 'dashboard.index')
+          <li class="nav-item p-2">
+            <a class="nav-link active" href="{{ route('dashboard.index') }}">
+              <i class="bi bi-speedometer2"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+        @else
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('dashboard.index') }}">
+              <i class="bi bi-speedometer2"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+        @endif
+
+        <!-- Menu Gudang -->
+        <li class="nav-item mt-3 mb-1">
+          <small class="text-muted px-3 text-uppercase fw-bold">Kelola Gudang</small>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="./analytics.html">
-            <i class="bi bi-graph-up"></i>
-            <span>Tables</span>
+          <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGudang" aria-expanded="false">
+            <i class="bi bi-houses"></i>
+            <span>Gudang</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
           </a>
+          <div class="collapse" id="collapseGudang">
+            <ul class="nav nav-submenu">
+              <li class="nav-item">
+                <a class="nav-link" href="./elements.html">
+                  <i class="bi bi-columns"></i>
+                  <span>Ruang 1</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./elements.html">
+                  <i class="bi bi-columns"></i>
+                  <span>Ruang 2</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./elements.html">
+                  <i class="bi bi-columns"></i>
+                  <span>Ruang 3</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+        <!-- Menu Kelola Data -->
+        <li class="nav-item mt-3 mb-1">
+          <small class="text-muted px-3 text-uppercase fw-bold">Kelola Riwayat Data</small>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="./users.html">
-            <i class="bi bi-people"></i>
+          <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapseRiwayatData" aria-expanded="false">
+            <i class="bi bi-houses"></i>
             <span>Riwayat Data</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
           </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./products.html">
-            <i class="bi bi-box"></i>
-            <span>Notifications</span>
-          </a>
-        <li class="nav-item mt-3">
-          <small class="text-muted px-3 text-uppercase fw-bold">Halaman Tambah Data</small>
-        </li>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./orders.html">
-            <i class="bi bi-bag-check"></i>
-            <span>Data Kebun</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./reports.html">
-            <i class="bi bi-file-earmark-text"></i>
-            <span>Data Blok</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./calendar.html">
-            <i class="bi bi-calendar-event"></i>
-            <span>Data Pengguna</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./files.html">
-            <i class="bi bi-folder2-open"></i>
-            <span>Data Galeri</span>
-          </a>
+          <div class="collapse" id="collapseRiwayatData">
+            <ul class="nav nav-submenu">
+              <li class="nav-item p-2">
+                <a class="nav-link" href="./elements.html">
+                  <i class="bi bi-activity"></i>
+                  <span>Histori Data</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </li>
       </ul>
     </nav>

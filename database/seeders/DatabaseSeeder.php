@@ -20,5 +20,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'password' => password_hash('admin1234', PASSWORD_BCRYPT, ['cost' => 12])
         ]);
+
+
+        User::factory()->create([
+            'name' => 'User Lab KSi',
+            'email' => 'Labksisteam@gmail.com',
+            'password' => password_hash('admin1234', PASSWORD_BCRYPT, ['cost' => 12])
+        ]);
     }
 }
