@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RuangPerebusanController;
 use App\Http\Controllers\ProfileController;
+use App\Models\GudangModel;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,3 +22,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/test/debug', function () {
+    dd(Str::uuid());
+})->name('test.debug');
