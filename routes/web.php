@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RuangPerebusanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,6 +11,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function() {
     Route::resource('dashboard', DashboardController::class);
+    Route::resource( 'ruang-perebusan', RuangPerebusanController::class );
 });
 
 Route::middleware('auth')->group(function () {

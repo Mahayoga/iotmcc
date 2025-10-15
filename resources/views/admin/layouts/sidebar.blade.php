@@ -32,9 +32,9 @@
           <div class="collapse" id="collapseGudang">
             <ul class="nav nav-submenu">
               <li class="nav-item">
-                <a class="nav-link" href="./elements.html">
+                <a class="nav-link" href="{{ route('ruang-perebusan.index') }}">
                   <i class="bi bi-columns"></i>
-                  <span>Ruang 1</span>
+                  <span>Ruang Perebusan</span>
                 </a>
               </li>
               <li class="nav-item">
