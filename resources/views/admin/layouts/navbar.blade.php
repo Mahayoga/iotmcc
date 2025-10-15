@@ -11,7 +11,7 @@
       </a>
 
       <!-- Search Bar with Alpine.js -->
-      <div class="search-container flex-grow-1 mx-4" x-data="searchComponent">
+      {{-- <div class="search-container flex-grow-1 mx-4" x-data="searchComponent">
         <div class="position-relative">
           <input type="search" class="form-control" placeholder="Search... (Ctrl+K)" x-model="query" @input="search()"
             data-search-input aria-label="Search">
@@ -32,27 +32,27 @@
             </template>
           </div>
         </div>
-      </div>
+      </div> --}}
 
       <!-- Right Side Icons -->
       <div class="navbar-nav flex-row">
         <!-- Theme Toggle with Alpine.js -->
-        <div x-data="themeSwitch">
+        {{-- <div x-data="themeSwitch">
           <button class="btn btn-outline-secondary me-2" type="button" @click="toggle()" data-bs-toggle="tooltip"
             data-bs-placement="bottom" title="Toggle theme">
             <i class="bi bi-sun-fill" x-show="currentTheme === 'light'"></i>
             <i class="bi bi-moon-fill" x-show="currentTheme === 'dark'"></i>
           </button>
-        </div>
+        </div> --}}
 
         <!-- Fullscreen Toggle -->
-        <button class="btn btn-outline-secondary me-2" type="button" data-fullscreen-toggle data-bs-toggle="tooltip"
+        {{-- <button class="btn btn-outline-secondary me-2" type="button" data-fullscreen-toggle data-bs-toggle="tooltip"
           data-bs-placement="bottom" title="Toggle fullscreen">
           <i class="bi bi-arrows-fullscreen icon-hover"></i>
-        </button>
+        </button> --}}
 
         <!-- Notifications -->
-        <div class="dropdown me-2">
+        {{-- <div class="dropdown me-2">
           <button class="btn btn-outline-secondary position-relative" type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             <i class="bi bi-bell"></i>
@@ -72,7 +72,7 @@
             </li>
             <li><a class="dropdown-item text-center" href="#">View all notifications</a></li>
           </ul>
-        </div>
+        </div> --}}
 
         <!-- User Menu -->
         <div class="dropdown">
@@ -81,7 +81,7 @@
             <img
               src="data:image/svg+xml,%3csvg%20width='32'%20height='32'%20viewBox='0%200%2032%2032'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3c!--%20Background%20circle%20--%3e%3ccircle%20cx='16'%20cy='16'%20r='16'%20fill='url(%23avatarGradient)'/%3e%3c!--%20Person%20silhouette%20--%3e%3cg%20fill='white'%20opacity='0.9'%3e%3c!--%20Head%20--%3e%3ccircle%20cx='16'%20cy='12'%20r='5'/%3e%3c!--%20Body%20--%3e%3cpath%20d='M16%2018c-5.5%200-10%202.5-10%207v1h20v-1c0-4.5-4.5-7-10-7z'/%3e%3c/g%3e%3c!--%20Subtle%20border%20--%3e%3ccircle%20cx='16'%20cy='16'%20r='15.5'%20fill='none'%20stroke='rgba(255,255,255,0.2)'%20stroke-width='1'/%3e%3c!--%20Gradient%20definition%20--%3e%3cdefs%3e%3clinearGradient%20id='avatarGradient'%20x1='0%25'%20y1='0%25'%20x2='100%25'%20y2='100%25'%3e%3cstop%20offset='0%25'%20style='stop-color:%236b7280;stop-opacity:1'%20/%3e%3cstop%20offset='100%25'%20style='stop-color:%234b5563;stop-opacity:1'%20/%3e%3c/linearGradient%3e%3c/defs%3e%3c/svg%3e"
               alt="User Avatar" width="24" height="24" class="rounded-circle me-2">
-            <span class="d-none d-md-inline">John Doe</span>
+            <span class="d-none d-md-inline">Abi Pisang</span>
             <i class="bi bi-chevron-down ms-1"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
