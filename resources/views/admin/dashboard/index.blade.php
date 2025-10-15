@@ -12,15 +12,6 @@
           <p class="text-muted mb-0">Rekap Gudang Vanili Agrofilia Permata</p>
         </div>
       </div>
-  <main class="admin-main">
-    <div class="container-fluid p-4 p-lg-5">
-      <!-- Page Header -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h1 class="h3 mb-0">Dashboard</h1>
-          <p class="text-muted mb-0">Rekap Gudang Vanili Agrofilia Permata</p>
-        </div>
-      </div>
 
       {{-- Rekap Kondisi Ruang Di Gudang --}}
       <div class="row g-4 mb-4">
@@ -125,6 +116,7 @@
           </div>
         </div>
       </div>
+
 
       {{-- Grafik Monitoring Suhu dan Kelembapan --}}
       <div class="row mt-4">
