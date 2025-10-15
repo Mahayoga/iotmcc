@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\GudangModel;
+use App\Models\NilaiSensorModel;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -27,5 +29,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'Labksisteam@gmail.com',
             'password' => password_hash('admin1234', PASSWORD_BCRYPT, ['cost' => 12])
         ]);
+
+        $this->call(GudangSeeder::class);
+        $this->call(RuanganSeeder::class);
+        $this->call(SensorSeeder::class);
+        NilaiSensorModel::factory(100)->create();
+        $this->call(ModeBlowerSeeder::class);
     }
 }
