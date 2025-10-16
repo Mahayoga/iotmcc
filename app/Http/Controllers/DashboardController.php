@@ -24,8 +24,8 @@ class DashboardController extends Controller
 
         // nilai card
         foreach ($ruangan as $r) {
-            $sensorSuhu = $r->getDataSensor->where('flag_sensor', 'Suhu')->first();
-            $sensorKelembapan = $r->getDataSensor->where('flag_sensor', 'Kelembapan')->first();
+            $sensorSuhu = $r->getDataSensor->where('flag_sensor', 'suhu')->first();
+            $sensorKelembapan = $r->getDataSensor->where('flag_sensor', 'kelembaban')->first();
 
             $nilaiSuhuAkhir = $sensorSuhu ? NilaiSensorModel::where('id_sensor', $sensorSuhu->id_sensor)->latest()->first() : null;
             $nilaiKelembapanAkhir = $sensorKelembapan ? NilaiSensorModel::where('id_sensor', $sensorKelembapan->id_sensor)->latest()->first() : null;
