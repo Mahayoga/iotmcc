@@ -28,6 +28,7 @@ class NilaiSensorModelFactory extends Factory
             '4519cc50-56ae-4e94-90b0-b17f2c5b4c12',
             '4519cc50-56ae-4e94-90b0-b17f2c5b4c13',
             '4519cc50-56ae-4e94-90b0-b17f2c5b4c14',
+            '4519cc50-56ae-4e94-90b0-b17f2c5b4cy6'
         ];
 
         return [
