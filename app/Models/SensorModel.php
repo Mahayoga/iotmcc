@@ -37,4 +37,8 @@ class SensorModel extends Model
     public function getDataRuangan() {
         return $this->belongsTo(RuanganModel::class, 'id_ruangan', 'id_ruangan');
     }
+
+    public function getDataNilaiSensor() {
+        return $this->hasMany(NilaiSensorModel::class, 'id_sensor', 'id_sensor');
+    }
 }
