@@ -21,13 +21,11 @@
           </li>
         @endif
 
-        {{-- Kelola Gudang --}}
         <li class="nav-item mt-3 mb-1">
           <small class="text-muted px-3 text-uppercase fw-bold">Kelola Gudang</small>
         </li>
 
-        {{-- Jika sedang di ruang perebusan atau fermentasi, buka menu Gudang --}}
-        @if(Route::currentRouteName() == 'ruang-perebusan.index' || Route::currentRouteName() == 'ruang-fermentasi.index')
+        @if(Route::currentRouteName() == 'ruang-perebusan.index' || Route::currentRouteName() == 'ruang-fermentasi.index' || Route::currentRouteName() == 'ruang-pengeringan.index')
           <li class="nav-item">
             <a class="nav-link active" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGudang" aria-expanded="true">
               <i class="bi bi-houses"></i>
@@ -36,6 +34,7 @@
             </a>
             <div class="collapse show" id="collapseGudang">
               <ul class="nav nav-submenu">
+
                 {{-- Ruang Perebusan --}}
                 @if(Route::currentRouteName() == 'ruang-perebusan.index')
                   <li class="nav-item">
@@ -90,7 +89,7 @@
             </div>
           </li>
         @else
-          {{-- Jika bukan di salah satu ruang, collapse tertutup --}}
+
           <li class="nav-item">
             <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGudang" aria-expanded="false">
               <i class="bi bi-houses"></i>
@@ -107,7 +106,7 @@
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ route('ruang-fermentasi.index') }}">
-                    <i class="bi bi-columns"></i>
+                    <i class="bi bi-columns"></i> 
                     <span>Ruang Fermentasi</span>
                   </a>
                 </li>
