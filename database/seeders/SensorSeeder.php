@@ -25,6 +25,11 @@ class SensorSeeder extends Seeder
             'flag_sensor' => 'timer',
             'id_ruangan' => '93b4a0ae-90bd-4c77-89d5-5544eaefa0c5',
         ]);
+        SensorModel::create([
+            'id_sensor' => '4519cc50-56ae-4e94-90b0-b17f2c5b4cy6',
+            'flag_sensor' => 'kelembaban',
+            'id_ruangan' => '93b4a0ae-90bd-4c77-89d5-5544eaefa0c5',
+        ]);
 
         // Ruangan 2 (Fermentasi)
         SensorModel::create([

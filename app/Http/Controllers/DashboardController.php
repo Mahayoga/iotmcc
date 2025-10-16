@@ -3,62 +3,83 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\GudangModel;
+use App\Models\RuanganModel;
+use App\Models\SensorModel;
+use App\Models\NilaiSensorModel;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   
     public function index()
     {
-        return view('admin.dashboard.index');
-    }
+        $gudang = GudangModel::with('getDataRuangan.getDataSensor')->get();
+        $ruangan = RuanganModel::with('getDataSensor')->get();
+        //dd($gudang, $ruangan);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $dataRuangan = [];
+        $grafikSuhu = [];
+        $grafikKelembapan = [];
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // nilai card
+        foreach ($ruangan as $r) {
+            $sensorSuhu = $r->getDataSensor->where('flag_sensor', 'suhu')->first();
+            $sensorKelembapan = $r->getDataSensor->where('flag_sensor', 'kelembaban')->first();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+            $nilaiSuhuAkhir = $sensorSuhu ? NilaiSensorModel::where('id_sensor', $sensorSuhu->id_sensor)->latest()->first() : null;
+            $nilaiKelembapanAkhir = $sensorKelembapan ? NilaiSensorModel::where('id_sensor', $sensorKelembapan->id_sensor)->latest()->first() : null;
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+            // $status = 'Perlu Cek';
+            // if ($nilaiSuhuAkhir && $nilaiSuhuAkhir->nilai_sensor <= 35 && $nilaiSuhuAkhir->nilai_sensor >= 25) {
+            //     $status = 'Normal';
+            // }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+            $dataRuangan[] = [
+                'id_ruangan' => $r->id_ruangan,
+                'nama_ruangan' => $r->nama_ruangan,
+                'suhu'=> $nilaiSuhuAkhir->nilai_sensor ?? '_',
+                'kelembapan' => $nilaiKelembapanAkhir->nilai_sensor ?? '_',
+                // 'status' => $status,
+            ];
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+
+            // nilai grafik suhu
+            if ($sensorSuhu) {
+                $grafikSuhu[$r->nama_ruangan] = NilaiSensorModel::where('id_sensor', $sensorSuhu->id_sensor)
+                    ->orderBy('created_at', 'asc')
+                    ->take(5)
+                    ->get(['nilai_sensor', 'created_at'])
+                    ->map(function ($row) {
+                        return [
+                            'nilai' => (float)$row->nilai_sensor,
+                            'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+                        ];
+                    });
+            }
+
+            //nilai grafik kelembapan
+            if ($sensorKelembapan) {
+                $grafikKelembapan[$r->nama_ruangan] = NilaiSensorModel::where('id_sensor', $sensorKelembapan->id_sensor)
+                    ->orderBy('created_at', 'asc')
+                    ->take(5)
+                    ->get(['nilai_sensor', 'created_at'])
+                    ->map(function ($row) {
+                        return [
+                            'nilai' => (float)$row->nilai_sensor,
+                            'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+                        ];
+                    });
+            }
+        }
+
+        // dd($dataRuangan, $grafikSuhu, $grafikKelembapan);
+
+        return view('admin.dashboard.index', [
+            'gudang' => $gudang,
+            'dataRuangan' => $dataRuangan,
+            'grafikSuhu' => $grafikSuhu,
+            'grafikKelembapan' => $grafikKelembapan
+        ]);
     }
 }
