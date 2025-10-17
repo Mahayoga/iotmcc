@@ -43,8 +43,8 @@
                           <h6 class="mb-0 fw-bold">{{ $dataRuangan[0]['nama_ruangan'] ?? 'Ruang 1' }}</h6>
                         </div>
                       </div>
-                      <span class="badge bg-light text-success px-3 py-2">
-                        {{ ($dataRuangan[0]['suhu'] ?? 0) <= 30 ? 'Normal' : 'Perlu Cek' }}
+                      <span class="badge bg-light px-3 py-2 {{ ($dataRuangan[0]['status'] ?? 'Perlu Cek') == 'Normal' ? 'text-success' : 'text-warning' }}">
+                        {{ $dataRuangan[0]['status'] ?? 'Perlu Cek' }}
                       </span>
                     </div>
 
@@ -101,7 +101,7 @@
                     <div class="gudang-header d-flex justify-content-between align-items-center">
                       <div class="d-flex align-items-center">
                         <div class="gudang-icon bg-white text-warning">
-                          <i class="bi bi-box-seam fs-4"></i>
+                          <i class="bi bi-fan fs-4"></i>
                         </div>
                         <div class="ms-2">
                           <h6 class="mb-0 fw-bold">{{ $dataRuangan[2]['nama_ruangan'] ?? 'Ruang 3' }}</h6>
