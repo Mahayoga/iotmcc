@@ -97,8 +97,11 @@
               <h5 class="card-title mb-1 mt-2">Grafik Suhu</h5>
               <small class="text-muted">Perubahan Suhu di Ruang Fermentasi</small>
             </div>
-            <div class="card-body" style="height: 350px;">
-              <canvas id="chartSuhu" style="width:100%; height:100%;"></canvas>
+            <div class="card-body" style="height: 400px;">
+              <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+              </div>
             </div>
           </div>
         </div>
@@ -110,8 +113,11 @@
               <h5 class="card-title mb-1 mt-2">Grafik Kelembaban</h5>
               <small class="text-muted">Perubahan Kelembaban di Ruang Fermentasi</small>
             </div>
-            <div class="card-body" style="height: 350px;">
-              <canvas id="chartKelembaban" style="width:100%; height:100%;"></canvas>
+            <div class="card-body" style="height: 400px;">
+              <canvas id="chartKelembaban" style="width:100%; height:90%;"></canvas>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+              </div>
             </div>
           </div>
         </div>
@@ -124,6 +130,52 @@
   <script>
     const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
     const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
+    let suhuChart = new Chart(ctxSuhu, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: "Suhu (°C)",
+          data: [],
+          backgroundColor: '#0f172abf',
+          borderColor: '#C8F76A'
+        }],
+        labels: []
+      },
+
+      options: {
+        responsive: true,
+        scales: {
+          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
+          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        },
+        animation: {
+          duration: 800,
+        }
+      }
+    });
+
+    let kelembabanChart = new Chart(ctxKelembaban, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: "Kelembaban (%)",
+          data: [],
+          backgroundColor: '#0f172abf',
+          borderColor: '#C8F76A'
+        }],
+        labels: []
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { title: { display: true, text: 'Kelembaban (%)', color: '#888' }, beginAtZero: true },
+          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        },
+        animation: {
+          duration: 800,
+        }
+      }
+    });
 
     function getDataSuhu() {
       $.get('{{ route('ruang-fermentasi.getDataSuhu', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
@@ -187,41 +239,14 @@
             classListKelembaban.add('text-danger');
           }
 
-          let suhuChart = new Chart(ctxSuhu, {
-            type: 'line',
-            data: {
-              datasets: [{
-                label: "Suhu (°C)",
-                data: data.dataSuhu
-              }],
-              labels: data.dataWaktuSuhu
-            },
-            options: {
-              responsive: true,
-              scales: {
-                y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
-                x: { title: { display: true, text: 'Waktu', color: '#888' } }
-              }
-            }
-          });
+          suhuChart.data.labels = data.dataWaktuSuhu;
+          suhuChart.data.datasets[0].data = data.dataSuhu;
 
-          let kelembabanChart = new Chart(ctxKelembaban, {
-            type: 'line',
-            data: {
-              datasets: [{
-                label: "Kelembaban (%)",
-                data: data.dataKelembaban
-              }],
-              labels: data.dataWaktuKelembaban
-            },
-            options: {
-              responsive: true,
-              scales: {
-                y: { title: { display: true, text: 'Kelembaban (%)', color: '#888' }, beginAtZero: true },
-                x: { title: { display: true, text: 'Waktu', color: '#888' } }
-              }
-            }
-          });
+          kelembabanChart.data.labels = data.dataWaktuKelembaban;
+          kelembabanChart.data.datasets[0].data = data.dataKelembaban;
+
+          suhuChart.update();
+          kelembabanChart.update();
         }
       });
     }
