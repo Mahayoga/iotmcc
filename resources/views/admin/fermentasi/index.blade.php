@@ -122,6 +122,45 @@
           </div>
         </div>
       </div>
+
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">Perbandingan Grafik Suhu dan Kelembaban</h5>
+              <small class="text-muted">Perbandingan Suhu dan Kelembaban di Ruang Fermentasi</small>
+            </div>
+            <div class="card-body" style="height: 400px;">
+              <canvas id="chartSuhuDanKelembaban" style="width:100%; height:90%;"></canvas>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">Riwayat</h5>
+              <small class="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit.</small>
+            </div>
+            <div class="card-body" style="height: 400px;">
+              <div class="row p-4">
+                <div class="col-md-12">
+                  <div class="row">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+      </div>
     </div>
   </main>
 @endsection
@@ -130,6 +169,8 @@
   <script>
     const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
     const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
+    const ctxSuhuDanKelembaban = document.getElementById('chartSuhuDanKelembaban')?.getContext('2d');
+
     let suhuChart = new Chart(ctxSuhu, {
       type: 'line',
       data: {
@@ -177,8 +218,36 @@
       }
     });
 
-    function getDataSuhu() {
-      $.get('{{ route('ruang-fermentasi.getDataSuhu', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
+    let suhuDanKelembabanChart = new Chart(ctxSuhuDanKelembaban, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: "Kelembaban (%)",
+          data: [],
+          backgroundColor: '#FFFFFF',
+          borderColor: '#1a91c4'
+        }, {
+          label: "Suhu (°C)",
+          data: [],
+          backgroundColor: '#FFFFFF',
+          borderColor: '#d44a24'
+        }],
+        labels: []
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { title: { display: true, text: 'Data Suhu dan Kelembaban', color: '#888' }, beginAtZero: true },
+          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        },
+        animation: {
+          duration: 800,
+        }
+      }
+    });
+
+    function getDataSensor() {
+      $.get('{{ route('ruang-fermentasi.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
 
       }, function(data, status) {
         if(data.status == true) {
@@ -245,11 +314,16 @@
           kelembabanChart.data.labels = data.dataWaktuKelembaban;
           kelembabanChart.data.datasets[0].data = data.dataKelembaban;
 
+          suhuDanKelembabanChart.data.labels = data.dataWaktuSuhu;
+          suhuDanKelembabanChart.data.datasets[0].data = data.dataKelembaban;
+          suhuDanKelembabanChart.data.datasets[1].data = data.dataSuhu;
+
           suhuChart.update();
           kelembabanChart.update();
+          suhuDanKelembabanChart.update();
         }
       });
     }
-    getDataSuhu();
+    setInterval(getDataSensor, 1000);
   </script>
 @endsection

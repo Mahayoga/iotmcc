@@ -20,7 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
         });
     Route::resource('ruang-fermentasi', RuanganFermentasiController::class);
         Route::prefix('ruang-fermentasi')->group(function() {
-            Route::get('/data/sensor/suhu/{id}', [RuanganFermentasiController::class, 'getDataSuhu'])->name('ruang-fermentasi.getDataSuhu');
+            Route::get('/data/sensor/sensor/{id}', [RuanganFermentasiController::class, 'getDataSensor'])->name('ruang-fermentasi.getDataSensor');
         });
     Route::resource('ruang-pengeringan', RuanganPengeringanController::class);
         Route::prefix('ruang-pengeringan')->group(function() {

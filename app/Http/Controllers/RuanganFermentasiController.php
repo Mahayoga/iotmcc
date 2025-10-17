@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class RuanganFermentasiController extends Controller
 {
 
-    public function getDataSuhu(string $id) {
+    public function getDataSensor(string $id) {
         $dataSuhu = [];
         $dataWaktuSuhu = [];
         $dataKelembaban = [];
@@ -18,17 +18,18 @@ class RuanganFermentasiController extends Controller
         $statusRuangan = 1;
         $dataGudang = GudangModel::findOrFail($id);
         $dataRuangan = $dataGudang->getDataRuangan;
+
         foreach ($dataRuangan as $value) { 
             if($value->tipe_ruangan == 2) {
                 $statusRuangan = $value->status_ruangan;
                 foreach($value->getDataSensor as $value2) {
                     if($value2->flag_sensor == 'suhu') {
-                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(20)->get() as $value3) {
+                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(5)->get() as $value3) {
                             $dataSuhu[] = $value3->nilai_sensor;
                             $dataWaktuSuhu[] = date('G:i:s', $value3->created_at->timestamp);
                         }
                     } else if($value2->flag_sensor == 'kelembaban') {
-                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(20)->get() as $value3) {
+                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(5)->get() as $value3) {
                             $dataKelembaban[] = $value3->nilai_sensor;
                             $dataWaktuKelembaban[] = date('G:i:s', $value3->created_at->timestamp);
                         }
@@ -45,7 +46,7 @@ class RuanganFermentasiController extends Controller
             'dataWaktuKelembaban' => $dataWaktuKelembaban,
             'dataAvgSuhu' => number_format(array_sum($dataSuhu) / count($dataSuhu), 1),
             'dataAvgKelembaban' => number_format(array_sum($dataKelembaban) / count($dataKelembaban), 1),
-            // 'statusRuangan' => $statusRuangan,
+            // 'statusRuangan' => $idTemp,
         ]);
     }
 
