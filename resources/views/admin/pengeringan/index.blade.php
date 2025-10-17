@@ -99,7 +99,10 @@
               <small class="text-muted">Perubahan Suhu di Ruang Pengeringan</small>
             </div>
             <div class="card-body" style="height: 350px;">
-              <canvas id="chartSuhu" style="width:100%; height:100%;"></canvas>
+              <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+              </div>
             </div>
           </div>
         </div>
@@ -111,7 +114,10 @@
               <small class="text-muted">Perubahan Kelembaban di Ruang Pengeringan</small>
             </div>
             <div class="card-body" style="height: 350px;">
-              <canvas id="chartKelembaban" style="width:100%; height:100%;"></canvas>
+              <canvas id="chartKelembaban" style="width:100%; height:90%;"></canvas>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+              </div>
             </div>
           </div>
         </div>
@@ -119,39 +125,43 @@
 
       <!-- Blower -->
       <div class="row mt-4">
+        <!-- Status Blower -->
         <div class="col-lg-6 mb-4">
-          <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Status Blower</h5>
+          <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0 text-center">
+              <h5 class="card-title mb-1 mt-2 fw-semibold">Status Blower</h5>
               <small class="text-muted">Indikator Operasional Blower</small>
             </div>
-            <div class="card-body text-center">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
               <div id="blower-indicator" class="mb-3">
                 <i class="bi bi-fan fs-1 text-secondary" id="blower-icon"></i>
               </div>
-              <h3 id="blower-status-text" class="fw-bold text-muted">Idle</h3>
-              <div class="form-check form-switch d-flex justify-content-center align-items-center mt-3">
-                <input class="form-check-input" type="checkbox" id="blower-switch">
-                <label class="form-check-label ms-2" for="blower-switch" id="blower-switch-label">Nyalakan Blower</label>
+              <h4 id="blower-status-text" class="fw-bold text-muted mb-3">Dalam pengerjaan ⏳</h4>
+
+              <!-- Switch -->
+              <div class="form-check form-switch d-flex flex-column align-items-center">
+                <input class="form-check-input mb-2" type="checkbox" id="blower-switch" disabled>
+                <label class="form-check-label text-muted fs-6" for="blower-switch" id="blower-switch-label">
+                </label>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Durasi Blower Aktif -->
         <div class="col-lg-6 mb-4">
-          <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Durasi Blower Aktif</h5>
+          <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0 text-center">
+              <h5 class="card-title mb-1 mt-2 fw-semibold">Durasi Blower Aktif</h5>
               <small class="text-muted">Total waktu blower aktif hari ini</small>
             </div>
-            <div class="card-body text-center">
-              <h1 id="durasi-blower" class="display-4 fw-bold text-success">0 mnt</h1>
-              <p id="status-proses-blower" class="badge bg-secondary fs-6">Idle</p>
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+              {{-- <h4 id="durasi-blower" class="fw-bold text-success mb-3">Dalam pengerjaan ⏳</h4> --}}
+              <p id="status-proses-blower" class="badge bg-secondary fs-6 px-3 py-2">Dalam pengerjaan ⏳</p>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </main>
 @endsection
@@ -213,7 +223,6 @@
     const blowerLabel = document.getElementById('blower-switch-label');
     let blowerStartTime = null;
 
-    // Update status blower & durasi
     function updateBlowerSwitch(statusBlower, durasiAktif) {
       if (statusBlower == 1) {
         blowerSwitch.checked = true;
@@ -239,14 +248,12 @@
       $('#durasi-blower').text(durasiAktif + ' mnt');
     }
 
-    // Get data blower 
     function getDataBlower() {
       $.get('{{ route('ruang-pengeringan.getDataBlower', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {}, function (data) {
         if (data.status) updateBlowerSwitch(data.statusBlower, data.durasiAktif);
       });
     }
 
-    // Toggle blower
     blowerSwitch.addEventListener('change', function () {
       $.post('{{ route('ruang-pengeringan.toggleBlower', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
         _token: '{{ csrf_token() }}'
