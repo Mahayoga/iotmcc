@@ -7,6 +7,7 @@ use App\Models\GudangModel;
 use App\Models\RuanganModel;
 use App\Models\SensorModel;
 use App\Models\NilaiSensorModel;
+use App\Models\ModeBlowerModel;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -26,16 +27,18 @@ class DashboardController extends Controller
         foreach ($ruangan as $r) {
             $sensorSuhu = $r->getDataSensor->where('flag_sensor', 'suhu')->first();
             $sensorKelembapan = $r->getDataSensor->where('flag_sensor', 'kelembaban')->first();
+            $sensorBlower = $r->getDataSensor->where('flag_sensor', 'blower')->first();
 
             $nilaiSuhuAkhir = $sensorSuhu ? NilaiSensorModel::where('id_sensor', $sensorSuhu->id_sensor)->latest()->first() : null;
             $nilaiKelembapanAkhir = $sensorKelembapan ? NilaiSensorModel::where('id_sensor', $sensorKelembapan->id_sensor)->latest()->first() : null;
+            $nilaiBlower = $sensorBlower ? ModeBlowerModel::where('id_sensor', $sensorBlower->id_sensor)->latest()->first() : null;
 
             $status = 'Perlu Cek';
             if ($nilaiSuhuAkhir && $nilaiKelembapanAkhir) {
                 $suhu = $nilaiSuhuAkhir->nilai_sensor;
                 $kelembapan = $nilaiKelembapanAkhir->nilai_sensor;
 
-                if ($suhu >= 25 && $suhu <= 35 && $kelembapan >= 50 && $kelembapan <= 80) {
+                if ($suhu >= 25 && $suhu <= 35 && $kelembapan >= 30 && $kelembapan <= 70) {
                     $status = 'Normal';
                 }
 
@@ -46,9 +49,11 @@ class DashboardController extends Controller
                 'nama_ruangan' => $r->nama_ruangan,
                 'suhu' => $nilaiSuhuAkhir->nilai_sensor ?? '_',
                 'kelembapan' => $nilaiKelembapanAkhir->nilai_sensor ?? '_',
+                'blower' => $nilaiBlower->nilai_sensor ?? '_',
                 'status' => $status,
             ];
 
+            // dd($dataRuangan);
 
             // nilai grafik suhu
             if ($sensorSuhu) {

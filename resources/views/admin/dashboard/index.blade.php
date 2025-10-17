@@ -5,8 +5,7 @@
 @section('content')
 
 
-  {{-- Logika otomatis untuk status ruang gudang belum selesai --}}
-
+{{-- Logika status belum selesai --}}
 
 
   <main class="admin-main">
@@ -31,7 +30,7 @@
             <div class="card-body">
               <div class="row gy-4">
 
-                <!-- Card Ruang 1 -->
+                {{-- Card Ruang 1 --}}
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-1">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -50,20 +49,14 @@
 
                     <div class="gudang-main mt-3">
                       <h2 class="fw-bold mb-0">{{ $dataRuangan[0]['suhu'] ?? '-' }}°C</h2>
-                      <p class="text-dark small mb-2">Kelembapan:
-                        <strong>{{ $dataRuangan[0]['kelembapan'] ?? '-' }}%</strong>
+                      <p class="text-dark small mb-2">
+                        Kelembapan: <strong>{{ $dataRuangan[0]['kelembapan'] ?? '-' }}%</strong>
                       </p>
-                    </div>
-
-                    <div class="gudang-footer">
-                      <small class="text-muted">
-                        <i class="bi bi-cpu me-1"></i>Sensor: Suhu, Buzzer, LCD, ESP, LoRa
-                      </small>
                     </div>
                   </div>
                 </div>
 
-                <!-- Card Ruang 2 -->
+                {{-- Card Ruang 2 --}}
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-2">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -82,20 +75,14 @@
 
                     <div class="gudang-main mt-3">
                       <h2 class="fw-bold mb-0">{{ $dataRuangan[1]['suhu'] ?? '-' }}°C</h2>
-                      <p class="text-dark small mb-2">Kelembapan:
-                        <strong>{{ $dataRuangan[1]['kelembapan'] ?? '-' }}%</strong>
+                      <p class="text-dark small mb-2">
+                        Kelembapan: <strong>{{ $dataRuangan[1]['kelembapan'] ?? '-' }}%</strong>
                       </p>
-                    </div>
-
-                    <div class="gudang-footer">
-                      <small class="text-muted">
-                        <i class="bi bi-cpu me-1"></i>Sensor: DHT, ESP, LoRa
-                      </small>
                     </div>
                   </div>
                 </div>
 
-                <!-- Card Ruang 3 -->
+                {{-- Card Ruang 3 --}}
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-3">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -114,15 +101,17 @@
 
                     <div class="gudang-main mt-3">
                       <h2 class="fw-bold mb-0">{{ $dataRuangan[2]['suhu'] ?? '-' }}°C</h2>
-                      <p class="text-dark small mb-2">Kelembapan:
-                        <strong>{{ $dataRuangan[2]['kelembapan'] ?? '-' }}%</strong>
+                      <p class="text-dark small mb-2">
+                        Kelembapan: <strong>{{ $dataRuangan[2]['kelembapan'] ?? '-' }}%</strong>
                       </p>
-                    </div>
-
-                    <div class="gudang-footer">
-                      <small class="text-dark">
-                        <i class="bi bi-cpu me-1"></i>Sensor: DHT, ESP, LoRa
-                      </small>
+                      <p class="text-dark small mb-0">
+                        Blower:
+                        @if(($dataRuangan[2]['blower'] ?? 1) == 0)
+                          <span class="badge bg-success">Aktif</span>
+                        @else
+                          <span class="badge bg-secondary">Mati</span>
+                        @endif
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -154,8 +143,7 @@
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Grafik Kelembapan</h5>
-              <small class="text-muted">Perubahan Kelembapan di Setiap Ruang Pada Gudang
-                Vanili</small>
+              <small class="text-muted">Perubahan Kelembapan di Setiap Ruang Pada Gudang Vanili</small>
             </div>
             <div class="card-body" style="height: 350px;">
               <canvas id="chartKelembapan" style="width:100%; height:100%;"></canvas>
@@ -166,95 +154,61 @@
     </div>
   </main>
 
-  {{--
-  <pre style="background:#f8f9fa;padding:10px;border-radius:8px;">
-    {{ json_encode($grafikSuhu, JSON_PRETTY_PRINT) }}
-    </pre>
-  <pre style="background:#f8f9fa;padding:10px;border-radius:8px;">
-    {{ json_encode($grafikKelembapan, JSON_PRETTY_PRINT) }}
-    </pre> --}}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const grafikSuhu = @json($grafikSuhu ?? []);
+      const grafikKelembapan = @json($grafikKelembapan ?? []);
 
-
-    <script>
-
-      // grafik monitoring suhu dan kelembapan
-      document.addEventListener('DOMContentLoaded', function () {
-        const grafikSuhu = @json($grafikSuhu ?? []);
-        const grafikKelembapan = @json($grafikKelembapan ?? []);
-
-        console.log("grafikSuhu:", grafikSuhu);
-        console.log("grafikKelembapan:", grafikKelembapan);
-
-        // grafik suhu
-        const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
-        if (ctxSuhu && Object.keys(grafikSuhu).length > 0) {
-          const suhuDatasets = [];
-
-          Object.keys(grafikSuhu).forEach((namaRuangan, index) => {
-            const dataRuangan = grafikSuhu[namaRuangan];
-
-            suhuDatasets.push({
-              label: namaRuangan,
-              data: dataRuangan.map(item => item.nilai),
-              borderColor: ['#00A86B', '#FFD93D', '#FF6B6B'][index] || '#888',
-              backgroundColor: ['rgba(0,168,107,0.1)', 'rgba(255,217,61,0.1)', 'rgba(255,107,107,0.1)'][index] || 'rgba(136,136,136,0.1)',
-              tension: 0.4,
-              borderWidth: 3
-            });
+      const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
+      if (ctxSuhu && Object.keys(grafikSuhu).length > 0) {
+        const suhuDatasets = [];
+        Object.keys(grafikSuhu).forEach((namaRuangan, index) => {
+          const dataRuangan = grafikSuhu[namaRuangan];
+          suhuDatasets.push({
+            label: namaRuangan,
+            data: dataRuangan.map(item => item.nilai),
+            borderColor: ['#00A86B', '#FFD93D', '#FF6B6B'][index] || '#888',
+            backgroundColor: ['rgba(0,168,107,0.1)', 'rgba(255,217,61,0.1)', 'rgba(255,107,107,0.1)'][index] || 'rgba(136,136,136,0.1)',
+            tension: 0.4,
+            borderWidth: 3
           });
+        });
 
-          new Chart(ctxSuhu, {
-            type: 'line',
-            data: {
-              labels: grafikSuhu[Object.keys(grafikSuhu)[0]]?.map(item => item.waktu) ?? [],
-              datasets: suhuDatasets
-            },
-            options: {
-              responsive: true,
-              scales: {
-                y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
-                x: { title: { display: true, text: 'Waktu', color: '#888' } }
-              }
-            }
+        new Chart(ctxSuhu, {
+          type: 'line',
+          data: {
+            labels: grafikSuhu[Object.keys(grafikSuhu)[0]]?.map(item => item.waktu) ?? [],
+            datasets: suhuDatasets
+          },
+          options: { responsive: true }
+        });
+      }
+
+      const ctxKelembapan = document.getElementById('chartKelembapan')?.getContext('2d');
+      if (ctxKelembapan && Object.keys(grafikKelembapan).length > 0) {
+        const kelembapanDatasets = [];
+        Object.keys(grafikKelembapan).forEach((namaRuangan, index) => {
+          const dataRuangan = grafikKelembapan[namaRuangan];
+          kelembapanDatasets.push({
+            label: namaRuangan,
+            data: dataRuangan.map(item => item.nilai),
+            borderColor: ['#00A86B', '#FFD93D', '#FF6B6B'][index] || '#888',
+            backgroundColor: ['rgba(0,168,107,0.1)', 'rgba(255,217,61,0.1)', 'rgba(255,107,107,0.1)'][index] || 'rgba(136,136,136,0.1)',
+            tension: 0.4,
+            borderWidth: 3
           });
-        }
+        });
 
-        // grafik kelembapan
-        const ctxKelembapan = document.getElementById('chartKelembapan')?.getContext('2d');
-        if (ctxKelembapan && Object.keys(grafikKelembapan).length > 0) {
-          const kelembapanDatasets = [];
-
-          Object.keys(grafikKelembapan).forEach((namaRuangan, index) => {
-            const dataRuangan = grafikKelembapan[namaRuangan];
-
-            kelembapanDatasets.push({
-              label: namaRuangan,
-              data: dataRuangan.map(item => item.nilai),
-              borderColor: ['#00A86B', '#FFD93D', '#FF6B6B'][index] || '#888',
-              backgroundColor: ['rgba(0,168,107,0.1)', 'rgba(255,217,61,0.1)', 'rgba(255,107,107,0.1)'][index] || 'rgba(136,136,136,0.1)',
-              tension: 0.4,
-              borderWidth: 3
-            });
-          });
-
-          new Chart(ctxKelembapan, {
-            type: 'line',
-            data: {
-              labels: grafikKelembapan[Object.keys(grafikKelembapan)[0]]?.map(item => item.waktu) ?? [],
-              datasets: kelembapanDatasets
-            },
-            options: {
-              responsive: true,
-              scales: {
-                y: { title: { display: true, text: 'Kelembapan (%)', color: '#888' }, beginAtZero: true },
-                x: { title: { display: true, text: 'Waktu', color: '#888' } }
-              }
-            }
-          });
-        }
-      });
-
-    </script>
-
+        new Chart(ctxKelembapan, {
+          type: 'line',
+          data: {
+            labels: grafikKelembapan[Object.keys(grafikKelembapan)[0]]?.map(item => item.waktu) ?? [],
+            datasets: kelembapanDatasets
+          },
+          options: { responsive: true }
+        });
+      }
+    });
+  </script>
 
 @endsection
