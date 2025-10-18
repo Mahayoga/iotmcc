@@ -6,5 +6,7 @@ use Illuminate\Http\Request;
 
 class HistoryController extends Controller
 {
-    // return view("admin.history.index");
+     public function index() {
+        return view('admin.history.index');
+     }
 }
