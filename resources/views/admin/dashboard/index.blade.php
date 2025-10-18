@@ -5,7 +5,7 @@
 @section('content')
 
 
-{{-- Logika status belum selesai --}}
+  {{-- Logika status belum selesai --}}
 
 
   <main class="admin-main">
@@ -42,7 +42,8 @@
                           <h6 class="mb-0 fw-bold">{{ $dataRuangan[0]['nama_ruangan'] ?? 'Ruang 1' }}</h6>
                         </div>
                       </div>
-                      <span class="badge bg-light px-3 py-2 {{ ($dataRuangan[0]['status'] ?? 'Perlu Cek') == 'Normal' ? 'text-success' : 'text-warning' }}">
+                      <span
+                        class="badge bg-light px-3 py-2 {{ ($dataRuangan[0]['status'] ?? 'Perlu Cek') == 'Normal' ? 'text-success' : 'text-warning' }}">
                         {{ $dataRuangan[0]['status'] ?? 'Perlu Cek' }}
                       </span>
                     </div>
@@ -51,6 +52,10 @@
                       <h2 class="fw-bold mb-0">{{ $dataRuangan[0]['suhu'] ?? '-' }}°C</h2>
                       <p class="text-dark small mb-2">
                         Kelembapan: <strong>{{ $dataRuangan[0]['kelembapan'] ?? '-' }}%</strong>
+                      </p>
+                      <p class="text-dark small mb-0">
+                        Timer: <strong id="timer-perebusan" class="text-light bg-secondary 
+                        "> &nbsp;&nbsp;  Dalam pengerjaan ⏳  &nbsp;</strong>
                       </p>
                     </div>
                   </div>
@@ -130,7 +135,7 @@
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Grafik Suhu</h5>
-              <small class="text-muted">Perubahan Suhu di Setiap Ruang Pada Gudang Vanili</small>
+              <small class="text-muted">Perubahan Suhu di Setiap Ruang Pada Gudang Vanili Hari Ini</small>
             </div>
             <div class="card-body" style="height: 350px;">
               <canvas id="chartSuhu" style="width:100%; height:100%;"></canvas>
@@ -143,7 +148,7 @@
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Grafik Kelembapan</h5>
-              <small class="text-muted">Perubahan Kelembapan di Setiap Ruang Pada Gudang Vanili</small>
+              <small class="text-muted">Perubahan Kelembapan di Setiap Ruang Pada Gudang Vanili Hari Ini</small>
             </div>
             <div class="card-body" style="height: 350px;">
               <canvas id="chartKelembapan" style="width:100%; height:100%;"></canvas>
