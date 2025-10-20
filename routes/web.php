@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
             Route::get('/blanching/data/sensor/{id}', [RiwayatDataController::class, 'getDataSensor'])->name('riwayat-data.blanching.getDataSensor');
             Route::get('/fermentasi/data/sensor/{id}', [RiwayatDataController::class, 'getDataSensor'])->name('riwayat-data.fermentasi.getDataSensor');
             Route::get('/pengeringan/data/sensor/{id}', [RiwayatDataController::class, 'getDataSensor'])->name('riwayat-data.pengeringan.getDataSensor');
+             Route::get('/get-ruangan/{id}', [RiwayatDataController::class, 'getRuangan'])->name('riwayat-data.getRuangan');
         });
 });
 

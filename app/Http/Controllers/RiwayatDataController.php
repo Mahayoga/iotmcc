@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RuanganModel;
 use Illuminate\Http\Request;
 use App\Models\GudangModel;
 use App\Models\NilaiSensorModel;
@@ -16,8 +17,9 @@ class RiwayatDataController extends Controller
         $dataWaktuSuhu = [];
         $dataKelembaban = [];
         $dataWaktuKelembaban = [];
-        $statusRuangan = 1; // ruangan 1 untuk blanching, ruangan 2 untuk fermentasi, ruangan 
+        $statusRuangan = 1;
         $dataGudang = GudangModel::findOrFail($id);
+
         $dataRuangan = $dataGudang->getDataRuangan;
 
         foreach ($dataRuangan as $value) { 
@@ -53,6 +55,15 @@ class RiwayatDataController extends Controller
 
 
    public function index() {
-      return view('admin.riwayat.index');
+    $gudang = GudangModel::all(); 
+    $ruangan = RuanganModel::all(); 
+    return view('admin.riwayat.index', compact('gudang', 'ruangan'));
    }
+
+   public function getRuangan($idGudang)
+   {
+    $ruangan = RuanganModel::where('id_gudang', $idGudang)->get();
+    return response()->json($ruangan);
+   }
+   
 }
