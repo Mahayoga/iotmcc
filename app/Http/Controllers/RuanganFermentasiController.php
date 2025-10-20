@@ -24,12 +24,12 @@ class RuanganFermentasiController extends Controller
                 $statusRuangan = $value->status_ruangan;
                 foreach($value->getDataSensor as $value2) {
                     if($value2->flag_sensor == 'suhu') {
-                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(5)->get() as $value3) {
+                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(15)->get() as $value3) {
                             $dataSuhu[] = $value3->nilai_sensor;
                             $dataWaktuSuhu[] = date('G:i:s', $value3->created_at->timestamp);
                         }
                     } else if($value2->flag_sensor == 'kelembaban') {
-                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(5)->get() as $value3) {
+                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(15)->get() as $value3) {
                             $dataKelembaban[] = $value3->nilai_sensor;
                             $dataWaktuKelembaban[] = date('G:i:s', $value3->created_at->timestamp);
                         }

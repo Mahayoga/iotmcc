@@ -140,7 +140,7 @@
         </div>
       </div>
 
-      <div class="row mt-4">
+      {{-- <div class="row mt-4">
         <div class="col-md-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0">
@@ -160,7 +160,7 @@
         </div>
         <div class="col-md-4"></div>
         <div class="col-md-4"></div>
-      </div>
+      </div> --}}
     </div>
   </main>
 @endsection
