@@ -47,8 +47,9 @@
                   </small>
 
                   <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-success px-4">Terapkan</button>
-                    <button type="reset" class="btn btn-outline-secondary px-4">Reset</button>
+                    <button type="button" class="btn px-4"
+                      style="background-color:#A9DA2E; color: #fff; border-color: #A9DA2E;">Terapkan</button>
+                    <button type="reset" class="btn btn-danger px-4">Reset</button>
                   </div>
                 </div>
               </div>
@@ -143,31 +144,27 @@
     const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
 
     $(document).ready(function () {
-    $('#gudang').change(function () {
+      $('#gudang').change(function () {
         let gudangId = $(this).val();
         if (gudangId) {
-            $.ajax({
-                url: '/riwayat-data/get-ruangan/' + gudangId, // <-- diubah di sini
-                type: 'GET',
-                success: function (data) {
-                    $('#ruangan').empty();
-                    $('#ruangan').append('<option value="">-- Pilih Ruang --</option>');
-                    $.each(data, function (key, value) {
-                        $('#ruangan').append(
-                            '<option value="' + value.id_ruangan + '">' + value.nama_ruangan + ' (' + value.tipe_ruangan + ')</option>'
-                        );
-                    });
-                }
-            });
+          $.ajax({
+            url: '/riwayat-data/get-ruangan/' + gudangId, // <-- diubah di sini
+            type: 'GET',
+            success: function (data) {
+              $('#ruangan').empty();
+              $('#ruangan').append('<option value="">-- Pilih Ruang --</option>');
+              $.each(data, function (key, value) {
+                $('#ruangan').append(
+                  '<option value="' + value.id_ruangan + '">' + value.nama_ruangan + ' (' + value.tipe_ruangan + ')</option>'
+                );
+              });
+            }
+          });
         } else {
-            $('#ruangan').empty();
-            $('#ruangan').append('<option value="">-- Pilih Ruang --</option>');
+          $('#ruangan').empty();
+          $('#ruangan').append('<option value="">-- Pilih Ruang --</option>');
         }
+      });
     });
-});
-
-
-
   </script>
 @endsection
-s
