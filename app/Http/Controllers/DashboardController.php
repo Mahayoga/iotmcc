@@ -7,11 +7,12 @@ use App\Models\GudangModel;
 use App\Models\RuanganModel;
 use App\Models\SensorModel;
 use App\Models\NilaiSensorModel;
+use App\Models\ModeBlowerModel;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-   
+
     public function index()
     {
         $gudang = GudangModel::with('getDataRuangan.getDataSensor')->get();
@@ -26,51 +27,70 @@ class DashboardController extends Controller
         foreach ($ruangan as $r) {
             $sensorSuhu = $r->getDataSensor->where('flag_sensor', 'suhu')->first();
             $sensorKelembapan = $r->getDataSensor->where('flag_sensor', 'kelembaban')->first();
+            $sensorBlower = $r->getDataSensor->where('flag_sensor', 'blower')->first();
 
             $nilaiSuhuAkhir = $sensorSuhu ? NilaiSensorModel::where('id_sensor', $sensorSuhu->id_sensor)->latest()->first() : null;
             $nilaiKelembapanAkhir = $sensorKelembapan ? NilaiSensorModel::where('id_sensor', $sensorKelembapan->id_sensor)->latest()->first() : null;
+            $nilaiBlower = $sensorBlower ? ModeBlowerModel::where('id_sensor', $sensorBlower->id_sensor)->latest()->first() : null;
 
-            // $status = 'Perlu Cek';
-            // if ($nilaiSuhuAkhir && $nilaiSuhuAkhir->nilai_sensor <= 35 && $nilaiSuhuAkhir->nilai_sensor >= 25) {
-            //     $status = 'Normal';
-            // }
+            $status = 'Perlu Cek';
+            if ($nilaiSuhuAkhir && $nilaiKelembapanAkhir) {
+                $suhu = $nilaiSuhuAkhir->nilai_sensor;
+                $kelembapan = $nilaiKelembapanAkhir->nilai_sensor;
+
+                if ($suhu >= 25 && $suhu <= 35 && $kelembapan >= 30 && $kelembapan <= 70) {
+                    $status = 'Normal';
+                }
+
+            }
 
             $dataRuangan[] = [
                 'id_ruangan' => $r->id_ruangan,
                 'nama_ruangan' => $r->nama_ruangan,
-                'suhu'=> $nilaiSuhuAkhir->nilai_sensor ?? '_',
+                'suhu' => $nilaiSuhuAkhir->nilai_sensor ?? '_',
                 'kelembapan' => $nilaiKelembapanAkhir->nilai_sensor ?? '_',
-                // 'status' => $status,
+                'blower' => $nilaiBlower->nilai_sensor ?? '_',
+                'status' => $status,
             ];
 
+            // dd($dataRuangan);
 
             // nilai grafik suhu
             if ($sensorSuhu) {
-                $grafikSuhu[$r->nama_ruangan] = NilaiSensorModel::where('id_sensor', $sensorSuhu->id_sensor)
-                    ->orderBy('created_at', 'asc')
-                    ->take(5)
-                    ->get(['nilai_sensor', 'created_at'])
+                $grafikSuhu[$r->nama_ruangan] = collect(
+                    NilaiSensorModel::where('id_sensor', $sensorSuhu->id_sensor)
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get(['nilai_sensor', 'created_at'])
+                )
+                    ->reverse()
+                    ->values()
                     ->map(function ($row) {
                         return [
-                            'nilai' => (float)$row->nilai_sensor,
-                            'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+                            'nilai' => (float) $row->nilai_sensor,
+                            'waktu' => \Carbon\Carbon::parse($row->created_at)->format('H:i'),
                         ];
                     });
             }
 
-            //nilai grafik kelembapan
+            // nilai grafik kelembapan
             if ($sensorKelembapan) {
-                $grafikKelembapan[$r->nama_ruangan] = NilaiSensorModel::where('id_sensor', $sensorKelembapan->id_sensor)
-                    ->orderBy('created_at', 'asc')
-                    ->take(5)
-                    ->get(['nilai_sensor', 'created_at'])
+                $grafikKelembapan[$r->nama_ruangan] = collect(
+                    NilaiSensorModel::where('id_sensor', $sensorKelembapan->id_sensor)
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get(['nilai_sensor', 'created_at'])
+                )
+                    ->reverse()
+                    ->values()
                     ->map(function ($row) {
                         return [
-                            'nilai' => (float)$row->nilai_sensor,
-                            'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+                            'nilai' => (float) $row->nilai_sensor,
+                            'waktu' => \Carbon\Carbon::parse($row->created_at)->format('H:i'),
                         ];
                     });
             }
+
         }
 
         // dd($dataRuangan, $grafikSuhu, $grafikKelembapan);
