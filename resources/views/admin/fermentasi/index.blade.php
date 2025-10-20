@@ -253,70 +253,54 @@
         if(data.status == true) {
           let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
           let classListKelembaban = document.getElementById('status-kelembaban-ruangan').classList;
-          $('#suhu-rata-rata')[0].innerHTML = data.dataAvgSuhu;
-          $('#kelembaban-rata-rata')[0].innerHTML = data.dataAvgKelembaban;
+          $('#suhu-rata-rata')[0].innerHTML = data.dataAvgSuhu[data.dataAvgSuhu.length - 1];
+          $('#kelembaban-rata-rata')[0].innerHTML = data.dataAvgKelembaban[data.dataAvgKelembaban.length - 1];
 
           if(data.dataAvgSuhu > 25 && data.dataAvgSuhu < 30) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
-            classListSuhu.remove('text-success');
-            classListSuhu.remove('text-warning');
-            classListSuhu.remove('text-danger');
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-success');
           } else if(data.dataAvgSuhu > 30 && data.dataAvgSuhu < 50) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-            classListSuhu.remove('text-success');
-            classListSuhu.remove('text-warning');
-            classListSuhu.remove('text-danger');
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-warning');
           } else if(data.dataAvgSuhu > 50 && data.dataAvgSuhu < 100) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
-            classListSuhu.remove('text-success');
-            classListSuhu.remove('text-warning');
-            classListSuhu.remove('text-danger');
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-danger');
           } else {
             $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-            classListSuhu.remove('text-success');
-            classListSuhu.remove('text-warning');
-            classListSuhu.remove('text-danger');
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-warning');
           }
 
           if(data.dataAvgKelembaban > 80) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Normal';
-            classListKelembaban.remove('text-success');
-            classListKelembaban.remove('text-warning');
-            classListKelembaban.remove('text-danger');
+            classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-success');
           } else if(data.dataAvgKelembaban > 60) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Peringatan';
-            classListKelembaban.remove('text-success');
-            classListKelembaban.remove('text-warning');
-            classListKelembaban.remove('text-danger');
+            classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-warning');
           } else if(data.dataAvgKelembaban > 0) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Bahaya';
-            classListKelembaban.remove('text-success');
-            classListKelembaban.remove('text-warning');
-            classListKelembaban.remove('text-danger');
+            classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-danger');
           } else {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Kesalahan!';
-            classListKelembaban.remove('text-success');
-            classListKelembaban.remove('text-warning');
-            classListKelembaban.remove('text-danger');
+            classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-danger');
           }
 
-          suhuChart.data.labels = data.dataWaktuSuhu;
-          suhuChart.data.datasets[0].data = data.dataSuhu;
+          suhuChart.data.labels = data.dataWaktuSuhu[0];
+          suhuChart.data.datasets[0].data = data.dataAvgSuhu;
 
-          kelembabanChart.data.labels = data.dataWaktuKelembaban;
-          kelembabanChart.data.datasets[0].data = data.dataKelembaban;
+          kelembabanChart.data.labels = data.dataWaktuKelembaban[0];
+          kelembabanChart.data.datasets[0].data = data.dataAvgKelembaban;
 
-          suhuDanKelembabanChart.data.labels = data.dataWaktuSuhu;
-          suhuDanKelembabanChart.data.datasets[0].data = data.dataKelembaban;
-          suhuDanKelembabanChart.data.datasets[1].data = data.dataSuhu;
+          suhuDanKelembabanChart.data.labels = data.dataWaktuSuhu[0];
+          suhuDanKelembabanChart.data.datasets[0].data = data.dataAvgKelembaban;
+          suhuDanKelembabanChart.data.datasets[1].data = data.dataAvgSuhu;
 
           suhuChart.update();
           kelembabanChart.update();

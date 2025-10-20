@@ -29,9 +29,9 @@
                 <label for="ruang" class="form-label fw-semibold mt-3">Pilih Ruang Spesifik</label>
                 <select id="ruang" name="ruang" class="form-select w-100">
                   <option value="">-- Pilih Ruang --</option>
-                  <option value="bleaching">Ruang Bleaching</option>
-                  <option value="fermentasi">Ruang Fermentasi</option>
-                  <option value="pengeringan">Ruang Pengeringan</option>
+                  <option value="11dc76a4-3c99-4563-9bbe-e1916a4a4ff2">Ruang Bleaching</option>
+                  <option value="11dc76a4-3c99-4563-9bbe-e1916a4a4ff2">Ruang Fermentasi</option>
+                  <option value="11dc76a4-3c99-4563-9bbe-e1916a4a4ff2">Ruang Pengeringan</option>
                 </select>
 
                 <small class="text-muted d-block mt-2 mb-3">
@@ -39,7 +39,7 @@
                 </small>
 
                 <div class="d-flex gap-2">
-                  <button type="button" class="btn btn-outline-success px-4">Terapkan</button>
+                  <button type="button" class="btn btn-outline-success px-4" onclick="getDataRiwayat()">Terapkan</button>
                   <button type="reset" class="btn btn-outline-secondary px-4">Reset</button>
                 </div>
               </div>
@@ -131,6 +131,18 @@
 <script>
   const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
   const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
+
+  function getDataRiwayat() {
+    let ruangId = $('#ruang').val();
+    
+    $.get('{{ route('riwayat-data.blanching.getDataSensor', ['__ID__']) }}'.replace('__ID__', ruangId), {
+
+    }, function(data, status) {
+      if(data.status == true) {
+        console.log(data);
+      }
+    });
+  }
 </script>
 @endsection
 s
