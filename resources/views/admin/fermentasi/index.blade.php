@@ -100,7 +100,7 @@
             <div class="card-body" style="height: 400px;">
               <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu">-</span> data terakhir</small>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@
             <div class="card-body" style="height: 400px;">
               <canvas id="chartKelembaban" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah <span id="total-kelembaban">-</span> data terakhir</small>
               </div>
             </div>
           </div>
@@ -133,7 +133,7 @@
             <div class="card-body" style="height: 400px;">
               <canvas id="chartSuhuDanKelembaban" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu-dan-kelembaban">-</span> data terakhir</small>
               </div>
             </div>
           </div>
@@ -301,6 +301,10 @@
           suhuDanKelembabanChart.data.labels = data.dataWaktuSuhu[0];
           suhuDanKelembabanChart.data.datasets[0].data = data.dataAvgKelembaban;
           suhuDanKelembabanChart.data.datasets[1].data = data.dataAvgSuhu;
+
+          $('#total-suhu').text(data.dataAvgSuhu.length);
+          $('#total-kelembaban').text(data.dataAvgKelembaban.length);
+          $('#total-suhu-dan-kelembaban').text(data.dataWaktuSuhu[0].length);
 
           suhuChart.update();
           kelembabanChart.update();
