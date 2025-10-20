@@ -46,7 +46,7 @@ class RuanganFermentasiController extends Controller
             'dataWaktuKelembaban' => $dataWaktuKelembaban,
             'dataAvgSuhu' => number_format(array_sum($dataSuhu) / count($dataSuhu), 1),
             'dataAvgKelembaban' => number_format(array_sum($dataKelembaban) / count($dataKelembaban), 1),
-            // 'statusRuangan' => $idTemp,
+            'statusRuangan' => $statusRuangan,
         ]);
     }
 
