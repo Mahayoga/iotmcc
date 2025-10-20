@@ -101,7 +101,7 @@
             <div class="card-body" style="height: 350px;">
               <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah 11 data terakhir</small>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@
             <div class="card-body" style="height: 350px;">
               <canvas id="chartKelembaban" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah 30 data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah 11 data terakhir</small>
               </div>
             </div>
           </div>

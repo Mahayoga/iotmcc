@@ -51,12 +51,14 @@
         <div class="col-xl-6 col-lg-6 col-md-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruang Blanching</h5>
-              <small class="text-muted">Perubahan suhu dalam 30 pembacaan terakhir</small>
+              <h5 class="card-title mb-1 mt-2">Grafik Suhu</h5>
+              <small class="text-muted">Perubahan suhu dalam ruang blanching</small>
             </div>
-
-            <div class="card-body">
-              <canvas id="chartSuhu" height="150"></canvas>
+            <div class="card-body" style="height: 250px;">
+              <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
+              <div class="p-4 pt-2 pb-0">
+                <small class="text-muted">*data yang ditampilkan adalah 11 data terakhir</small>
+              </div>
             </div>
           </div>
         </div>

@@ -77,7 +77,7 @@
         <img src="{{ ('assets/user/images/background-vanili.jpg') }}" alt="Hero Image">
         <div class="container">
           <h2>VIoT</h2>
-          <p>Vanilini Internet of Things</p>
+          <p>Vanili Internet of Things</p>
         </div>
       </div>
     </section><!-- /Hero Section -->
