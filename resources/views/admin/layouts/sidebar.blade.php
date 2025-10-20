@@ -40,14 +40,14 @@
                   <li class="nav-item">
                     <a class="nav-link active" href="{{ route('ruang-perebusan.index') }}">
                       <i class="bi bi-columns"></i>
-                      <span>Ruang Perebusan</span>
+                      <span>Ruang Bleaching</span>
                     </a>
                   </li>
                 @else
                   <li class="nav-item">
                     <a class="nav-link" href="{{ route('ruang-perebusan.index') }}">
                       <i class="bi bi-columns"></i>
-                      <span>Ruang Perebusan</span>
+                      <span>Ruang Bleaching</span>
                     </a>
                   </li>
                 @endif
@@ -101,7 +101,7 @@
                 <li class="nav-item">
                   <a class="nav-link" href="{{ route('ruang-perebusan.index') }}">
                     <i class="bi bi-columns"></i>
-                    <span>Ruang Perebusan</span>
+                    <span>Ruang Bleaching</span>
                   </a>
                 </li>
                 <li class="nav-item">
