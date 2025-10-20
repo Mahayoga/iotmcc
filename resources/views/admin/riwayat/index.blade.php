@@ -66,7 +66,7 @@
             <div class="card-body">
               <canvas id="chartSuhu" height="130"></canvas>
               <div class="mt-3">
-                <h6 class="fw-semibold mb-1">Grafik Suhu</h6>
+                <h6 class="fw-semibold mb-1">Grafik Suhu Bleaching</h6>
                 <p class="text-muted mb-0 small">Total Suhu Ruang per Minggu</p>
                 <hr class="dark-horizontal">
                 <i class="bi bi-info-circle"> Data ini diambil dari range tanggal yang dipilih (ditampilkan per
@@ -80,7 +80,7 @@
         <div class="col-xl-4 col-lg-5">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-body">
-              <h6 class="fw-semibold mb-1">Suhu Ruangan</h6>
+              <h6 class="fw-semibold mb-1">Suhu Ruangan Bleaching</h6>
               <p class="text-muted small mb-3">Rata-rata suhu di ruang yang dipilih</p>
               <hr class="dark-horizontal">
               <div class="d-flex justify-content-between">
@@ -97,13 +97,51 @@
           </div>
         </div>
 
+        <div class="col-xl-8 col-lg-7">
+          <div class="card border-0 shadow-sm" style="border-radius: 18px;">
+            <div class="card-body">
+              <canvas id="chartSuhu" height="130"></canvas>
+              <div class="mt-3">
+                <h6 class="fw-semibold mb-1">Grafik Suhu Fermentasi</h6>
+                <p class="text-muted mb-0 small">Total Suhu Ruang per Minggu</p>
+                <hr class="dark-horizontal">
+                <i class="bi bi-info-circle"> Data ini diambil dari range tanggal yang dipilih (ditampilkan per
+                  minggu)</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suhu Ruangan -->
+        <div class="col-xl-4 col-lg-5">
+          <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
+            <div class="card-body">
+              <h6 class="fw-semibold mb-1">Suhu Ruangan Fermentasi</h6>
+              <p class="text-muted small mb-3">Rata-rata suhu di ruang yang dipilih</p>
+              <hr class="dark-horizontal">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <p class="mb-1 fw-semibold">Rata-rata</p>
+                  <p class="text-muted">Suhu Maksimum</p>
+                </div>
+                <div class="text-end">
+                  <p class="mb-1 fw-semibold text-success" id="avgSuhu">-</p>
+                  <p class="text-muted" id="maxSuhu">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
         <!-- Chart Kelembaban -->
         <div class="col-xl-8 col-lg-7">
           <div class="card border-0 shadow-sm" style="border-radius: 18px;">
             <div class="card-body">
               <canvas id="chartKelembaban" height="130"></canvas>
               <div class="mt-3">
-                <h6 class="fw-semibold mb-1">Grafik Kelembaban</h6>
+                <h6 class="fw-semibold mb-1">Grafik Kelembaban Fermentasi</h6>
                 <p class="text-muted mb-0 small">Total Kelembaban Ruang per Minggu</p>
                 <hr class="dark-horizontal">
                 <i class="bi bi-info-circle"> Data ini diambil dari range tanggal yang dipilih (ditampilkan per
@@ -117,7 +155,7 @@
         <div class="col-xl-4 col-lg-5">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-body">
-              <h6 class="fw-semibold mb-1">Kelembaban Ruangan</h6>
+              <h6 class="fw-semibold mb-1">Kelembaban Ruangan Fermentasi</h6>
               <p class="text-muted small mb-3">Rata-rata kelembaban di ruang yang dipilih</p>
               <hr class="dark-horizontal">
               <div class="d-flex justify-content-between">
@@ -133,6 +171,80 @@
             </div>
           </div>
         </div>
+
+        <div class="col-xl-8 col-lg-7">
+          <div class="card border-0 shadow-sm" style="border-radius: 18px;">
+            <div class="card-body">
+              <canvas id="chartSuhu" height="130"></canvas>
+              <div class="mt-3">
+                <h6 class="fw-semibold mb-1">Grafik Suhu Pengeringan</h6>
+                <p class="text-muted mb-0 small">Total Suhu Ruang per Minggu</p>
+                <hr class="dark-horizontal">
+                <i class="bi bi-info-circle"> Data ini diambil dari range tanggal yang dipilih (ditampilkan per
+                  minggu)</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suhu Ruangan -->
+        <div class="col-xl-4 col-lg-5">
+          <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
+            <div class="card-body">
+              <h6 class="fw-semibold mb-1">Suhu Ruangan Pengeringan</h6>
+              <p class="text-muted small mb-3">Rata-rata suhu di ruang yang dipilih</p>
+              <hr class="dark-horizontal">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <p class="mb-1 fw-semibold">Rata-rata</p>
+                  <p class="text-muted">Suhu Maksimum</p>
+                </div>
+                <div class="text-end">
+                  <p class="mb-1 fw-semibold text-success" id="avgSuhu">-</p>
+                  <p class="text-muted" id="maxSuhu">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                <!-- Chart Kelembaban -->
+        <div class="col-xl-8 col-lg-7">
+          <div class="card border-0 shadow-sm" style="border-radius: 18px;">
+            <div class="card-body">
+              <canvas id="chartKelembaban" height="130"></canvas>
+              <div class="mt-3">
+                <h6 class="fw-semibold mb-1">Grafik Kelembaban Pengeringan</h6>
+                <p class="text-muted mb-0 small">Total Kelembaban Ruang per Minggu</p>
+                <hr class="dark-horizontal">
+                <i class="bi bi-info-circle"> Data ini diambil dari range tanggal yang dipilih (ditampilkan per
+                  minggu)</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kelembaban Ruangan -->
+        <div class="col-xl-4 col-lg-5">
+          <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
+            <div class="card-body">
+              <h6 class="fw-semibold mb-1">Kelembaban Ruangan Pengeringan</h6>
+              <p class="text-muted small mb-3">Rata-rata kelembaban di ruang yang dipilih</p>
+              <hr class="dark-horizontal">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <p class="mb-1 fw-semibold">Rata-rata</p>
+                  <p class="text-muted">Kelembaban Maksimum</p>
+                </div>
+                <div class="text-end">
+                  <p class="mb-1 fw-semibold text-success" id="avgKelembaban">-</p>
+                  <p class="text-muted" id="maxKelembaban">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </main>
