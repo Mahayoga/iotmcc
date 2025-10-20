@@ -1,6 +1,6 @@
 @extends('admin.layouts.main')
 
-@section('title', 'Ruang Perebusan')
+@section('title', 'Riwayat Data')
 
 @section('content')
   <main class="admin-main">
@@ -260,7 +260,7 @@
         let gudangId = $(this).val();
         if (gudangId) {
           $.ajax({
-            url: '/riwayat-data/get-ruangan/' + gudangId, // <-- diubah di sini
+            url: '/riwayat-data/get-ruangan/' + gudangId,
             type: 'GET',
             success: function (data) {
               $('#ruangan').empty();

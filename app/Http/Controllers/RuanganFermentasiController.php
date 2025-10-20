@@ -15,7 +15,7 @@ class RuanganFermentasiController extends Controller
         $dataWaktuSuhu = [];
         $dataKelembaban = [];
         $dataWaktuKelembaban = [];
-        $statusRuangan = 1; // ruangan 1 untuk blanching, ruangan 2 untuk fermentasi, ruangan 
+        $statusRuangan = 1; 
         $dataGudang = GudangModel::findOrFail($id);
         $dataRuangan = $dataGudang->getDataRuangan;
         $idSuhuTemp = [];

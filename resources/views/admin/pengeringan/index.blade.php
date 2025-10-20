@@ -167,117 +167,148 @@
 @endsection
 
 @section('script')
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
+  const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
     const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
+    const ctxSuhuDanKelembaban = document.getElementById('chartSuhuDanKelembaban')?.getContext('2d');
 
     let suhuChart = new Chart(ctxSuhu, {
       type: 'line',
-      data: { datasets: [{ label: "Suhu (°C)", data: [], borderWidth: 2, borderColor: '#28a745', fill: false }], labels: [] },
-      options: { responsive: true, scales: { y: { beginAtZero: true }, x: {} } }
+      data: {
+        datasets: [{
+          label: "Suhu (°C)",
+          data: [],
+          backgroundColor: '#0f172abf',
+          borderColor: '#C8F76A'
+        }],
+        labels: []
+      },
+
+      options: {
+        responsive: true,
+        scales: {
+          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
+          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        },
+        animation: {
+          duration: 800,
+        }
+      }
     });
 
     let kelembabanChart = new Chart(ctxKelembaban, {
       type: 'line',
-      data: { datasets: [{ label: "Kelembaban (%)", data: [], borderWidth: 2, borderColor: '#007bff', fill: false }], labels: [] },
-      options: { responsive: true, scales: { y: { beginAtZero: true }, x: {} } }
+      data: {
+        datasets: [{
+          label: "Kelembaban (%)",
+          data: [],
+          backgroundColor: '#0f172abf',
+          borderColor: '#C8F76A'
+        }],
+        labels: []
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { title: { display: true, text: 'Kelembaban (%)', color: '#888' }, beginAtZero: true },
+          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        },
+        animation: {
+          duration: 800,
+        }
+      }
     });
 
-    function getDataSuhu() {
-      $.get('{{ route('ruang-pengeringan.getDataSuhu', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {}, function (data) {
-        if (data.status) {
-          $('#suhu-rata-rata').text(data.dataAvgSuhu);
-          $('#kelembaban-rata-rata').text(data.dataAvgKelembaban);
+    let suhuDanKelembabanChart = new Chart(ctxSuhuDanKelembaban, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: "Kelembaban (%)",
+          data: [],
+          backgroundColor: '#FFFFFF',
+          borderColor: '#1a91c4'
+        }, {
+          label: "Suhu (°C)",
+          data: [],
+          backgroundColor: '#FFFFFF',
+          borderColor: '#d44a24'
+        }],
+        labels: []
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { title: { display: true, text: 'Data Suhu dan Kelembaban', color: '#888' }, beginAtZero: true },
+          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        },
+        animation: {
+          duration: 800,
+        }
+      }
+    });
 
-          // Status Suhu
-          let suhuClass = $('#status-suhu-ruangan');
-          suhuClass.removeClass('text-success text-warning text-danger');
-          if (data.dataAvgSuhu > 25 && data.dataAvgSuhu < 30) suhuClass.text('Normal').addClass('text-success');
-          else if (data.dataAvgSuhu >= 30 && data.dataAvgSuhu < 50) suhuClass.text('Peringatan').addClass('text-warning');
-          else suhuClass.text('Bahaya').addClass('text-danger');
+    function getDataSensor() {
+      $.get('{{ route('ruang-pengeringan.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
 
-          // Status Kelembaban
-          let kelembabanClass = $('#status-kelembaban-ruangan');
-          kelembabanClass.removeClass('text-success text-warning text-danger');
-          if (data.dataAvgKelembaban > 80) kelembabanClass.text('Normal').addClass('text-success');
-          else if (data.dataAvgKelembaban > 60) kelembabanClass.text('Peringatan').addClass('text-warning');
-          else kelembabanClass.text('Bahaya').addClass('text-danger');
+      }, function(data, status) {
+        if(data.status == true) {
+          let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
+          let classListKelembaban = document.getElementById('status-kelembaban-ruangan').classList;
+          $('#suhu-rata-rata')[0].innerHTML = data.dataAvgSuhu[data.dataAvgSuhu.length - 1];
+          $('#kelembaban-rata-rata')[0].innerHTML = data.dataAvgKelembaban[data.dataAvgKelembaban.length - 1];
 
-          // Update Chart
-          suhuChart.data.datasets[0].data = data.dataSuhu.reverse();
-          suhuChart.data.labels = data.dataWaktuSuhu.reverse();
+          if(data.dataAvgSuhu > 25 && data.dataAvgSuhu < 30) {
+            $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+            classListSuhu.add('text-success');
+          } else if(data.dataAvgSuhu > 30 && data.dataAvgSuhu < 50) {
+            $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+            classListSuhu.add('text-warning');
+          } else if(data.dataAvgSuhu > 50 && data.dataAvgSuhu < 100) {
+            $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+            classListSuhu.add('text-danger');
+          } else {
+            $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+            classListSuhu.add('text-warning');
+          }
+
+          if(data.dataAvgKelembaban > 80) {
+            $('#status-kelembaban-ruangan')[0].innerHTML = 'Normal';
+            classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
+            classListKelembaban.add('text-success');
+          } else if(data.dataAvgKelembaban > 60) {
+            $('#status-kelembaban-ruangan')[0].innerHTML = 'Peringatan';
+            classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
+            classListKelembaban.add('text-warning');
+          } else if(data.dataAvgKelembaban > 0) {
+            $('#status-kelembaban-ruangan')[0].innerHTML = 'Bahaya';
+            classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
+            classListKelembaban.add('text-danger');
+          } else {
+            $('#status-kelembaban-ruangan')[0].innerHTML = 'Kesalahan!';
+            classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
+            classListKelembaban.add('text-danger');
+          }
+
+          suhuChart.data.labels = data.dataWaktuSuhu[0];
+          suhuChart.data.datasets[0].data = data.dataAvgSuhu;
+
+          kelembabanChart.data.labels = data.dataWaktuKelembaban[0];
+          kelembabanChart.data.datasets[0].data = data.dataAvgKelembaban;
+
+          suhuDanKelembabanChart.data.labels = data.dataWaktuSuhu[0];
+          suhuDanKelembabanChart.data.datasets[0].data = data.dataAvgKelembaban;
+          suhuDanKelembabanChart.data.datasets[1].data = data.dataAvgSuhu;
+
           suhuChart.update();
-
-          kelembabanChart.data.datasets[0].data = data.dataKelembaban.reverse();
-          kelembabanChart.data.labels = data.dataWaktuKelembaban.reverse();
           kelembabanChart.update();
+          suhuDanKelembabanChart.update();
         }
       });
     }
-
-    // ---- Blower ----
-    const blowerSwitch = document.getElementById('blower-switch');
-    const blowerIcon = document.getElementById('blower-icon');
-    const blowerStatusText = document.getElementById('blower-status-text');
-    const blowerLabel = document.getElementById('blower-switch-label');
-    let blowerStartTime = null;
-
-    function updateBlowerSwitch(statusBlower, durasiAktif) {
-      if (statusBlower == 1) {
-        blowerSwitch.checked = true;
-        blowerIcon.classList.add('text-success', 'bi-fan-spin');
-        blowerIcon.classList.remove('text-secondary');
-        blowerStatusText.textContent = 'Blower Aktif';
-        blowerStatusText.classList.add('text-success');
-        blowerStatusText.classList.remove('text-muted');
-        blowerLabel.textContent = 'Matikan Blower';
-        $('#status-proses-blower').text('Proses Pengeringan').removeClass('bg-secondary').addClass('bg-success');
-        blowerStartTime = new Date();
-      } else {
-        blowerSwitch.checked = false;
-        blowerIcon.classList.remove('text-success', 'bi-fan-spin');
-        blowerIcon.classList.add('text-secondary');
-        blowerStatusText.textContent = 'Blower Mati';
-        blowerStatusText.classList.remove('text-success');
-        blowerStatusText.classList.add('text-muted');
-        blowerLabel.textContent = 'Nyalakan Blower';
-        $('#status-proses-blower').text('Idle').removeClass('bg-success').addClass('bg-secondary');
-        blowerStartTime = null;
-      }
-      $('#durasi-blower').text(durasiAktif + ' mnt');
-    }
-
-    function getDataBlower() {
-      $.get('{{ route('ruang-pengeringan.getDataBlower', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {}, function (data) {
-        if (data.status) updateBlowerSwitch(data.statusBlower, data.durasiAktif);
-      });
-    }
-
-    blowerSwitch.addEventListener('change', function () {
-      $.post('{{ route('ruang-pengeringan.toggleBlower', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
-        _token: '{{ csrf_token() }}'
-      }, function (response) {
-        if (response.status) getDataBlower();
-        else {
-          alert(response.message);
-          blowerSwitch.checked = !blowerSwitch.checked;
-        }
-      });
-    });
-
-    // Timer durasi otomatis
-    setInterval(() => {
-      if (blowerStartTime) {
-        let durasi = Math.floor((new Date() - blowerStartTime) / 60000);
-        $('#durasi-blower').text(durasi + ' mnt');
-      }
-    }, 1000);
-
-    // Interval update data
-    getDataSuhu();
-    getDataBlower();
-    setInterval(getDataSuhu, 3000);
-    setInterval(getDataBlower, 5000);
+    setInterval(getDataSensor, 1000);
   </script>
 @endsection

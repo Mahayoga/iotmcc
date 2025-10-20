@@ -5,7 +5,6 @@
 @section('content')
   <main class="admin-main">
     <div class="container-fluid p-4 p-lg-5">
-      <!-- Page Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 class="h3 mb-0">Ruang Blanching</h1>
@@ -14,7 +13,6 @@
       </div>
 
       <div class="row g-4 mb-4">
-        <!-- CARD SUHU RATA-RATA -->
         <div class="col-xl-6 col-lg-6 col-md-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
@@ -50,7 +48,6 @@
           </div>
         </div>
 
-        <!-- CARD GRAFIK SUHU -->
         <div class="col-xl-6 col-lg-6 col-md-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
@@ -65,8 +62,6 @@
         </div>
       </div>
 
-
-      <!--cardd timer perebusan-->
       <div class="row g-4 mb-4">
         <div class="col-xl-6 col-lg-6 col-md-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
@@ -85,7 +80,6 @@
           </div>
         </div>
 
-        <!--card informasi proses-->
         <div class="col-xl-6 col-lg-6 col-md-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
@@ -116,116 +110,67 @@
 @endsection
 
 @section('script')
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
-    let timerInterval;
-    let waktuMulai, waktuSelesai;
 
-    function updateStatus(status) {
-      const el = $('#status-proses');
-      el.removeClass('bg-secondary bg-success bg-danger');
-      if (status === 'Sedang Berjalan') el.addClass('bg-success');
-      else if (status === 'Selesai') el.addClass('bg-danger');
-      else el.addClass('bg-secondary');
-      el.text(status);
-    }
+    let suhuChart = new Chart(ctxSuhu, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: "Suhu (°C)",
+          data: [],
+          backgroundColor: '#0f172abf',
+          borderColor: '#C8F76A'
+        }],
+        labels: []
+      },
 
-    function startCountdown(seconds) {
-      clearInterval(timerInterval);
-      let remaining = seconds;
-      waktuMulai = new Date();
-      waktuSelesai = new Date(waktuMulai.getTime() + remaining * 1000);
-      $('#waktu-mulai').text(waktuMulai.toLocaleTimeString());
-      $('#waktu-selesai').text(waktuSelesai.toLocaleTimeString());
-      updateStatus('Sedang Berjalan');
-
-      timerInterval = setInterval(() => {
-        const mins = Math.floor(remaining / 60);
-        const secs = remaining % 60;
-        $('#timer-display').text(`${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`);
-        if (remaining <= 0) {
-          clearInterval(timerInterval);
-          updateStatus('Selesai');
+      options: {
+        responsive: true,
+        scales: {
+          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
+          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        },
+        animation: {
+          duration: 800,
         }
-        remaining--;
-      }, 1000);
-    }
-
-    $('#start-timer').click(() => {
-      const durasi = parseInt($('#durasi-input').val()) || 5;
-      startCountdown(durasi * 60);
+      }
     });
 
-    $('#stop-timer').click(() => {
-      clearInterval(timerInterval);
-      updateStatus('Menunggu');
-    });
+    function getDataSensor() {
+      $.get('{{ route('ruang-blanching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
 
-    $('#set-durasi').click(() => {
-      const durasi = parseInt($('#durasi-input').val());
-      if (isNaN(durasi) || durasi <= 0) return alert('Masukkan durasi valid!');
-      startCountdown(durasi * 60);
-    });
+      }, function(data, status) {
+        if(data.status == true) {
+          let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
+          $('#suhu-rata-rata')[0].innerHTML = data.dataAvgSuhu[data.dataAvgSuhu.length - 1];
 
-    function getDataSuhu() {
-    $.get('{{ route('ruang-blanching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
-
-    }, function(data, status) {
-      if(data.status == true) {
-        let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
-        $('#suhu-rata-rata')[0].innerHTML = data.dataAvgSuhu;
-
-        if (data.dataAvgSuhu > 25 && data.dataAvgSuhu < 30) {
-          $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
-          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-          classListSuhu.add('text-success');
-        } else if (data.dataAvgSuhu > 30 && data.dataAvgSuhu < 50) {
-          $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-          classListSuhu.add('text-warning');
-        } else if (data.dataAvgSuhu >= 50 && data.dataAvgSuhu < 100) {
-          $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
-          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-          classListSuhu.add('text-danger');
-        } else {
-          $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-          classListSuhu.add('text-warning');
-        }
-
-          let suhuChart = new Chart(ctxSuhu, {
-            type: 'line',
-            data: {
-              datasets: [{
-                label: "Suhu (°C)",
-                data: data.dataSuhu
-              }],
-              labels: data.dataWaktuSuhu
-            },
-            options: {
-              responsive: true,
-              scales: {
-                y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
-                x: { title: { display: true, text: 'Waktu', color: '#888' } }
-              }
-            }
-          });
-
-          if (ctxSuhu) {
-            new Chart(ctxSuhu, {
-              type: 'line',
-              data: {
-                labels: data.dataWaktuSuhu,
-                datasets: [{ label: "Suhu (°C)", data: data.dataSuhu, fill: false, borderWidth: 2 }]
-              },
-              options: { responsive: true }
-            });
+          if (data.dataAvgSuhu > 60 && data.dataAvgSuhu < 75) {
+            $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+            classListSuhu.add('text-success');
+          } else if ((data.dataAvgSuhu > 50 && data.dataAvgSuhu < 60) || (data.dataAvgSuhu > 65 && data.dataAvgSuhu <= 70)) {
+            $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+            classListSuhu.add('text-warning');
+          } else if (data.dataAvgSuhu < 50 || data.dataAvgSuhu > 70) {
+            $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+            classListSuhu.add('text-danger');
+          } else {
+            $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
+            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+            classListSuhu.add('text-warning');
           }
-        }
-      });
-    }
 
-    getDataSuhu();
+        suhuChart.data.labels = data.dataWaktuSuhu[0];
+        suhuChart.data.datasets[0].data = data.dataAvgSuhu;
+
+        suhuChart.update();
+      }
+    });
+  }
+    
+  setInterval(getDataSensor, 1000);
   </script>
 @endsection
