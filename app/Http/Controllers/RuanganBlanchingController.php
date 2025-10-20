@@ -8,9 +8,9 @@ use App\Models\NilaiSensorModel;
 use App\Models\SensorModel;
 
 
-class RuanganPerebusanController extends Controller
+class RuanganBlanchingController extends Controller
 {
-     public function getDataSuhu(string $id)
+     public function getDataSensor(string $id)
     {
         $dataSuhu = [];
         $dataWaktuSuhu = [];
@@ -23,7 +23,7 @@ class RuanganPerebusanController extends Controller
         $dataRuangan = $dataGudang->getDataRuangan;
 
         foreach ($dataRuangan as $value) {
-            if ($value->tipe_ruangan == 1) { // Ruang Perebusan
+            if ($value->tipe_ruangan == 1) {
                 $statusRuangan = $value->status_ruangan;
 
                 foreach ($value->getDataSensor as $value2) {
@@ -64,7 +64,7 @@ class RuanganPerebusanController extends Controller
      */
     public function index()
     {
-        return view("admin.perebusan.index");
+        return view("admin.blanching.index");
     }
 
 

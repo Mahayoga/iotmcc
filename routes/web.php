@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RuanganPerebusanController;
+use App\Http\Controllers\RuanganBlanchingController;
 use App\Http\Controllers\RuanganFermentasiController;
 use App\Http\Controllers\RuanganPengeringanController;
 use App\Http\Controllers\RiwayatDataController;
@@ -16,9 +16,9 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function() {
     Route::resource('dashboard', DashboardController::class);
-    Route::resource( 'ruang-perebusan', RuanganPerebusanController::class );
-        Route::prefix('ruang-perebusan')->group(function() {
-            Route::get('/data/sensor/suhu/{id}', [RuanganPerebusanController::class, 'getDataSuhu'])->name('ruang-perebusan.getDataSuhu');
+    Route::resource( 'ruang-blanching', RuanganBlanchingController::class );
+        Route::prefix('ruang-blanching')->group(function() {
+            Route::get('/data/sensor/sensor/{id}', [RuanganBlanchingController::class, 'getDataSensor'])->name('ruang-blanching.getDataSensor');
         });
     Route::resource('ruang-fermentasi', RuanganFermentasiController::class);
         Route::prefix('ruang-fermentasi')->group(function() {
@@ -32,7 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function() {
         });
     Route::resource('riwayat-data', RiwayatDataController::class);
         Route::prefix('riwayat-data')->group(function() {
-            // Route::get('/data/sensor/sensor/{id}', [RuanganFermentasiController::class, 'getDataSensor'])->name('ruang-fermentasi.getDataSensor');
+            Route::get('/blanching/data/sensor/{id}', [RiwayatDataController::class, 'getDataSensor'])->name('riwayat-data.blanching.getDataSensor');
+            Route::get('/fermentasi/data/sensor/{id}', [RiwayatDataController::class, 'getDataSensor'])->name('riwayat-data.fermentasi.getDataSensor');
+            Route::get('/pengeringan/data/sensor/{id}', [RiwayatDataController::class, 'getDataSensor'])->name('riwayat-data.pengeringan.getDataSensor');
         });
 });
 

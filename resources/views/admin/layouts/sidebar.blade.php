@@ -25,7 +25,7 @@
           <small class="text-muted px-3 text-uppercase fw-bold">Kelola Gudang</small>
         </li>
 
-        @if(Route::currentRouteName() == 'ruang-perebusan.index' || Route::currentRouteName() == 'ruang-fermentasi.index' || Route::currentRouteName() == 'ruang-pengeringan.index')
+        @if(Route::currentRouteName() == 'ruang-blanching.index' || Route::currentRouteName() == 'ruang-fermentasi.index' || Route::currentRouteName() == 'ruang-pengeringan.index')
           <li class="nav-item">
             <a class="nav-link active" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGudang" aria-expanded="true">
               <i class="bi bi-houses"></i>
@@ -35,19 +35,19 @@
             <div class="collapse show" id="collapseGudang">
               <ul class="nav nav-submenu">
 
-                <!-- Ruang Perebusan -->
-                @if(Route::currentRouteName() == 'ruang-perebusan.index')
+                <!-- Ruang Blanching -->
+                @if(Route::currentRouteName() == 'ruang-blanching.index')
                   <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('ruang-perebusan.index') }}">
+                    <a class="nav-link active" href="{{ route('ruang-blanching.index') }}">
                       <i class="bi bi-fire"></i>
-                      <span>Ruang Bleaching</span>
+                      <span>Ruang Blanching</span>
                     </a>
                   </li>
                 @else
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ route('ruang-perebusan.index') }}">
+                    <a class="nav-link" href="{{ route('ruang-blanching.index') }}">
                       <i class="bi bi-fire"></i>
-                      <span>Ruang Bleaching</span>
+                      <span>Ruang Blanching</span>
                     </a>
                   </li>
                 @endif
@@ -99,9 +99,9 @@
             <div class="collapse" id="collapseGudang">
               <ul class="nav nav-submenu">
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ route('ruang-perebusan.index') }}">
+                  <a class="nav-link" href="{{ route('ruang-blanching.index') }}">
                     <i class="bi bi-fire"></i>
-                    <span>Ruang Bleaching</span>
+                    <span>Ruang Blanching</span>
                   </a>
                 </li>
                 <li class="nav-item">

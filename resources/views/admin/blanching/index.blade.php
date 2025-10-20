@@ -1,6 +1,6 @@
 @extends('admin.layouts.main')
 
-@section('title', 'Ruang Perebusan')
+@section('title', 'Ruang Blanching')
 
 @section('content')
   <main class="admin-main">
@@ -8,8 +8,8 @@
       <!-- Page Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h1 class="h3 mb-0">Ruang Perebusan</h1>
-          <p class="text-muted mb-0">Rekap Ruang Perebusan Vanili Agrofilia Permata</p>
+          <h1 class="h3 mb-0">Ruang Blanching</h1>
+          <p class="text-muted mb-0">Rekap Ruang Blanching Vanili Agrofilia Permata</p>
         </div>
       </div>
 
@@ -19,7 +19,7 @@
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Suhu Rata-Rata</h5>
-              <small class="text-muted">Pantauan kondisi suhu ruang perebusan</small>
+              <small class="text-muted">Pantauan kondisi suhu ruang Blanching</small>
             </div>
 
             <div class="card-body">
@@ -54,7 +54,7 @@
         <div class="col-xl-6 col-lg-6 col-md-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruang Perebusan</h5>
+              <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruang Blanching</h5>
               <small class="text-muted">Perubahan suhu dalam 30 pembacaan terakhir</small>
             </div>
 
@@ -71,8 +71,8 @@
         <div class="col-xl-6 col-lg-6 col-md-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Timer Perebusan</h5>
-              <small class="text-muted">Hitung mundur proses perebusan</small>
+              <h5 class="card-title mb-1 mt-2">Timer Blanching</h5>
+              <small class="text-muted">Hitung mundur proses Blanching</small>
             </div>
 
             <div class="card-body text-center d-flex flex-column justify-content-center">
@@ -90,7 +90,7 @@
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Informasi Proses</h5>
-              <small class="text-muted">Detail waktu dan status proses perebusan</small>
+              <small class="text-muted">Detail waktu dan status proses Blanching</small>
             </div>
 
             <div class="card-body d-flex flex-column justify-content-center">
@@ -101,7 +101,7 @@
                   <p><b>Status:</b> <span id="status-proses" class="badge bg-secondary">Menunggu</span></p>
                 </div>
                 <div class="col-md-6">
-                  <label for="durasi-input" class="form-label mb-1 fw-bold">Durasi Perebusan (menit)</label>
+                  <label for="durasi-input" class="form-label mb-1 fw-bold">Durasi Blanching (menit)</label>
                   <div class="input-group">
                     <input type="number" id="durasi-input" class="form-control" placeholder="Masukkan durasi">
                     <button id="set-durasi" class="btn btn-primary">Atur</button>
@@ -169,7 +169,7 @@
     });
 
     function getDataSuhu() {
-    $.get('{{ route('ruang-perebusan.getDataSuhu', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
+    $.get('{{ route('ruang-blanching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
 
     }, function(data, status) {
       if(data.status == true) {
