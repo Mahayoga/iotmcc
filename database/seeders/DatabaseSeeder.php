@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
         $this->call(GudangSeeder::class);
         $this->call(RuanganSeeder::class);
         $this->call(SensorSeeder::class);
-        NilaiSensorModel::factory(100)->create();
+        NilaiSensorModel::factory(10000)->create();
         $this->call(ModeBlowerSeeder::class);
     }
 }
