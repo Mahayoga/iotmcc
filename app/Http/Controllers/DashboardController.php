@@ -57,31 +57,40 @@ class DashboardController extends Controller
 
             // nilai grafik suhu
             if ($sensorSuhu) {
-                $grafikSuhu[$r->nama_ruangan] = NilaiSensorModel::where('id_sensor', $sensorSuhu->id_sensor)
-                    ->orderBy('created_at', 'asc')
-                    ->take(5)
-                    ->get(['nilai_sensor', 'created_at'])
+                $grafikSuhu[$r->nama_ruangan] = collect(
+                    NilaiSensorModel::where('id_sensor', $sensorSuhu->id_sensor)
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get(['nilai_sensor', 'created_at'])
+                )
+                    ->reverse()
+                    ->values()
                     ->map(function ($row) {
                         return [
                             'nilai' => (float) $row->nilai_sensor,
-                            'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+                            'waktu' => \Carbon\Carbon::parse($row->created_at)->format('H:i'),
                         ];
                     });
             }
 
-            //nilai grafik kelembapan
+            // nilai grafik kelembapan
             if ($sensorKelembapan) {
-                $grafikKelembapan[$r->nama_ruangan] = NilaiSensorModel::where('id_sensor', $sensorKelembapan->id_sensor)
-                    ->orderBy('created_at', 'asc')
-                    ->take(5)
-                    ->get(['nilai_sensor', 'created_at'])
+                $grafikKelembapan[$r->nama_ruangan] = collect(
+                    NilaiSensorModel::where('id_sensor', $sensorKelembapan->id_sensor)
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get(['nilai_sensor', 'created_at'])
+                )
+                    ->reverse()
+                    ->values()
                     ->map(function ($row) {
                         return [
                             'nilai' => (float) $row->nilai_sensor,
-                            'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+                            'waktu' => \Carbon\Carbon::parse($row->created_at)->format('H:i'),
                         ];
                     });
             }
+
         }
 
         // dd($dataRuangan, $grafikSuhu, $grafikKelembapan);
