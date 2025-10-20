@@ -134,7 +134,7 @@
           <div class="collapse" id="collapseRiwayatData">
             <ul class="nav nav-submenu">
               <li class="nav-item p-2">
-                <a class="nav-link" href="./elements.html">
+                <a class="nav-link" href="{{ route('history.index') }}">
                   <i class="bi bi-activity"></i>
                   <span>Histori Data</span>
                 </a>

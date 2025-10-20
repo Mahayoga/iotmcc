@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RuanganPerebusanController;
 use App\Http\Controllers\RuanganFermentasiController;
 use App\Http\Controllers\RuanganPengeringanController;
+use App\Http\Controllers\HistoryController;
 use App\Models\GudangModel;
 use Illuminate\Support\Facades\Route;
 
@@ -27,8 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function() {
             Route::get('/data/sensor/suhu/{id}', [RuanganPengeringanController::class, 'getDataSuhu'])->name('ruang-pengeringan.getDataSuhu');
             Route::get('/data/sensor/blower/{id}', [RuanganPengeringanController::class, 'getDataBlower'])->name('ruang-pengeringan.getDataBlower');
             Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower'])->name('ruang-pengeringan.toggleBlower');
-
         });
+    Route::resource('history', HistoryController::class);
 });
 
 Route::middleware('auth')->group(function () {
