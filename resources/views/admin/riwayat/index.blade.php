@@ -47,7 +47,7 @@
                   </small>
 
                   <div class="d-flex gap-2">
-                    <button type="button" class="btn px-4"
+                    <button type="button" class="btn px-4" id="terapkan"
                       style="background-color:#A9DA2E; color: #fff; border-color: #A9DA2E;">Terapkan</button>
                     <button type="reset" class="btn btn-danger px-4">Reset</button>
                   </div>
@@ -164,6 +164,17 @@
           $('#ruangan').empty();
           $('#ruangan').append('<option value="">-- Pilih Ruang --</option>');
         }
+      });
+
+      $('#terapkan').click(function() {
+        let idRuangan = $('#ruangan').val();
+        $.get('{{ route('riwayat-data.blanching.getDataSensor', ['__ID__']) }}'.replace('__ID__', idRuangan), {
+
+        }, function(data, status) {
+          if(data.status == true) {
+            console.log(data);
+          }
+        });
       });
     });
   </script>
