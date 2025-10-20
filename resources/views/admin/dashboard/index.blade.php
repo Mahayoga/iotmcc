@@ -225,33 +225,43 @@ document.addEventListener('DOMContentLoaded', function () {
     updateRuanganStatus();
 
     function updateRuanganStatus() {
+        console.log('🔄 Memperbarui status ruangan...');
+        
         dataRuangan.forEach((ruangan, index) => {
             const suhu = parseFloat(ruangan.suhu) || 0;
             const kelembapan = parseFloat(ruangan.kelembapan) || 0;
             const namaRuangan = ruangan.nama_ruangan.toLowerCase();
 
+            console.log(`🔍 Ruangan ${index}: ${namaRuangan}`, {
+                suhu: suhu + '°C', 
+                kelembapan: kelembapan + '%'
+            });
+
             let status = 'Perlu Cek';
             let badgeClass = 'bg-warning text-dark';
 
             if (namaRuangan.includes('perebusan') || index === 0) {
-                if (suhu >= 50 && suhu <= 80 && kelembapan >= 60 && kelembapan <= 90) {
+                if (suhu >= 55 && suhu <= 65 && kelembapan >= 70 && kelembapan <= 85) {
                     status = 'Normal';
                     badgeClass = 'bg-success text-white';
                 }
             }
             else if (namaRuangan.includes('fermentasi') || index === 1) {
-                if (suhu >= 25 && suhu <= 35 && kelembapan >= 70 && kelembapan <= 85) {
+                if (suhu >= 28 && suhu <= 32 && kelembapan >= 75 && kelembapan <= 85) {
                     status = 'Normal';
                     badgeClass = 'bg-success text-white';
                 }
             }
             else if (namaRuangan.includes('pengeringan') || index === 2) {
-                if (suhu >= 20 && suhu <= 30 && kelembapan >= 30 && kelembapan <= 50) {
+                if (suhu >= 25 && suhu <= 35 && kelembapan >= 40 && kelembapan <= 100) {
                     status = 'Normal';
                     badgeClass = 'bg-success text-white';
                 }
             }
 
+            console.log(`✅ Status akhir: ${status}`);
+
+            // Update badge
             const badgeElement = document.querySelector(`[data-ruangan="${index}"]`);
             if (badgeElement) {
                 badgeElement.textContent = status;
@@ -260,7 +270,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    setInterval(updateRuanganStatus, 1000);
+    updateRuanganStatus();
+    setInterval(updateRuanganStatus, 10000);
 });
 </script>
 
