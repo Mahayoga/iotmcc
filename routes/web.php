@@ -26,9 +26,9 @@ Route::middleware(['auth', 'verified'])->group(function() {
         });
     Route::resource('ruang-pengeringan', RuanganPengeringanController::class);
         Route::prefix('ruang-pengeringan')->group(function() {
-            Route::get('/data/sensor/suhu/{id}', [RuanganPengeringanController::class, 'getDataSuhu'])->name('ruang-pengeringan.getDataSuhu');
-            Route::get('/data/sensor/blower/{id}', [RuanganPengeringanController::class, 'getDataBlower'])->name('ruang-pengeringan.getDataBlower');
-            Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower'])->name('ruang-pengeringan.toggleBlower');
+            Route::get('/data/sensor/sensor/{id}', [RuanganPengeringanController::class, 'getDataSensor'])->name('ruang-pengeringan.getDataSensor');
+            // Route::get('/data/sensor/blower/{id}', [RuanganPengeringanController::class, 'getDataBlower'])->name('ruang-pengeringan.getDataBlower');
+            // Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower'])->name('ruang-pengeringan.toggleBlower');
         });
     Route::resource('riwayat-data', RiwayatDataController::class);
         Route::prefix('riwayat-data')->group(function() {
