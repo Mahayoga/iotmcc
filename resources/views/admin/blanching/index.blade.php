@@ -57,6 +57,9 @@
 
             <div class="card-body">
               <canvas id="chartSuhu" height="150"></canvas>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah 11 data terakhir</small>
+              </div>
             </div>
           </div>
         </div>

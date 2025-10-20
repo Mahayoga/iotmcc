@@ -121,7 +121,7 @@
           </li>
         @endif
 
-        <li class="nav-item mt-3 mb-1">
+        {{-- <li class="nav-item mt-3 mb-1">
           <small class="text-muted px-3 text-uppercase fw-bold">Kelola Riwayat Data</small>
         </li>
 
@@ -173,7 +173,7 @@
               </ul>
             </div>
           </li>
-        @endif
+        @endif --}}
       </ul>
     </nav>
   </div>
