@@ -104,6 +104,23 @@
             </div>
           </div>
         </div>
+
+        
+        <div class="col-md-12">
+          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">Perbandingan Grafik Suhu dan Kelembaban</h5>
+              <small class="text-muted">Perbandingan Suhu dan Kelembaban di Ruang Pengeringan</small>
+            </div>
+            <div class="card-body" style="height: 400px;">
+              <canvas id="chartSuhuDanKelembaban" style="width:100%; height:90%;"></canvas>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu-dan-kelembaban">-</span> data terakhir</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Blower -->
