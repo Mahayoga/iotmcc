@@ -5,23 +5,6 @@
 @section('content')
   <main class="admin-main">
     <div class="container-fluid p-4 p-lg-5">
-      <!-- Page Header -->
-      <style>
-        .bi-fan-spin {
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      </style>
-
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 class="h3 mb-0">Ruang Pengeringan</h1>
@@ -125,52 +108,135 @@
 
       <!-- Blower -->
       <div class="row mt-4">
-        <!-- Status Blower -->
-        <div class="col-lg-6 mb-4">
+        {{-- <p id="status-proses-blower" class="badge bg-secondary fs-6 px-3 py-2">
+          Dalam pengerjaan ⏳
+        </p> --}}
+        <div class="col-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0 text-center">
-              <h5 class="card-title mb-1 mt-2 fw-semibold">Status Blower</h5>
-              <small class="text-muted">Indikator Operasional Blower</small>
-            </div>
-            <div class="card-body d-flex flex-column justify-content-center align-items-center">
-              <div id="blower-indicator" class="mb-3">
-                <i class="bi bi-fan fs-1 text-secondary" id="blower-icon"></i>
+            <div class="card-header bg-transparent border-0 position-relative text-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2 fw-semibold">Daftar Blower</h5>
+                <small class="text-muted">Indikator Operasional Blower (Total 8 Unit)</small>
               </div>
-              <h4 id="blower-status-text" class="fw-bold text-muted mb-3">Dalam pengerjaan ⏳</h4>
-
-              <!-- Switch -->
-              <div class="form-check form-switch d-flex flex-column align-items-center">
-                <input class="form-check-input mb-2" type="checkbox" id="blower-switch" disabled>
-                <label class="form-check-label text-muted fs-6" for="blower-switch" id="blower-switch-label">
-                </label>
+              <div class="position-absolute bottom-0 end-0 mb-2 me-3"
+                style="border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.25rem 0.5rem; background-color: #f8f9fa;">
+                <div class="form-check form-switch d-flex align-items-center m-0">
+                  <input class="form-check-input" type="checkbox" id="switch-all" style="margin:0;">
+                  <label class="form-check-label small text-muted fw-semibold ms-2 mb-0" for="switch-all">
+                    Switch all
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Durasi Blower Aktif -->
-        <div class="col-lg-6 mb-4">
-          <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0 text-center">
-              <h5 class="card-title mb-1 mt-2 fw-semibold">Durasi Blower Aktif</h5>
-              <small class="text-muted">Total waktu blower aktif hari ini</small>
-            </div>
-            <div class="card-body d-flex flex-column justify-content-center align-items-center">
-              {{-- <h4 id="durasi-blower" class="fw-bold text-success mb-3">Dalam pengerjaan ⏳</h4> --}}
-              <p id="status-proses-blower" class="badge bg-secondary fs-6 px-3 py-2">Dalam pengerjaan ⏳</p>
+            <div class="card-body">
+              <div class="container">
+                @for ($i = 1; $i <= 8; $i++)
+                  <div class="d-flex justify-content-between align-items-center py-3 px-3 mb-2 border rounded-3 shadow-sm"
+                    style="background:#f8f9fa;">
+                    <div class="d-flex align-items-center">
+                      <i id="blower-{{ $i }}" class="bi bi-fan me-3" style="font-size: 1.5rem; color: gray;"></i>
+                      <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
+                    </div>
+
+                    <div class="form-check form-switch d-flex align-items-center">
+                      <input class="form-check-input blower-switch me-2" type="checkbox" id="switch-{{ $i }}"
+                        data-id="{{ $i }}">
+                      <label class="form-check-label fw-semibold text-muted blower-label" for="switch-{{ $i }}"
+                        style="width: 50px; display: inline-block; text-align: center;">Mati</label>
+                    </div>
+                  </div>
+                @endfor
+              </div>
+
+              <!-- Deskripsi -->
+              <div class="mt-4 text-start">
+                <h6 class="fw-bold">Deskripsi</h6>
+                <p class="mb-1">
+                  <span class="badge bg-success"
+                    style="width:15px; height:15px; background-image: linear-gradient(to right, #A9DA2E, #6EA017); border-color: #A9DA2E;">&nbsp;</span>
+                  Blower Menyala
+                </p>
+                <p class="mb-1">
+                  <span class="badge bg-secondary me-2" style="width:15px; height:15px;">&nbsp;</span>
+                  Blower Mati
+                </p>
+                <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower</small>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <style>
+        .form-check-input {
+          width: 3rem;
+          height: 1.5rem;
+          cursor: pointer;
+          transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .form-check-input:checked {
+          background-color: #6EA017 !important;
+          border-color: #6EA017 !important;
+          background-image: linear-gradient(to right, #A9DA2E, #6EA017);
+          transition: background-color 0.3s, border-color 0.3s;
+        }
+      </style>
+
   </main>
 @endsection
 
 @section('script')
   <script>
-  const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
+    const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
     const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
     const ctxSuhuDanKelembaban = document.getElementById('chartSuhuDanKelembaban')?.getContext('2d');
+
+    // Event untuk blower
+    document.querySelectorAll('.blower-switch').forEach((switchEl) => {
+      switchEl.addEventListener('change', function () {
+        const label = this.nextElementSibling;
+        const blowerIcon = document.getElementById('blower-' + this.dataset.id);
+
+        if (this.checked) {
+          label.textContent = 'Hidup';
+          label.style.color = '#6EA017';
+          blowerIcon.style.color = '#6EA017';
+          blowerIcon.classList.add('bi-fan-spin');
+        } else {
+          label.textContent = 'Mati';
+          label.style.color = 'gray';
+          blowerIcon.style.color = 'gray';
+          blowerIcon.classList.remove('bi-fan-spin');
+        }
+      });
+    });
+
+    // Event tombol “Hidupkan Semua”
+    const switchAll = document.getElementById('switch-all');
+    switchAll.addEventListener('change', function () {
+      const allSwitches = document.querySelectorAll('.blower-switch');
+      const turnOn = this.checked;
+      allSwitches.forEach((switchEl) => {
+        if (switchEl.checked !== turnOn) switchEl.click(); 
+      });
+      this.nextElementSibling.textContent = turnOn ? 'switch of' : 'switch on';
+    }); 
+
+    // Animasi kipas
+    const style = document.createElement('style');
+    style.innerHTML = `
+    .bi-fan-spin {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  `;
+    document.head.appendChild(style);
+
 
     let suhuChart = new Chart(ctxSuhu, {
       type: 'line',
@@ -250,22 +316,22 @@
     function getDataSensor() {
       $.get('{{ route('ruang-pengeringan.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
 
-      }, function(data, status) {
-        if(data.status == true) {
+      }, function (data, status) {
+        if (data.status == true) {
           let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
           let classListKelembaban = document.getElementById('status-kelembaban-ruangan').classList;
           $('#suhu-rata-rata')[0].innerHTML = data.dataAvgSuhu[data.dataAvgSuhu.length - 1];
           $('#kelembaban-rata-rata')[0].innerHTML = data.dataAvgKelembaban[data.dataAvgKelembaban.length - 1];
 
-          if(data.dataAvgSuhu > 25 && data.dataAvgSuhu < 30) {
+          if (data.dataAvgSuhu > 25 && data.dataAvgSuhu < 30) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-success');
-          } else if(data.dataAvgSuhu > 30 && data.dataAvgSuhu < 50) {
+          } else if (data.dataAvgSuhu > 30 && data.dataAvgSuhu < 50) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-warning');
-          } else if(data.dataAvgSuhu > 50 && data.dataAvgSuhu < 100) {
+          } else if (data.dataAvgSuhu > 50 && data.dataAvgSuhu < 100) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-danger');
@@ -275,15 +341,15 @@
             classListSuhu.add('text-warning');
           }
 
-          if(data.dataAvgKelembaban > 80) {
+          if (data.dataAvgKelembaban > 80) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Normal';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-success');
-          } else if(data.dataAvgKelembaban > 60) {
+          } else if (data.dataAvgKelembaban > 60) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Peringatan';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-warning');
-          } else if(data.dataAvgKelembaban > 0) {
+          } else if (data.dataAvgKelembaban > 0) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Bahaya';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-danger');

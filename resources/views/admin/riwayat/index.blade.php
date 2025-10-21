@@ -39,7 +39,6 @@
                   <label for="ruangan" class="form-label fw-semibold mt-3">Pilih Ruang</label>
                   <select id="ruangan" name="ruangan" class="form-select w-100">
                     <option value="">-- Pilih Ruang --</option>
-                    <!-- Ruangan akan diisi via AJAX -->
                   </select>
 
                   <small class="text-muted d-block mt-2 mb-3">

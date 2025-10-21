@@ -75,7 +75,9 @@
             <div class="card-body text-center d-flex flex-column justify-content-center">
               <h1 id="timer-display" class="fw-bold display-3 text-danger mb-4">00:00</h1>
               <div class="d-flex justify-content-center gap-3">
-                <button id="start-timer" class="btn btn-success px-4">Mulai</button>
+                <button id="start-timer" class="btn btn-success px-4" style="background-color:#A9DA2E; color: #fff; border-color: #A9DA2E;">
+                  Mulai
+                </button>
                 <button id="stop-timer" class="btn btn-danger px-4">Hentikan</button>
               </div>
             </div>
