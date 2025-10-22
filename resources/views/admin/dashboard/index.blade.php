@@ -270,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+
     updateRuanganStatus();
     setInterval(updateRuanganStatus, 10000);
 });
