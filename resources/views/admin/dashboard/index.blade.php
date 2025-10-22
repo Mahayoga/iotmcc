@@ -77,8 +77,7 @@
                         <h2 class="fw-bold mb-0">{{ $dataRuangan[1]['suhu'] ?? '-' }}°C</h2>
                         <p class="text-dark small mb-2">
                           Kelembapan: <strong>{{ $dataRuangan[1]['kelembapan'] ?? '-' }}%</strong>
-                        </p>
-                        <p class="text-dark small mb-7">                      
+                        </p>                      
                       </p>
                       </div>
                     </div>
