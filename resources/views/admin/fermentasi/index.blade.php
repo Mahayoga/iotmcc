@@ -177,8 +177,10 @@
         datasets: [{
           label: "Suhu (°C)",
           data: [],
-          backgroundColor: '#0f172abf',
-          borderColor: '#C8F76A'
+          backgroundColor: '#C8F76A33',
+          borderColor: '#C8F76A',
+          pointBorderColor: '#0f172abf',
+          fill: true
         }],
         labels: []
       },
@@ -201,8 +203,10 @@
         datasets: [{
           label: "Kelembaban (%)",
           data: [],
-          backgroundColor: '#0f172abf',
-          borderColor: '#C8F76A'
+          backgroundColor: '#C8F76A33',
+          borderColor: '#C8F76A',
+          pointBorderColor: '#0f172abf',
+          fill: true
         }],
         labels: []
       },
@@ -224,13 +228,17 @@
         datasets: [{
           label: "Kelembaban (%)",
           data: [],
-          backgroundColor: '#FFFFFF',
-          borderColor: '#1a91c4'
+          backgroundColor: '#C8F76A33',
+          borderColor: '#C8F76A',
+          pointBorderColor: '#0f172abf',
+          fill: true
         }, {
           label: "Suhu (°C)",
           data: [],
-          backgroundColor: '#FFFFFF',
-          borderColor: '#d44a24'
+          backgroundColor: '#C8F76A33',
+          borderColor: '#C8F76A',
+          pointBorderColor: '#0f172abf',
+          fill: true
         }],
         labels: []
       },
@@ -253,18 +261,44 @@
         if(data.status == true) {
           let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
           let classListKelembaban = document.getElementById('status-kelembaban-ruangan').classList;
-          $('#suhu-rata-rata')[0].innerHTML = data.dataAvgSuhu[data.dataAvgSuhu.length - 1];
-          $('#kelembaban-rata-rata')[0].innerHTML = data.dataAvgKelembaban[data.dataAvgKelembaban.length - 1];
 
-          if(data.dataAvgSuhu > 25 && data.dataAvgSuhu < 30) {
+          let suhuTotal = 0;
+          let totalDataSuhu = 0;
+          let kelTotal = 0;
+          let totalDataKel = 0;
+          data.dataSensor.forEach(element => {
+            if(element.flag_sensor.includes('suhu')) {
+              element.value.forEach(element2 => {
+                suhuTotal += parseFloat(element2);
+                totalDataSuhu += 1;
+              });
+            }
+          });
+
+          data.dataSensor.forEach(element => {
+            if(element.flag_sensor.includes('kelembaban')) {
+              element.value.forEach(element2 => {
+                kelTotal += parseFloat(element2);
+                totalDataKel += 1;
+              });
+            }
+          });
+
+          let rataRataSuhu = (suhuTotal / totalDataSuhu).toFixed(2);
+          let rataRataKel = (kelTotal / totalDataKel).toFixed(2);
+
+          $('#suhu-rata-rata')[0].innerHTML = rataRataSuhu;
+          $('#kelembaban-rata-rata')[0].innerHTML = rataRataKel;
+
+          if(rataRataSuhu > 20 && rataRataSuhu < 30) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-success');
-          } else if(data.dataAvgSuhu > 30 && data.dataAvgSuhu < 50) {
+          } else if(rataRataSuhu > 30 && rataRataSuhu < 50) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-warning');
-          } else if(data.dataAvgSuhu > 50 && data.dataAvgSuhu < 100) {
+          } else if(rataRataSuhu > 50 && rataRataSuhu < 100) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-danger');
@@ -274,15 +308,15 @@
             classListSuhu.add('text-warning');
           }
 
-          if(data.dataAvgKelembaban > 80) {
+          if(rataRataKel > 80) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Normal';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-success');
-          } else if(data.dataAvgKelembaban > 60) {
+          } else if(rataRataKel > 60) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Peringatan';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-warning');
-          } else if(data.dataAvgKelembaban > 0) {
+          } else if(rataRataKel > 0) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Bahaya';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-danger');
@@ -292,19 +326,61 @@
             classListKelembaban.add('text-danger');
           }
 
-          suhuChart.data.labels = data.dataWaktuSuhu[0];
-          suhuChart.data.datasets[0].data = data.dataAvgSuhu;
+          let dataSuhuTemp = [
+            [],
+            []
+          ];
+          let dataResultSuhuTemp = [];
+          data.dataSensor.forEach(element => {
+            if(element.flag_sensor.includes('suhu_1')) {
+              dataSuhuTemp[0].push(element.value);
+            }
 
-          kelembabanChart.data.labels = data.dataWaktuKelembaban[0];
-          kelembabanChart.data.datasets[0].data = data.dataAvgKelembaban;
+            if(element.flag_sensor.includes('suhu_2')) {
+              dataSuhuTemp[1].push(element.value);
+            }
+          });
 
-          suhuDanKelembabanChart.data.labels = data.dataWaktuSuhu[0];
-          suhuDanKelembabanChart.data.datasets[0].data = data.dataAvgKelembaban;
-          suhuDanKelembabanChart.data.datasets[1].data = data.dataAvgSuhu;
+          for(var i = 0; i < dataSuhuTemp[0][0].length; i++) {
+            dataResultSuhuTemp.push((parseInt(dataSuhuTemp[0][0][i]) + parseInt(dataSuhuTemp[1][0][0])) / 2);
+          }
 
-          $('#total-suhu').text(data.dataAvgSuhu.length);
-          $('#total-kelembaban').text(data.dataAvgKelembaban.length);
-          $('#total-suhu-dan-kelembaban').text(data.dataWaktuSuhu[0].length);
+          let dataKelTemp = [
+            [],
+            []
+          ];
+          let dataResultKelTemp = [];
+          data.dataSensor.forEach(element => {
+            if(element.flag_sensor.includes('kelembaban_1')) {
+              dataKelTemp[0].push(element.value);
+            }
+
+            if(element.flag_sensor.includes('kelembaban_2')) {
+              dataKelTemp[1].push(element.value);
+            }
+          });
+
+          for(var i = 0; i < dataKelTemp[0][0].length; i++) {
+            dataResultKelTemp.push((parseInt(dataKelTemp[0][0][i]) + parseInt(dataKelTemp[1][0][i])) / 2);
+            // console.log(dataKelTemp[1][0][i]);
+          }
+
+          // console.log(dataKelTemp);
+          // console.log(dataResultKelTemp);
+
+          suhuChart.data.labels = data.dataWaktuSensor[1].value;
+          suhuChart.data.datasets[0].data = dataResultSuhuTemp;
+
+          kelembabanChart.data.labels = data.dataWaktuSensor[0].value;
+          kelembabanChart.data.datasets[0].data = dataResultKelTemp;
+
+          suhuDanKelembabanChart.data.labels = data.dataWaktuSensor[1].value;
+          suhuDanKelembabanChart.data.datasets[0].data = dataResultSuhuTemp;
+          suhuDanKelembabanChart.data.datasets[1].data = dataResultKelTemp;
+
+          $('#total-suhu').text(dataResultSuhuTemp.length);
+          $('#total-kelembaban').text(dataResultKelTemp.length);
+          $('#total-suhu-dan-kelembaban').text(dataResultSuhuTemp.length);
 
           suhuChart.update();
           kelembabanChart.update();
