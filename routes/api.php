@@ -19,16 +19,16 @@ use App\Http\Controllers\Api\GudangController;
         Route::post('/logout', [AuthController::class, 'logout']);
     });
 
-    Route::prefix('ruangan-perebusan')->group(function () {
+    Route::prefix('api-ruangan-perebusan')->group(function () {
         Route::get('/data/sensor/sensor/{id}', [RuanganBlachingController::class, 'getDataSensor']);
     });
 
-    Route::prefix('ruangan-fermentasi')->group(function () {
+    Route::prefix('api-ruangan-fermentasi')->group(function () {
         Route::get('/data/sensor/sensor/{id}', [RuanganFermentasiController::class, 'getDataSensor']);
     });
 
-    Route::resource('ruang-pengeringan', RuanganPengeringanController::class);
-        Route::prefix('ruang-pengeringan')->group(function() {
+    Route::resource('api-ruang-pengeringan', RuanganPengeringanController::class);
+        Route::prefix('api-ruang-pengeringan')->group(function() {
             Route::get('/data/sensor/suhu/{id}', [RuanganPengeringanController::class, 'getDataSuhu']);
             // Route::get('/data/sensor/blower/{id}', [RuanganPengeringanController::class, 'getDataBlower']);
             // Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower']);
