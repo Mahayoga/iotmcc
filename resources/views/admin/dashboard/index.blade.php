@@ -56,7 +56,31 @@
                 </div>
 
                 {{-- Card Ruang 2 --}}
-                <div class="col-xl-4 col-md-6 d-flex">
+                <div class="col-xl-4 col-md-6">
+                  <div class="gudang-box gudang-1">
+                    <div class="gudang-header d-flex justify-content-between align-items-center">
+                      <div class="d-flex align-items-center">
+                        <div class="gudang-icon bg-white text-success">
+                          <i class="bi bi-sun fs-4"></i>
+                        </div>
+                        <div class="ms-2">
+                          <h6 class="mb-0 fw-bold">{{ $dataRuangan[1]['nama_ruangan'] ?? 'Ruang 1' }}</h6>
+                        </div>
+                      </div>
+                      <span class="badge px-3 py-2 {{ ($dataRuangan[1]['status'] ?? 'Perlu Cek') == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}" data-ruangan="0">
+                        {{ $dataRuangan[1]['status'] ?? 'Perlu Cek' }}
+                      </span>
+                    </div>
+                    <div class="gudang-main mt-3">
+                      <h2 class="fw-bold mb-0">{{ $dataRuangan[1]['suhu'] ?? '-' }}°C</h2>
+                      <p class="text-dark small mb-2">
+                        Kelembapan: <strong>{{ $dataRuangan[1]['kelembapan'] ?? '-' }}%</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {{-- <div class="col-xl-4 col-md-6 d-flex">
                   <div
                     class="gudang-box bg-light border rounded-4 shadow-sm p-3 w-100 d-flex flex-column justify-content-between h-100">
                     <div>
@@ -82,7 +106,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> --}}
 
 
                 {{-- Card Ruang 3 --}}
