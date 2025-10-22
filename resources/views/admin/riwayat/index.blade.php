@@ -8,7 +8,7 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 class="h3 mb-0 fw-semibold">Riwayat Data</h1>
-          <p class="text-muted mb-0">Riwayat Data Ruang Pengeboran Vanili Agrofilia Permata</p>
+          <p class="text-muted mb-0">Riwayat Data Ruang Vanili Agrofilia Permata</p>
         </div>
       </div>
 
@@ -18,7 +18,7 @@
           <div class="card border-0 shadow-sm" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2 fw-semibold">Filter Riwayat Data</h5>
-              <small class="text-muted">Pilih tanggal untuk menampilkan data riwayat 7 hari ke belakang.</small>
+              <small class="text-muted">Pilih tanggal untuk menampilkan data riwayat 1 hari.</small>
             </div>
             <div class="card-body">
               <div class="row gy-3">
@@ -43,7 +43,7 @@
                   </select>
 
                   <small class="text-muted d-block mt-2 mb-3">
-                    Tanggal dan Ruang yang dipilih akan menampilkan data 7 hari ke belakang.
+                    Tanggal dan Ruang yang dipilih akan menampilkan data 1 hari.
                   </small>
 
                   <div class="d-flex gap-2">
