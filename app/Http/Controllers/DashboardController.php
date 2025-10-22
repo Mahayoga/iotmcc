@@ -25,9 +25,9 @@ class DashboardController extends Controller
 
         // nilai card
         foreach ($ruangan as $r) {
-            $sensorSuhuList = $r->getDataSensor->filter(fn($s) => str_starts_with($s->flag_sensor, 'suhu'));
-            $sensorKelembapanList = $r->getDataSensor->filter(fn($s) => str_starts_with($s->flag_sensor, 'kelembaban'));
-            $sensorBlower = $r->getDataSensor->first(fn($s) => str_starts_with($s->flag_sensor, 'blower'));
+            $sensorSuhuList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor, 'suhu'));
+            $sensorKelembapanList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor, 'kelembaban'));
+            $sensorBlower = collect($r->getDataSensor)->first(fn($s) => str_starts_with($s->flag_sensor, 'blower'));
 
             $nilaiSuhu = [];
             foreach ($sensorSuhuList as $sensor) {
