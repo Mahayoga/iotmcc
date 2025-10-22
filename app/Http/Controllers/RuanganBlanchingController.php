@@ -2,61 +2,69 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\GudangModel;
 use App\Models\NilaiSensorModel;
 use App\Models\SensorModel;
-use Illuminate\Http\Request;
 
-class RuanganFermentasiController extends Controller
+
+class RuanganBlanchingController extends Controller
 {
-
-    public function getDataSensor(string $id) {
+     public function getDataSensor(string $id) {
         $dataSensor = [];
         $dataWaktuSensor = [];
         $dataGudang = GudangModel::findOrFail($id);
         $dataRuangan = $dataGudang->getDataRuangan;
         $nilaiSensorTemp = [];
         $waktuSensorTemp = [];
+        // $i = 0;
 
         foreach ($dataRuangan as $value) { 
-            if($value->tipe_ruangan == 2) {
+            if($value->tipe_ruangan == 1) {
                 $statusRuangan = $value->status_ruangan;
                 foreach($value->getDataSensor as $value2) {
-                    if($value2->flag_sensor == 'suhu') {
-                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(15)->get() as $value3) {
-                            $dataSuhu[] = $value3->nilai_sensor;
-                            $dataWaktuSuhu[] = date('G:i:s', $value3->created_at->timestamp);
-                        }
-                    } else if($value2->flag_sensor == 'kelembaban') {
-                        foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(15)->get() as $value3) {
-                            $dataKelembaban[] = $value3->nilai_sensor;
-                            $dataWaktuKelembaban[] = date('G:i:s', $value3->created_at->timestamp);
-                        }
+                    if(str_contains($value2->flag_sensor, 'timer')) {
+                        break;
                     }
+                    foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(11)->get() as $value3) {
+                        $nilaiSensorTemp[] = $value3->nilai_sensor;
+                        $waktuSensorTemp[] = date('G:i:s', $value3->created_at->timestamp);
+                    }
+                    array_push($dataSensor, [
+                        'type' => 'sensor',
+                        'flag_sensor' => $value2->flag_sensor,
+                        'value' => $nilaiSensorTemp,
+                        'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
+                    ]);
+                    array_push($dataWaktuSensor, [
+                        'type' => 'waktu',
+                        'flag_sensor' => $value2->flag_sensor,
+                        'value' => $waktuSensorTemp
+                    ]);
+                    $nilaiSensorTemp = [];
+                    $waktuSensorTemp = [];
+                    // $i++;
                 }
             }
         }
 
         return response()->json([
             'status' => true,
-            'dataSuhu' => $dataSuhu,
-            'dataKelembaban' => $dataKelembaban,
-            'dataWaktuSuhu' => $dataWaktuSuhu,
-            'dataWaktuKelembaban' => $dataWaktuKelembaban,
-            'dataAvgSuhu' => number_format(array_sum($dataSuhu) / count($dataSuhu), 1),
-            'dataAvgKelembaban' => number_format(array_sum($dataKelembaban) / count($dataKelembaban), 1),
-            'statusRuangan' => $statusRuangan,
+            'dataSensor' => $dataSensor,
+            'dataWaktuSensor' => $dataWaktuSensor,
         ]);
 
     }
+
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('admin.fermentasi.index');
+        return view("admin.blanching.index");
     }
+
 
     /**
      * Show the form for creating a new resource.

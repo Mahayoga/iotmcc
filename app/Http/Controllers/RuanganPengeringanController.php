@@ -11,44 +11,49 @@ use App\Models\LogModeBlowerModel;
 
 class RuanganPengeringanController extends Controller
 {
-  public function getDataSuhu(string $id)
-  {
-    $dataSuhu = [];
-    $dataWaktuSuhu = [];
-    $dataKelembaban = [];
-    $dataWaktuKelembaban = [];
-    $statusRuangan = 1;
-    $dataGudang = GudangModel::findOrFail($id);
-    $dataRuangan = $dataGudang->getDataRuangan;
-    foreach ($dataRuangan as $value) {
-      if ($value->tipe_ruangan == 3) {
-        $statusRuangan = $value->status_ruangan;
-        foreach ($value->getDataSensor as $value2) {
-          if ($value2->flag_sensor == 'suhu') {
-            foreach ($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(15)->get() as $value3) {
-              $dataSuhu[] = $value3->nilai_sensor;
-              $dataWaktuSuhu[] = date('G:i:s', $value3->created_at->timestamp);
+  public function getDataSensor(string $id) {
+        $dataSensor = [];
+        $dataWaktuSensor = [];
+        $dataGudang = GudangModel::findOrFail($id);
+        $dataRuangan = $dataGudang->getDataRuangan;
+        $nilaiSensorTemp = [];
+        $waktuSensorTemp = [];
+
+        foreach ($dataRuangan as $value) { 
+            if($value->tipe_ruangan == 3) {
+              $statusRuangan = $value->status_ruangan;
+                foreach($value->getDataSensor as $value2) {
+                  if(!str_contains($value2->flag_sensor,"blower")) {
+                    foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(11)->get() as $value3) {
+                        $nilaiSensorTemp[] = $value3->nilai_sensor;
+                        $waktuSensorTemp[] = date('G:i:s', $value3->created_at->timestamp);
+                    }
+                    array_push($dataSensor, [
+                        'type' => 'sensor',
+                        'flag_sensor' => $value2->flag_sensor,
+                        'value' => $nilaiSensorTemp,
+                        'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
+                    ]);
+                    array_push($dataWaktuSensor, [
+                        'type' => 'waktu',
+                        'flag_sensor' => $value2->flag_sensor,
+                        'value' => $waktuSensorTemp
+                    ]);
+                    $nilaiSensorTemp = [];
+                    $waktuSensorTemp = [];
+                  }
+                }
             }
-          } else if ($value2->flag_sensor == 'kelembaban') {
-            foreach ($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(15)->get() as $value3) {
-              $dataKelembaban[] = $value3->nilai_sensor;
-              $dataWaktuKelembaban[] = date('G:i:s', $value3->created_at->timestamp);
-            }
-          }
         }
-      }
+
+        return response()->json([
+            'status' => true,
+            'dataSensor' => $dataSensor,
+            'dataWaktuSensor' => $dataWaktuSensor,
+        ]);
+
     }
 
-    return response()->json([
-      'status' => true,
-      'dataSuhu' => $dataSuhu,
-      'dataKelembaban' => $dataKelembaban,
-      'dataWaktuSuhu' => $dataWaktuSuhu,
-      'dataWaktuKelembaban' => $dataWaktuKelembaban,
-      'dataAvgSuhu' => number_format(array_sum($dataSuhu) / count($dataSuhu), 1),
-      'dataAvgKelembaban' => number_format(array_sum($dataKelembaban) / count($dataKelembaban), 1),
-    ]);
-  }
 
   public function getDataBlower(string $id)
   {
