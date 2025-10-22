@@ -10,57 +10,50 @@ use App\Models\SensorModel;
 
 class RuanganBlanchingController extends Controller
 {
-     public function getDataSensor(string $id)
-    {
-        $dataSuhu = [];
-        $dataWaktuSuhu = [];        
-        $statusRuangan = 1;  
+     public function getDataSensor(string $id) {
+        $dataSensor = [];
+        $dataWaktuSensor = [];
         $dataGudang = GudangModel::findOrFail($id);
         $dataRuangan = $dataGudang->getDataRuangan;
-        $idSuhuTemp = [];
-        $nilaiSuhuTemp = [];
-        $waktuSuhuTemp = [];
+        $nilaiSensorTemp = [];
+        $waktuSensorTemp = [];
+        // $i = 0;
 
         foreach ($dataRuangan as $value) { 
             if($value->tipe_ruangan == 1) {
                 $statusRuangan = $value->status_ruangan;
                 foreach($value->getDataSensor as $value2) {
-                    if($value2->flag_sensor == 'suhu') {
-                        if(!in_array($value2->id_sensor, $idSuhuTemp)) {
-                            $idSuhuTemp[] = $value2->id_sensor;
-                            foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(11)->get() as $value3) {
-                                $nilaiSuhuTemp[] = $value3->nilai_sensor;
-                                $waktuSuhuTemp[] = date('G:i:s', $value3->created_at->timestamp);
-                            }
-                            array_push($dataSuhu, $nilaiSuhuTemp);
-                            array_push($dataWaktuSuhu, $waktuSuhuTemp);
-                            $nilaiSuhuTemp = [];
-                            $waktuSuhuTemp = [];
-                        }
-                    } 
-    
+                    if(str_contains($value2->flag_sensor, 'timer')) {
+                        break;
+                    }
+                    foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(11)->get() as $value3) {
+                        $nilaiSensorTemp[] = $value3->nilai_sensor;
+                        $waktuSensorTemp[] = date('G:i:s', $value3->created_at->timestamp);
+                    }
+                    array_push($dataSensor, [
+                        'type' => 'sensor',
+                        'flag_sensor' => $value2->flag_sensor,
+                        'value' => $nilaiSensorTemp,
+                        'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
+                    ]);
+                    array_push($dataWaktuSensor, [
+                        'type' => 'waktu',
+                        'flag_sensor' => $value2->flag_sensor,
+                        'value' => $waktuSensorTemp
+                    ]);
+                    $nilaiSensorTemp = [];
+                    $waktuSensorTemp = [];
+                    // $i++;
                 }
             }
         }
 
-        $jumlahBarisSuhu = count($dataSuhu);
-        $jumlahKolomSuhu = count($dataSuhu[0]);
-        $rataRataKolomSuhu = [];
-
-        for ($i = 0; $i < $jumlahKolomSuhu; $i++) {
-            $total = 0;
-            for ($j = 0; $j < $jumlahBarisSuhu; $j++) {
-                $total += $dataSuhu[$j][$i];
-            }
-            $rataRataKolomSuhu[$i] = number_format($total / $jumlahBarisSuhu, 1);
-        }
-
         return response()->json([
             'status' => true,
-            'dataSuhu' => $dataSuhu,
-            'dataWaktuSuhu' => $dataWaktuSuhu,
-            'dataAvgSuhu' => $rataRataKolomSuhu,
+            'dataSensor' => $dataSensor,
+            'dataWaktuSensor' => $dataWaktuSensor,
         ]);
+
     }
 
 
