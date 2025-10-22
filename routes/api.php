@@ -3,9 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\RuanganPerebusanController;
-use App\Http\Controllers\RuanganFermentasiController;
-use App\Http\Controllers\RuanganPengeringanController;
+use App\Http\Controllers\Api\RuanganBlachingController;
+use App\Http\Controllers\Api\RuanganFermentasiController;
+use App\Http\Controllers\Api\RuanganPengeringanController;
 use App\Http\Controllers\Api\GudangController;
 
     Route::post('/login', [AuthController::class, 'login']);
@@ -20,7 +20,7 @@ use App\Http\Controllers\Api\GudangController;
     });
 
     Route::prefix('ruangan-perebusan')->group(function () {
-        Route::get('/data/sensor/suhu/{id}', [RuanganPerebusanController::class, 'getDataSuhu']);
+        Route::get('/data/sensor/sensor/{id}', [RuanganBlachingController::class, 'getDataSensor']);
     });
 
     Route::prefix('ruangan-fermentasi')->group(function () {
@@ -30,8 +30,8 @@ use App\Http\Controllers\Api\GudangController;
     Route::resource('ruang-pengeringan', RuanganPengeringanController::class);
         Route::prefix('ruang-pengeringan')->group(function() {
             Route::get('/data/sensor/suhu/{id}', [RuanganPengeringanController::class, 'getDataSuhu']);
-            Route::get('/data/sensor/blower/{id}', [RuanganPengeringanController::class, 'getDataBlower']);
-            Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower']);
+            // Route::get('/data/sensor/blower/{id}', [RuanganPengeringanController::class, 'getDataBlower']);
+            // Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower']);
         });
 
     Route::prefix('gudang')->group(function () {

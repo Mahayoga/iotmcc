@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\GudangModel;
 use App\Models\NilaiSensorModel;
 use App\Models\SensorModel;
-use Illuminate\Http\Request;
 
-class RuanganFermentasiController extends Controller
+class RuanganBlachingController extends Controller
 {
-
     public function getDataSensor(string $id) {
         $dataSensor = [];
         $dataWaktuSensor = [];
@@ -17,12 +17,17 @@ class RuanganFermentasiController extends Controller
         $dataRuangan = $dataGudang->getDataRuangan;
         $nilaiSensorTemp = [];
         $waktuSensorTemp = [];
+        $statusRuangan = 1;
+        // $i = 0;
 
         foreach ($dataRuangan as $value) { 
-            if($value->tipe_ruangan == 2) {
+            if($value->tipe_ruangan == 1) {
                 $statusRuangan = $value->status_ruangan;
                 foreach($value->getDataSensor as $value2) {
-                    foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(11)->get() as $value3) {
+                    if(str_contains($value2->flag_sensor, 'timer')) {
+                        break;
+                    }
+                    foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(30)->get() as $value3) {
                         $nilaiSensorTemp[] = $value3->nilai_sensor;
                         $waktuSensorTemp[] = date('G:i:s', $value3->created_at->timestamp);
                     }
@@ -39,6 +44,7 @@ class RuanganFermentasiController extends Controller
                     ]);
                     $nilaiSensorTemp = [];
                     $waktuSensorTemp = [];
+                    // $i++;
                 }
             }
         }
@@ -47,63 +53,8 @@ class RuanganFermentasiController extends Controller
             'status' => true,
             'dataSensor' => $dataSensor,
             'dataWaktuSensor' => $dataWaktuSensor,
+            'statusRuangan' => $statusRuangan,
         ]);
 
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('admin.fermentasi.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

@@ -10,7 +10,7 @@ use App\Models\SensorModel;
 
 class RuanganBlanchingController extends Controller
 {
-     public function getDataSensor(string $id) {
+    public function getDataSensor(string $id) {
         $dataSensor = [];
         $dataWaktuSensor = [];
         $dataGudang = GudangModel::findOrFail($id);
