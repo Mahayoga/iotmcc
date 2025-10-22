@@ -51,10 +51,6 @@
                       <p class="text-dark small mb-2">
                         Kelembapan: <strong>{{ $dataRuangan[0]['kelembapan'] ?? '-' }}%</strong>
                       </p>
-                      <p class="text-dark small mb-0">
-                        Timer: <strong id="timer-perebusan" class="text-light bg-secondary 
-                          "> &nbsp;&nbsp; Dalam pengerjaan ⏳ &nbsp;</strong>
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -110,11 +106,6 @@
                       <h2 class="fw-bold mb-0">{{ $dataRuangan[2]['suhu'] ?? '-' }}°C</h2>
                       <p class="text-dark small mb-2">
                         Kelembapan: <strong>{{ $dataRuangan[2]['kelembapan'] ?? '-' }}%</strong>
-                      </p>
-                      <p class="text-dark small mb-0">
-                        Blower:
-                        <strong id="timer-perebusan" class="text-light bg-secondary 
-                          "> &nbsp;&nbsp; Dalam pengerjaan ⏳ &nbsp;</strong>
                       </p>
                     </div>
                   </div>
@@ -271,8 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    updateRuanganStatus();
-    setInterval(updateRuanganStatus, 10000);
+    
 });
 </script>
 
