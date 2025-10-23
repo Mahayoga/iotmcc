@@ -53,8 +53,8 @@
 
 <script>
   function updateJamTanggal() {
-    const jamEl = document.getElementById('jamNavbar');
-    const tanggalEl = document.getElementById('tanggalNavbar');
+    const jamNav = document.getElementById('jamNavbar');
+    const tanggalNav = document.getElementById('tanggalNavbar');
 
     const now = new Date();
     const jam = String(now.getHours()).padStart(2, '0');
@@ -72,8 +72,8 @@
     const bulan = bulanList[now.getMonth()];
     const tahun = now.getFullYear();
 
-    jamEl.textContent = `${jam}:${menit}:${detik}`;
-    tanggalEl.textContent = `${hari}, ${tanggal} ${bulan} ${tahun}`;
+    jamNav.textContent = `${jam}:${menit}:${detik}`;
+    tanggalNav.textContent = `${hari}, ${tanggal} ${bulan} ${tahun}`;
   }
 
   setInterval(updateJamTanggal, 1000);
