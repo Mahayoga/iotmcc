@@ -11,7 +11,7 @@ use App\Models\GudangModel;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('user.index');
+    return redirect()->route('login');
 })->name('user.index');
 
 Route::middleware(['auth', 'verified'])->group(function() {
