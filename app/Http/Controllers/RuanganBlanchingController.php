@@ -2,26 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\GudangModel;
 use App\Models\NilaiSensorModel;
 use App\Models\SensorModel;
-use Illuminate\Http\Request;
 
-class RuanganFermentasiController extends Controller
+
+class RuanganBlanchingController extends Controller
 {
-
-    public function getDataSensor(string $id) {
+     public function getDataSensor(string $id) {
         $dataSensor = [];
         $dataWaktuSensor = [];
         $dataGudang = GudangModel::findOrFail($id);
         $dataRuangan = $dataGudang->getDataRuangan;
         $nilaiSensorTemp = [];
         $waktuSensorTemp = [];
+        // $i = 0;
 
         foreach ($dataRuangan as $value) { 
-            if($value->tipe_ruangan == 2) {
+            if($value->tipe_ruangan == 1) {
                 $statusRuangan = $value->status_ruangan;
                 foreach($value->getDataSensor as $value2) {
+                    if(str_contains($value2->flag_sensor, 'timer')) {
+                        break;
+                    }
                     foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(11)->get() as $value3) {
                         $nilaiSensorTemp[] = $value3->nilai_sensor;
                         $waktuSensorTemp[] = date('G:i:s', $value3->created_at->timestamp);
@@ -39,6 +43,7 @@ class RuanganFermentasiController extends Controller
                     ]);
                     $nilaiSensorTemp = [];
                     $waktuSensorTemp = [];
+                    // $i++;
                 }
             }
         }
@@ -51,13 +56,15 @@ class RuanganFermentasiController extends Controller
 
     }
 
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('admin.fermentasi.index');
+        return view("admin.blanching.index");
     }
+
 
     /**
      * Show the form for creating a new resource.

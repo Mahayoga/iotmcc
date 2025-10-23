@@ -7,7 +7,7 @@
         <img
           src="{{ asset('assets/admin/images/icon-iotmcc.png') }}"
           alt="Logo" height="30" class="d-inline-block align-text-top me-2">
-        <h1 class="h4 mb-0 fw-bold" style="color: #000000">Agrofilia Permata</h1>
+        <h1 class="h4 mb-0 fw-bold" style="color: #000000">Vanili Internet of Things</h1>
       </a>
 
       <!-- Right Side Icons -->

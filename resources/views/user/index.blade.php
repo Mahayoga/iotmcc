@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>IOTMCC</title>
+  <title>VIoT</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -48,7 +48,7 @@
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <img src="{{ asset('assets/user/images/icon-iotmcc.png') }}" alt="IoTMCC Logo" width="35" height="35"
           class="me-2">
-        <h3 class="sitename m-0">IOTMCC</h3><span>.</span>
+        <h3 class="sitename m-0">VIoT</h3><span>.</span>
       </a>
 
       <nav id="navmenu" class="navmenu">
@@ -76,8 +76,8 @@
       <div class="hero-single">
         <img src="{{ ('assets/user/images/background-vanili.jpg') }}" alt="Hero Image">
         <div class="container">
-          <h2>IOTMCC</h2>
-          <p>Internet of Things Multi Climate Control</p>
+          <h2>VIoT</h2>
+          <p>Vanilini Internet of Things</p>
         </div>
       </div>
     </section><!-- /Hero Section -->
@@ -199,7 +199,7 @@
       <div class="row gy-4">
         <div class="col-lg-4 col-md-6 footer-about">
           <a href="" class="logo d-flex align-items-center">
-            <span class="sitename">IOTMCC</span>
+            <span class="sitename">VIoT</span>
           </a>
           <div class="footer-contact pt-3">
             <p>Area Sawah/Kulon, Baratan,</p>
