@@ -35,7 +35,7 @@ use App\Http\Controllers\Api\GudangController;
         });
 
     Route::resource('api-riwayat-data', RiwayatDataController::class);
-        Route::prefix('riwayat-data')->group(function() {
+        Route::prefix('api-riwayat-data')->group(function() {
             Route::get('blanching/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
             Route::get('fermentasi/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
             Route::get('pengeringan/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
