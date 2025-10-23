@@ -12,10 +12,11 @@
 
       <!-- Right Side Icons -->
       <div class="navbar-nav flex-row">
-
-        <div id="jam-digital" class="me-3 fw-semibold text-dark d-none d-md-block mt-3"
-          style="font-size: 16px;">
-          --
+  
+        {{-- Waktu --}}
+        <div class="text-end me-3 d-none d-md-block mt-2" style="line-height: 1.2;">
+          <div id="jamNavbar" class="fw-semibold text-dark" style="font-size: 16px;">------</div>
+          <div id="tanggalNavbar" class="text-secondary small">--</div>
         </div>
 
         <!-- User Menu -->
@@ -51,14 +52,30 @@
 </header>
 
 <script>
-  function updateJam() {
-    const jamEl = document.getElementById('jam-digital');
+  function updateJamTanggal() {
+    const jamEl = document.getElementById('jamNavbar');
+    const tanggalEl = document.getElementById('tanggalNavbar');
+
     const now = new Date();
     const jam = String(now.getHours()).padStart(2, '0');
     const menit = String(now.getMinutes()).padStart(2, '0');
     const detik = String(now.getSeconds()).padStart(2, '0');
+
+    const hariList = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const bulanList = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+
+    const hari = hariList[now.getDay()];
+    const tanggal = now.getDate();
+    const bulan = bulanList[now.getMonth()];
+    const tahun = now.getFullYear();
+
     jamEl.textContent = `${jam}:${menit}:${detik}`;
+    tanggalEl.textContent = `${hari}, ${tanggal} ${bulan} ${tahun}`;
   }
-  setInterval(updateJam, 1000);
-  updateJam();
+
+  setInterval(updateJamTanggal, 1000);
+  updateJamTanggal();
 </script>
