@@ -1,23 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
-use App\Models\RuanganModel;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\GudangModel;
-use App\Models\NilaiSensorModel;
-use App\Models\SensorModel;
-
 
 class RiwayatDataController extends Controller
-{     
-   
-   public function getDataSensor(string $id, string $tgl) {
+{
+    public function getDataSensor(string $id, string $tgl) {
         $dataSensor = [];
         $dataWaktuSensor = [];
         $dataRuangan = RuanganModel::findOrFail($id);
         $nilaiSensorTemp = [];
         $waktuSensorTemp = [];
+        $statusRuangan = 1;
 
         foreach($dataRuangan->getDataSensor as $value2) {
             if(!str_contains($value2->flag_sensor, 'timer') && !str_contains($value2->flag_sensor,'blower')) {
@@ -55,20 +51,13 @@ class RiwayatDataController extends Controller
             'dataSensor' => $dataSensor,
             'dataWaktuSensor' => $dataWaktuSensor,
             'namaRuangan' => $dataRuangan->nama_ruangan,
+            'statusRuangan' => $statusRuangan,
         ]);
    }
 
-
-   public function index() {
-    $gudang = GudangModel::all(); 
-    $ruangan = RuanganModel::all(); 
-    return view('admin.riwayat.index', compact('gudang', 'ruangan'));
-   }
-
-   public function getRuangan($idGudang)
+    public function getRuangan($idGudang)
    {
     $ruangan = RuanganModel::where('id_gudang', $idGudang)->get();
     return response()->json($ruangan);
    }
-   
 }
