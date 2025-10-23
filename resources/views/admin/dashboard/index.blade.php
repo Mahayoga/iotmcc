@@ -48,8 +48,8 @@
                     </div>
                     <div class="gudang-main mt-3">
                       <h2 class="fw-bold mb-0">{{ $dataRuangan[0]['suhu'] ?? '-' }}°C</h2>
-                      <p class="text-dark small mb-2">
-                        Kelembapan: <strong>{{ $dataRuangan[0]['kelembapan'] ?? '-' }}%</strong>
+                      <p class="text-dark small mb-7">
+                        {{-- Kelembapan: <strong>{{ $dataRuangan[0]['kelembapan'] ?? '-' }}%</strong> --}}
                       </p>
                     </div>
                   </div>
