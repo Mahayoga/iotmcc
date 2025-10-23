@@ -28,7 +28,7 @@ use App\Http\Controllers\Api\GudangController;
     });
 
     Route::resource('api-ruangan-pengeringan', RuanganPengeringanController::class);
-        Route::prefix('ruangan-pengeringan')->group(function() {
+        Route::prefix('api-ruangan-pengeringan')->group(function() {
             Route::get('data/sensor/sensor/{id}', [RuanganPengeringanController::class, 'getDataSensor']);
             // Route::get('/data/sensor/blower/{id}', [RuanganPengeringanController::class, 'getDataBlower']);
             // Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower']);
