@@ -110,16 +110,17 @@
                 let wrapper = document.createElement('div');
                 wrapper.classList.add('col-xl-8', 'col-lg-7');
                 wrapper.innerHTML += `
-                  <!-- Chart Suhu -->
+                  <!-- Chart ${element.flag_sensor.split('_')[0].charAt(0).toUpperCase() + element.flag_sensor.split('_')[0].slice(1)} -->
                   <div class="card border-0 shadow-sm" style="border-radius: 18px;">
                     <div class="card-body">
+                      <div class="mb-3">
+                        <h6 class="fw-semibold mb-1">Grafik ${element.flag_sensor.split('_')[0].charAt(0).toUpperCase() + element.flag_sensor.split('_')[0].slice(1)} ${element.flag_sensor.split('_')[1]} ${data.namaRuangan}</h6>
+                        <p class="text-muted mb-0 small">Total ${element.flag_sensor.split('_')[0].charAt(0).toUpperCase() + element.flag_sensor.split('_')[0].slice(1)} Ruang per hari yang dipilih</p>
+                      </div>
                       <canvas id="${element.type}-${element.flag_sensor}" height="130"></canvas>
-                      <div class="mt-3">
-                        <h6 class="fw-semibold mb-1">Grafik Suhu ${data.namaRuangan}</h6>
-                        <p class="text-muted mb-0 small">Total Suhu Ruang per Minggu</p>
+                      <div class="mt-3 text-muted">
                         <hr class="dark-horizontal">
-                        <i class="bi bi-info-circle"> Data ini diambil dari range tanggal yang dipilih (ditampilkan per
-                          minggu)</i>
+                        <i class="bi bi-info-circle"> Data ini diambil dari tanggal yang dipilih (per hari)</i>
                       </div>
                     </div>
                   </div>
@@ -128,22 +129,13 @@
                 let wrapper2 = document.createElement('div');
                 wrapper2.classList.add('col-xl-4', 'col-lg-5');
                 wrapper2.innerHTML += `
-                  <!-- Suhu Ruangan -->
+                  <!-- ${element.flag_sensor.split('_')[0].charAt(0).toUpperCase() + element.flag_sensor.split('_')[0].slice(1)} Ruangan -->
                   <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
                     <div class="card-body">
-                      <h6 class="fw-semibold mb-1">Suhu ${data.namaRuangan}</h6>
-                      <p class="text-muted small mb-3">Rata-rata suhu di ruang yang dipilih</p>
+                      <h6 class="fw-semibold mb-1">${element.flag_sensor.split('_')[0].charAt(0).toUpperCase() + element.flag_sensor.split('_')[0].slice(1)} ${data.namaRuangan}</h6>
+                      <p class="text-muted small mb-3">Laporan ${element.flag_sensor.split('_')[0]} di ruang yang dipilih</p>
                       <hr class="dark-horizontal">
-                      <div class="d-flex justify-content-between">
-                        <div>
-                          <p class="mb-1 fw-semibold">Rata-rata</p>
-                          <p class="text-muted">Suhu Maksimum</p>
-                        </div>
-                        <div class="text-end">
-                          <p class="mb-1 fw-semibold text-success" id="avg-${element.type}-${element.flag_sensor}">-</p>
-                          <p class="text-muted" id="max-${element.type}-${element.flag_sensor}">-</p>
-                        </div>
-                      </div>
+                      <div class="row" id="report-${element.type}-${element.flag_sensor}"></div>
                     </div>
                   </div>
                 `;
@@ -151,12 +143,56 @@
                 chartContainer.appendChild(wrapper);
                 chartContainer.appendChild(wrapper2);
 
+                let arrDataLabel = element.value;
+                let arrTimeLabel = element.time_label;
+                let arrDataLabelChunks = [];
+                let arrTimeLabelChunks = [];
+                let chunkSize = 50;
+                for (let i = 0; i < arrDataLabel.length; i += chunkSize) {
+                  const chunk = arrDataLabel.slice(i, i + chunkSize);
+                  arrDataLabelChunks.push(chunk);
+                }
+                for (let i = 0; i < arrTimeLabel.length; i += chunkSize) {
+                  const chunk = arrTimeLabel.slice(i, i + chunkSize);
+                  arrTimeLabelChunks.push(chunk);
+                }
+
+                // console.log(arrDataLabelChunks, arrTimeLabelChunks);
+                let avgChunks = document.getElementById(`report-${element.type}-${element.flag_sensor}`);
+                let i = 0;
+                avgChunks.innerHTML = '';
+                arrDataLabelChunks.forEach(element2 => {
+                  const tempInt = element2.map(Number);
+                  avgChunks.innerHTML += `
+                    <div class="col-md-10">
+                      <span>
+                        Rata rata data diambil pada jam (${arrTimeLabelChunks[i][0]} - ${arrTimeLabelChunks[i][arrTimeLabelChunks[i].length - 1]}): 
+                      </span>
+                    </div>
+                    <div class="col-md-2">
+                      <span>
+                         ${(tempInt.reduce((accumulator, currentValue) => accumulator + currentValue, 0) / tempInt.length).toString().slice(0, 4)}
+                      </span>
+                    </div>
+                  `;
+                  i++;
+                });
+                
+
+                let labelText = '';
+
+                if(element.flag_sensor.includes('suhu')) {
+                  labelText = 'Suhu (°C)';
+                } else if(element.flag_sensor.includes('kelembaban')) {
+                  labelText = 'Kelembaban (%)';
+                }
+
                 arrChart.push(
                   new Chart(document.getElementById(`${element.type}-${element.flag_sensor}`)?.getContext('2d'), {
                     type: 'line',
                     data: {
                       datasets: [{
-                        label: "Coba (%)",
+                        label: labelText,
                         data: element.value,
                         backgroundColor: '#C8F76A33',
                         borderColor: '#C8F76A',
@@ -168,7 +204,7 @@
                     options: {
                       responsive: true,
                       scales: {
-                        y: { title: { display: true, text: 'Data Coba', color: '#888' }, beginAtZero: true },
+                        y: { title: { display: true, text: 'Data ' + element.flag_sensor.split('_')[0].charAt(0).toUpperCase() + element.flag_sensor.split('_')[0].slice(1), color: '#888' }, beginAtZero: true },
                         x: { title: { display: true, text: 'Waktu', color: '#888' } }
                       },
                       animation: {
