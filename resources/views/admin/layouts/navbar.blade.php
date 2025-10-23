@@ -13,6 +13,11 @@
       <!-- Right Side Icons -->
       <div class="navbar-nav flex-row">
 
+        <div id="jam-digital" class="me-3 fw-semibold text-dark d-none d-md-block mt-3"
+          style="font-size: 16px;">
+          --
+        </div>
+
         <!-- User Menu -->
         <div class="dropdown">
           <button class="btn btn-outline-secondary d-flex align-items-center" type="button" data-bs-toggle="dropdown"
@@ -24,7 +29,7 @@
             <i class="bi bi-chevron-down ms-1"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+            {{-- <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li> --}}
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -44,3 +49,16 @@
     </div>
   </nav>
 </header>
+
+<script>
+  function updateJam() {
+    const jamEl = document.getElementById('jam-digital');
+    const now = new Date();
+    const jam = String(now.getHours()).padStart(2, '0');
+    const menit = String(now.getMinutes()).padStart(2, '0');
+    const detik = String(now.getSeconds()).padStart(2, '0');
+    jamEl.textContent = `${jam}:${menit}:${detik}`;
+  }
+  setInterval(updateJam, 1000);
+  updateJam();
+</script>

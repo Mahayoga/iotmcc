@@ -55,7 +55,6 @@ class RiwayatDataController extends Controller
             'dataSensor' => $dataSensor,
             'dataWaktuSensor' => $dataWaktuSensor,
             'namaRuangan' => $dataRuangan->nama_ruangan,
-
         ]);
    }
 

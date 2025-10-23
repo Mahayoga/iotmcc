@@ -20,20 +20,28 @@ use App\Http\Controllers\Api\GudangController;
     });
 
     Route::prefix('ruangan-perebusan')->group(function () {
-        Route::get('/data/sensor/sensor/{id}', [RuanganBlachingController::class, 'getDataSensor']);
+        Route::get('api/data/sensor/sensor/{id}', [RuanganBlachingController::class, 'getDataSensor']);
     });
 
     Route::prefix('ruangan-fermentasi')->group(function () {
-        Route::get('/data/sensor/sensor/{id}', [RuanganFermentasiController::class, 'getDataSensor']);
+        Route::get('api/data/sensor/sensor/{id}', [RuanganFermentasiController::class, 'getDataSensor']);
     });
 
-    Route::resource('ruang-pengeringan', RuanganPengeringanController::class);
-        Route::prefix('ruang-pengeringan')->group(function() {
-            Route::get('/data/sensor/suhu/{id}', [RuanganPengeringanController::class, 'getDataSuhu']);
+    Route::resource('ruangan-pengeringan', RuanganPengeringanController::class);
+        Route::prefix('ruangan-pengeringan')->group(function() {
+            Route::get('api/data/sensor/sensor/{id}', [RuanganPengeringanController::class, 'getDataSensor']);
             // Route::get('/data/sensor/blower/{id}', [RuanganPengeringanController::class, 'getDataBlower']);
             // Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower']);
         });
 
+    Route::resource('riwayat-data', RiwayatDataController::class);
+        Route::prefix('riwayat-data')->group(function() {
+            Route::get('api/blanching/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
+            Route::get('api/fermentasi/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
+            Route::get('api/pengeringan/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
+             Route::get('api/get-ruangan/{id}', [RiwayatDataController::class, 'getRuangan']);
+        });
+    
     Route::prefix('gudang')->group(function () {
         Route::get('/', [GudangController::class, 'index']);
         Route::get('/active', [GudangController::class, 'getActiveGudang']);
