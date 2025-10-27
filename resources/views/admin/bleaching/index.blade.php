@@ -52,13 +52,13 @@
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
-              <small class="text-muted">Perubahan suhu dalam 11 pembacaan terakhir</small>
+              <small class="text-muted">Perubahan suhu dalam 24 jam terakhir</small>
             </div>
 
             <div class="card-body">
               <canvas id="chartSuhu" height="150"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah 11 data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah 24 jam terakhir</small>
               </div>
             </div>
           </div>
@@ -214,7 +214,7 @@
           let rataRataSuhu = parseFloat(data.rataRataSuhu_7_10);
           $('#suhu-rata-rata').text(rataRataSuhu.toFixed(2));
           $('.card-header small:contains("Pantauan kondisi suhu alat bleaching")')
-              .text("Rata-rata jam 07:00 - 10:00 (26-10-2025)");
+              .text("Rata-rata suhu jam 07:00 - 10:00");
 
           classListSuhu.remove('text-success', 'text-warning', 'text-danger', 'text-info');
           if(rataRataSuhu >= 85 && rataRataSuhu <= 95) {
