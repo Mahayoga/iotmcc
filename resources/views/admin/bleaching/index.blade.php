@@ -197,7 +197,7 @@
       options: {
         responsive: true,
         scales: {
-          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: false }, // Ubah beginAtZero ke false agar lebih jelas jika suhu tidak mulai dari 0
+          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: false }, 
           x: { title: { display: true, text: 'Waktu (pada 2025-10-26)', color: '#888' } }
         },
         animation: {
@@ -207,52 +207,42 @@
     });
 
    function getDataSensor() {
-    $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function(data, status) {
-      if (data.status === true) {
-        let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
-        let suhuTotal = 0;
-        let totalDataSuhu = 0;
-        data.dataSensor.forEach(sensor => {
-          if (sensor.flag_sensor.includes('suhu')) {
-            sensor.value.forEach(v => {
-              suhuTotal += parseFloat(v);
-              totalDataSuhu++;
-            });
-          }
-        });
+      $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function(data, status) {
+        if (data.status === true) {
+          
+          let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
+          let rataRataSuhu = parseFloat(data.rataRataSuhu_7_10);
+          $('#suhu-rata-rata').text(rataRataSuhu.toFixed(2));
+          $('.card-header small:contains("Pantauan kondisi suhu alat bleaching")')
+              .text("Rata-rata jam 07:00 - 10:00 (26-10-2025)");
 
-        let rataRataSuhu = (suhuTotal / totalDataSuhu).toFixed(2);
-        $('#suhu-rata-rata').text(rataRataSuhu);
+          classListSuhu.remove('text-success', 'text-warning', 'text-danger', 'text-info');
+          if(rataRataSuhu >= 85 && rataRataSuhu <= 95) {
+              $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
+              classListSuhu.add('text-success');
 
-        if(rataRataSuhu > 20 && rataRataSuhu < 30) {
-            $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
-            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-            classListSuhu.add('text-success');
-          } else if(rataRataSuhu > 30 && rataRataSuhu < 50) {
-            $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-            classListSuhu.add('text-warning');
-          } else if(rataRataSuhu > 50 && rataRataSuhu < 100) {
-            $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
-            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-            classListSuhu.add('text-danger');
+          } else if (rataRataSuhu > 100) {
+              $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
+              classListSuhu.add('text-danger');
           } else {
-            $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-            classListSuhu.add('text-warning');
+              $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
+              classListSuhu.add('text-warning');
           }
 
-        let suhuData = data.dataSensor.find(e => e.flag_sensor === 'suhu_1');
-        let waktuData = data.dataWaktuSensor.find(e => e.flag_sensor === 'suhu_1');
-
-        if (suhuData && waktuData) {
-          suhuChart.data.labels = waktuData.value.reverse();
-          suhuChart.data.datasets[0].data = suhuData.value.reverse().map(v => parseFloat(v));
-          suhuChart.update();
+          if (data.graphSuhu && data.graphWaktu) {
+            suhuChart.data.labels = data.graphWaktu; 
+            suhuChart.data.datasets[0].data = data.graphSuhu.map(v => parseFloat(v));
+            suhuChart.update();
+          }
+          
+          $('.card-header small:contains("24 jam terakhir")')
+              .text("Perubahan suhu pada 26-10-2025");
+          $('.card-body small:contains("*data yang ditampilkan adalah data 24 jam terakhir")')
+              .text("*Data yang ditampilkan adalah semua data dari 26-10-2025");
         }
-      }
-    });
-  }
-  setInterval(getDataSensor, 1000);
+      });
+    }
+    getDataSensor();
+    setInterval(getDataSensor, 60000); 
   </script>
 @endsection
