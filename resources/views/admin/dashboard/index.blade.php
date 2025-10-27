@@ -36,9 +36,9 @@
                                                 <h6 class="mb-0 fw-bold">{{ $dataRuangan[1]['nama_ruangan'] }}</h6>
                                             </div>
                                         </div>
-                                        <span class="badge px-3 py-2 {{ $dataRuangan[1]['status'] == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
+                                        {{-- <span class="badge px-3 py-2 {{ $dataRuangan[1]['status'] == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
                                             {{ $dataRuangan[1]['status'] }}
-                                        </span>
+                                        </span> --}}
                                     </div>
                                     <div class="gudang-main mt-3">
                                         @if($dataRuangan[1]['suhu_bleaching'])
@@ -71,9 +71,9 @@
                                                 <h6 class="mb-0 fw-bold">{{ $dataRuangan[2]['nama_ruangan'] }}</h6>
                                             </div>
                                         </div>
-                                        <span class="badge px-3 py-2 {{ $dataRuangan[2]['status'] == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
+                                        {{-- <span class="badge px-3 py-2 {{ $dataRuangan[2]['status'] == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
                                             {{ $dataRuangan[2]['status'] }}
-                                        </span>
+                                        </span> --}}
                                     </div>
                                     <div class="gudang-main mt-3">
                                         <h2 class="fw-bold mb-0">{{ $dataRuangan[2]['suhu'] }}°C</h2>
@@ -96,9 +96,9 @@
                                                 <h6 class="mb-0 fw-bold">{{ $dataRuangan[3]['nama_ruangan'] }}</h6>
                                             </div>
                                         </div>
-                                        <span class="badge px-3 py-2 {{ $dataRuangan[3]['status'] == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
+                                        {{-- <span class="badge px-3 py-2 {{ $dataRuangan[3]['status'] == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
                                             {{ $dataRuangan[3]['status'] }}
-                                        </span>
+                                        </span> --}}
                                     </div>
                                     <div class="gudang-main mt-3">
                                         <h2 class="fw-bold mb-0">{{ $dataRuangan[3]['suhu'] }}°C</h2>
