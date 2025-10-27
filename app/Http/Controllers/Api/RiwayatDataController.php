@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Models\RuanganModel;
 use Illuminate\Http\Request;
 
 class RiwayatDataController extends Controller

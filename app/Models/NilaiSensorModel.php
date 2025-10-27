@@ -18,8 +18,10 @@ class NilaiSensorModel extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id_nilai_sensor',
         'id_sensor',
+        'nilai_sensor',
+        'rssi',
+        'snr'
     ];
 
     protected $casts = [
