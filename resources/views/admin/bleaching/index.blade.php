@@ -1,14 +1,14 @@
 @extends('admin.layouts.main')
 
-@section('title', 'Ruang Blanching')
+@section('title', 'Alat Bleaching')
 
 @section('content')
   <main class="admin-main">
     <div class="container-fluid p-4 p-lg-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h1 class="h3 mb-0">Ruang Blanching</h1>
-          <p class="text-muted mb-0">Rekap Ruang Blanching Vanili Agrofilia Permata</p>
+          <h1 class="h3 mb-0">Alat Bleaching</h1>
+          <p class="text-muted mb-0">Rekap Alat Bleaching Vanili</p>
         </div>
       </div>
 
@@ -17,7 +17,7 @@
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Suhu Rata-Rata</h5>
-              <small class="text-muted">Pantauan kondisi suhu ruang Blanching</small>
+              <small class="text-muted">Pantauan kondisi suhu alat bleaching</small>
             </div>
 
             <div class="card-body">
@@ -51,8 +51,8 @@
         <div class="col-xl-6 col-lg-6 col-md-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruang Blanching</h5>
-              <small class="text-muted">Perubahan suhu dalam 30 pembacaan terakhir</small>
+              <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
+              <small class="text-muted">Perubahan suhu dalam 11 pembacaan terakhir</small>
             </div>
 
             <div class="card-body">
@@ -65,13 +65,13 @@
         </div>
       </div>
 
-      <div class="row g-4 mb-4">
-  <!-- Timer Blanching -->
+  <div class="row g-4 mb-4">
+  <!-- Timer Bleaching -->
   <div class="col-xl-6 col-lg-6 col-md-12">
     <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
       <div class="card-header bg-transparent border-0">
-        <h5 class="card-title mb-1 mt-2">Timer Blanching</h5>
-        <small class="text-muted">Hitung mundur proses Blanching</small>
+        <h5 class="card-title mb-1 mt-2">Timer Bleaching</h5>
+        <small class="text-muted">Hitung mundur proses Bleaching</small>
       </div>
 
       <div class="card-body text-center d-flex flex-column justify-content-center">
@@ -88,7 +88,7 @@
     <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
       <div class="card-header bg-transparent border-0">
         <h5 class="card-title mb-1 mt-2">Informasi Proses</h5>
-        <small class="text-muted">Detail waktu dan status proses Blanching</small>
+        <small class="text-muted">Detail waktu dan status proses Bleaching</small>
       </div>
 
       <div class="card-body d-flex flex-column justify-content-center">
@@ -99,7 +99,7 @@
             <p><b>Status:</b> <span id="status-proses" class="badge bg-secondary">Menunggu</span></p>
           </div>
           <div class="col-md-6">
-            <label for="durasi-input" class="form-label mb-1 fw-bold">Durasi Blanching (menit)</label>
+            <label for="durasi-input" class="form-label mb-1 fw-bold">Durasi Bleaching (menit)</label>
             <div class="input-group">
               <input type="number" id="durasi-input" class="form-control" placeholder="Masukkan durasi">
               <button id="set-durasi" class="btn btn-primary">Atur</button>
@@ -179,36 +179,35 @@
     timerDisplay.textContent = `${m}:${s}`;
   }
 
-    const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
+  const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
 
-  let suhuChart = new Chart(ctxSuhu, {
-    type: 'line',
-    data: {
-      datasets: [{
-        label: "Suhu (°C)",
-        data: [],
-        backgroundColor: '#C8F76A33',
-        borderColor: '#C8F76A',
-        pointBorderColor: '#0f172abf',
-        fill: true
-      }],
-      labels: []
-    },
-
-    options: {
-      responsive: true,
-      scales: {
-        y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
-        x: { title: { display: true, text: 'Waktu', color: '#888' } }
+    let suhuChart = new Chart(ctxSuhu, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: "Suhu (°C)",
+          data: [],
+          backgroundColor: '#C8F76A33',
+          borderColor: '#C8F76A',
+          pointBorderColor: '#0f172abf',
+          fill: true
+        }],
+        labels: []
       },
-      animation: {
-        duration: 800,
+      options: {
+        responsive: true,
+        scales: {
+          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: false }, // Ubah beginAtZero ke false agar lebih jelas jika suhu tidak mulai dari 0
+          x: { title: { display: true, text: 'Waktu (pada 2025-10-26)', color: '#888' } }
+        },
+        animation: {
+          duration: 800,
+        }
       }
-    }
-  });
+    });
 
    function getDataSensor() {
-    $.get('{{ route('ruang-blanching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function(data, status) {
+    $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function(data, status) {
       if (data.status === true) {
         let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
         let suhuTotal = 0;

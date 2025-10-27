@@ -8,7 +8,7 @@ use App\Models\NilaiSensorModel;
 use App\Models\SensorModel;
 
 
-class RuanganBlanchingController extends Controller
+class AlatBleachingController extends Controller
 {
     public function getDataSensor(string $id) {
         $dataSensor = [];
@@ -62,7 +62,7 @@ class RuanganBlanchingController extends Controller
      */
     public function index()
     {
-        return view("admin.blanching.index");
+        return view("admin.bleaching.index");
     }
 
 
