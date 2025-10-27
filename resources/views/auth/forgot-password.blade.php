@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,28 +9,36 @@
   <title>Lupa Password - IoTMCC</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('assets/user/css/login-style.css') }}">
-  <link rel="stylesheet" href="{{ asset( 'assets/user/css/forgot-password-style.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/user/css/forgot-password-style.css') }}">
 </head>
 
 <body>
   <div class="container-fluid manual-container-fluid">
     <div class="row justify-content-center align-items-center h-75">
       <div class="col-md-4 forgot-box text-center">
-         <div class="col-md-12 text-center fs-4 fw-bold">
-            Selamat Datang !
-          </div>
+        <div class="col-md-12 text-center fs-4 fw-bold">
+          Selamat Datang !
+        </div>
 
         <script src="https://cdn.lordicon.com/lordicon.js"></script>
-        <lord-icon
-          src="https://cdn.lordicon.com/rhvddzym.json"
-          trigger="loop"
-          colors="primary:#0ab39c"
+        <lord-icon src="https://cdn.lordicon.com/rhvddzym.json" trigger="loop" colors="primary:#0ab39c"
           style="width:80px;height:80px;margin-bottom:1rem;">
         </lord-icon>
 
         <div class="alert alert-warning text-center py-2 mb-3">
           Masukkan email yang terdaftar untuk menerima tautan reset kata sandi.
         </div>
+        @if (session('status'))
+          <div class="alert alert-success text-center py-2 mb-3">
+            {{ session('status') }}
+          </div>
+        @endif
+
+        @if ($errors->any())
+          <div class="alert alert-danger text-center py-2 mb-3">
+            {{ $errors->first('email') }}
+          </div>
+        @endif
 
         <form method="POST" action="{{ route('password.email') }}">
           @csrf
@@ -37,8 +46,11 @@
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" name="email" placeholder="Masukkan Email" required autofocus>
           </div>
-          <button type="button" class="btn btn-success w-100" onclick="handleLogin()">Kirim Link Reset Password</button>
+          <button type="submit" class="btn btn-success w-100">
+            Kirim Link Reset Password
+          </button>
         </form>
+
 
         <a href="{{ route('login') }}" class="back-link">← Kembali ke Login</a>
       </div>
@@ -64,11 +76,12 @@
         </svg>
       </div>
     `;
-    particlesJS.load('particles-js', '{{ asset('assets/user/js/particles.json') }}', function() {
+    particlesJS.load('particles-js', '{{ asset('assets/user/js/particles.json') }}', function () {
       document.getElementsByClassName('particles-js-canvas-el')[0].setAttribute('height', window.innerHeight / 2.5);
       document.getElementById('particles-js').style.position = 'absolute';
       document.getElementById('particles-js').style.zIndex = -1;
     });
   </script>
 </body>
+
 </html>
