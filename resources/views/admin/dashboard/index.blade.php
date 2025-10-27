@@ -33,23 +33,23 @@
                                                 <i class="bi bi-fire fs-4"></i>
                                             </div>
                                             <div class="ms-2">
-                                                <h6 class="mb-0 fw-bold">{{ $dataRuangan[0]['nama_ruangan'] ?? 'Bleaching' }}</h6>
+                                                <h6 class="mb-0 fw-bold">{{ $dataRuangan[1]['nama_ruangan'] }}</h6>
                                             </div>
                                         </div>
-                                        {{-- <span class="badge px-3 py-2 {{ ($dataRuangan[0]['status'] ?? 'Perlu Cek') == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}" data-ruangan="0">
-                                            {{ $dataRuangan[0]['status'] ?? 'Perlu Cek' }}
-                                        </span> --}}
+                                        <span class="badge px-3 py-2 {{ $dataRuangan[1]['status'] == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
+                                            {{ $dataRuangan[1]['status'] }}
+                                        </span>
                                     </div>
                                     <div class="gudang-main mt-3">
-                                        @if($dataRuangan[0]['suhu_bleaching'])
-                                            <h2 class="fw-bold mb-0">{{ $dataRuangan[0]['suhu_bleaching'] }}°C</h2>
+                                        @if($dataRuangan[1]['suhu_bleaching'])
+                                            <h2 class="fw-bold mb-0">{{ $dataRuangan[1]['suhu_bleaching'] }}°C</h2>
                                             <p class="text-dark small mb-2">
-                                                <strong>Suhu Terakhir Alat Bleaching (07:00 - 10:00)</strong>
+                                                <strong>Suhu Terakhir (07:00 - 10:00)</strong>
                                             </p>
                                         @else
                                             <h2 class="fw-bold mb-0 text-muted">-</h2>
                                             <p class="text-dark small mb-2">
-                                                <strong>Suhu Terakhir Alat Bleaching (07:00 - 10:00)</strong>
+                                                <strong>Suhu Terakhir (07:00 - 10:00)</strong>
                                             </p>
                                             <p class="text-muted small mb-0">
                                                 <i>Belum ada data hari ini</i>
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
 
-                            {{-- Card Fermentasi --}}
+                            {{-- Card Fermentasi  --}}
                             <div class="col-xl-4 col-md-6">
                                 <div class="gudang-box gudang-2">
                                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -68,23 +68,23 @@
                                                 <i class="bi bi-sun fs-4"></i>
                                             </div>
                                             <div class="ms-2">
-                                                <h6 class="mb-0 fw-bold">{{ $dataRuangan[1]['nama_ruangan'] ?? 'Fermentasi' }}</h6>
+                                                <h6 class="mb-0 fw-bold">{{ $dataRuangan[2]['nama_ruangan'] }}</h6>
                                             </div>
                                         </div>
-                                        {{-- <span class="badge px-3 py-2 {{ ($dataRuangan[1]['status'] ?? 'Perlu Cek') == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}" data-ruangan="1">
-                                            {{ $dataRuangan[1]['status'] ?? 'Perlu Cek' }}
-                                        </span> --}}
+                                        <span class="badge px-3 py-2 {{ $dataRuangan[2]['status'] == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
+                                            {{ $dataRuangan[2]['status'] }}
+                                        </span>
                                     </div>
                                     <div class="gudang-main mt-3">
-                                        <h2 class="fw-bold mb-0">{{ $dataRuangan[1]['suhu'] ?? '-' }}°C</h2>
+                                        <h2 class="fw-bold mb-0">{{ $dataRuangan[2]['suhu'] }}°C</h2>
                                         <p class="text-dark small mb-2">
-                                            Kelembapan: <strong>{{ $dataRuangan[1]['kelembapan'] ?? '-' }}%</strong>
+                                            Kelembapan: <strong>{{ $dataRuangan[2]['kelembapan'] }}%</strong>
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Card Pengeringan --}}
+                            {{-- Card Pengeringan  --}}
                             <div class="col-xl-4 col-md-6">
                                 <div class="gudang-box gudang-3">
                                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -93,17 +93,17 @@
                                                 <i class="bi bi-fan fs-4"></i>
                                             </div>
                                             <div class="ms-2">
-                                                <h6 class="mb-0 fw-bold">{{ $dataRuangan[2]['nama_ruangan'] ?? 'Pengeringan' }}</h6>
+                                                <h6 class="mb-0 fw-bold">{{ $dataRuangan[3]['nama_ruangan'] }}</h6>
                                             </div>
                                         </div>
-                                        {{-- <span class="badge px-3 py-2 {{ ($dataRuangan[2]['status'] ?? 'Perlu Cek') == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}" data-ruangan="2">
-                                            {{ $dataRuangan[2]['status'] ?? 'Perlu Cek' }}
-                                        </span> --}}
+                                        <span class="badge px-3 py-2 {{ $dataRuangan[3]['status'] == 'Normal' ? 'bg-success text-white' : 'bg-warning text-dark' }}">
+                                            {{ $dataRuangan[3]['status'] }}
+                                        </span>
                                     </div>
                                     <div class="gudang-main mt-3">
-                                        <h2 class="fw-bold mb-0">{{ $dataRuangan[2]['suhu'] ?? '-' }}°C</h2>
+                                        <h2 class="fw-bold mb-0">{{ $dataRuangan[3]['suhu'] }}°C</h2>
                                         <p class="text-dark small mb-2">
-                                            Kelembapan: <strong>{{ $dataRuangan[2]['kelembapan'] ?? '-' }}%</strong>
+                                            Kelembapan: <strong>{{ $dataRuangan[3]['kelembapan'] }}%</strong>
                                         </p>
                                     </div>
                                 </div>
@@ -114,9 +114,9 @@
             </div>
         </div>
 
-        {{-- Grafik Monitoring --}}
+        {{-- Grafik  --}}
         <div class="row mt-4">
-            <!-- Grafik Suhu Bleaching -->
+            <!-- Grafik Bleaching -->
             <div class="col-lg-4 mb-4">
                 <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
                     <div class="card-header bg-transparent border-0">
@@ -129,12 +129,12 @@
                 </div>
             </div>
 
-            <!-- Grafik Suhu Ruangan -->
+            <!-- Grafik Suhu-->
             <div class="col-lg-4 mb-4">
                 <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
                     <div class="card-header bg-transparent border-0">
                         <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruangan</h5>
-                        <small class="text-muted">Perubahan Suhu Fermentasi & Pengeringan</small>
+                        <small class="text-muted">Fermentasi & Pengeringan</small>
                     </div>
                     <div class="card-body" style="height: 300px;">
                         <canvas id="chartSuhu" style="width:100%; height:100%;"></canvas>
@@ -147,7 +147,7 @@
                 <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
                     <div class="card-header bg-transparent border-0">
                         <h5 class="card-title mb-1 mt-2">Grafik Kelembapan</h5>
-                        <small class="text-muted">Perubahan Kelembapan Fermentasi & Pengeringan</small>
+                        <small class="text-muted">Fermentasi & Pengeringan</small>
                     </div>
                     <div class="card-body" style="height: 300px;">
                         <canvas id="chartKelembapan" style="width:100%; height:100%;"></canvas>
@@ -247,46 +247,6 @@ document.addEventListener('DOMContentLoaded', function () {
             options: { 
                 responsive: true,
                 maintainAspectRatio: false
-            }
-        });
-    }
-
-    // Script status (belum selesai)
-    const dataRuangan = @json($dataRuangan ?? []);
-    updateRuanganStatus();
-
-    function updateRuanganStatus() {
-        dataRuangan.forEach((ruangan, index) => {
-            const suhu = parseFloat(ruangan.suhu) || 0;
-            const kelembapan = parseFloat(ruangan.kelembapan) || 0;
-            const namaRuangan = ruangan.nama_ruangan.toLowerCase();
-
-            let status = 'Perlu Cek';
-            let badgeClass = 'bg-warning text-dark';
-
-            if (namaRuangan.includes('bleaching') || index === 0) {
-                if (suhu >= 50 && suhu <= 70) {
-                    status = 'Normal';
-                    badgeClass = 'bg-success text-white';
-                }
-            }
-            else if (namaRuangan.includes('fermentasi') || index === 1) {
-                if (suhu >= 28 && suhu <= 32 && kelembapan >= 75 && kelembapan <= 85) {
-                    status = 'Normal';
-                    badgeClass = 'bg-success text-white';
-                }
-            }
-            else if (namaRuangan.includes('pengeringan') || index === 2) {
-                if (suhu >= 25 && suhu <= 35 && kelembapan >= 40 && kelembapan <= 60) {
-                    status = 'Normal';
-                    badgeClass = 'bg-success text-white';
-                }
-            }
-
-            const badgeElement = document.querySelector(`[data-ruangan="${index}"]`);
-            if (badgeElement) {
-                badgeElement.textContent = status;
-                badgeClass = 'bg-success text-white';
             }
         });
     }

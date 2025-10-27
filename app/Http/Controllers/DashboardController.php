@@ -23,11 +23,12 @@ class DashboardController extends Controller
         $grafikBleaching = [];
 
         foreach ($ruangan as $r) {
-            $sensorSuhuList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor, 'suhu'));
-            $sensorKelembapanList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor, 'kelembaban'));
-            $sensorBlower = collect($r->getDataSensor)->first(fn($s) => str_starts_with($s->flag_sensor, 'blower'));
+            $sensorSuhuList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor ?? '', 'suhu'));
+            $sensorKelembapanList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor ?? '', 'kelembaban'));
+            $sensorBlower = collect($r->getDataSensor)->first(fn($s) => str_starts_with($s->flag_sensor ?? '', 'blower'));
 
-            $isBleaching = str_contains(strtolower($r->nama_ruangan), 'bleaching');
+            $tipeRuangan = $r->tipe_ruangan;
+            $isBleaching = ($tipeRuangan == 1);
             
             $avgSuhu = null;
             $avgKelembapan = null;
@@ -48,7 +49,6 @@ class DashboardController extends Controller
                 }
                 $avgKelembapan = count($nilaiKelembapan) ? array_sum($nilaiKelembapan) / count($nilaiKelembapan) : null;
             } else {
-                // Untuk bleaching
                 foreach ($sensorSuhuList as $sensor) {
                     $suhuTerakhir = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
                         ->whereTime('created_at', '>=', '07:00:00')
@@ -81,20 +81,19 @@ class DashboardController extends Controller
                 }
             }
 
-            $dataRuangan[] = [
+            $dataRuangan[$tipeRuangan] = [
                 'id_ruangan' => $r->id_ruangan,
                 'nama_ruangan' => $r->nama_ruangan,
+                'tipe_ruangan' => $tipeRuangan,
                 'suhu' => $avgSuhu ? number_format($avgSuhu, 1) : '-',
                 'kelembapan' => $avgKelembapan ? number_format($avgKelembapan, 1) : '-',
-                'suhu_bleaching' => $suhuBleaching ? number_format($suhuBleaching, 1) : null, // Data khusus bleaching
+                'suhu_bleaching' => $suhuBleaching ? number_format($suhuBleaching, 1) : null,
                 'blower' => $nilaiBlower->nilai_sensor ?? '-',
                 'status' => $status,
                 'is_bleaching' => $isBleaching,
             ];
 
-            // Grafik data
             if (!$isBleaching) {
-                // Grafik untuk ruangan
                 if ($sensorSuhuList->isNotEmpty()) {
                     $firstSuhu = $sensorSuhuList->first();
                     $grafikSuhu[$r->nama_ruangan] = collect(
@@ -127,7 +126,6 @@ class DashboardController extends Controller
                         ]);
                 }
             } else {
-                // Grafik bleaching untuk jam 7 - 10 tgl terbaru
                 if ($sensorSuhuList->isNotEmpty()) {
                     $firstSuhu = $sensorSuhuList->first();
                     $latestDate = NilaiSensorModel::where('id_sensor', $firstSuhu->id_sensor)
