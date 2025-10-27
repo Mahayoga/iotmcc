@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RuanganBlanchingController;
+use App\Http\Controllers\AlatBleachingController;
 use App\Http\Controllers\RuanganFermentasiController;
 use App\Http\Controllers\RuanganPengeringanController;
 use App\Http\Controllers\RiwayatDataController;
@@ -27,9 +27,9 @@ Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('dashboard', DashboardController::class);
-    Route::resource('ruang-blanching', RuanganBlanchingController::class);
-    Route::prefix('ruang-blanching')->group(function () {
-        Route::get('/data/sensor/sensor/{id}', [RuanganBlanchingController::class, 'getDataSensor'])->name('ruang-blanching.getDataSensor');
+    Route::resource('alat-bleaching', AlatBleachingController::class);
+    Route::prefix('alat-bleaching')->group(function () {
+        Route::get('/data/sensor/sensor/{id}', [AlatBleachingController::class, 'getDataSensor'])->name('alat-bleaching.getDataSensor');
     });
     Route::resource('ruang-fermentasi', RuanganFermentasiController::class);
     Route::prefix('ruang-fermentasi')->group(function () {
