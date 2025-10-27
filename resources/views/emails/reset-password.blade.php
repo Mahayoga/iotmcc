@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password - Breeze</title>
+    <title>Reset Password</title>
     <style>
         * {
             margin: 0;
@@ -244,7 +244,7 @@
             </div>
             
             <div class="info-box">
-                <p><strong>⏰ Penting:</strong> Link reset password ini akan kedaluwarsa dalam <strong>60 menit</strong> demi keamanan akun Anda.</p>
+                <p><strong>⏰ Penting:</strong> Link reset password ini akan kedaluwarsa dalam <strong>5 menit</strong> demi keamanan akun Anda.</p>
             </div>
             
             <div class="warning">
