@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\api\RiwayatDataController;
+use App\Http\Controllers\NilaiSensorAPIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -50,4 +52,8 @@ use App\Http\Controllers\Api\GudangController;
         Route::post('/', [GudangController::class, 'store']);
         Route::put('/{id}', [GudangController::class, 'update']);
         Route::delete('/{id}', [GudangController::class, 'destroy']);
+    });
+
+    Route::prefix('send/')->group(function() {
+        Route::post('/nilai/sensor', [NilaiSensorAPIController::class, 'store']);
     });
