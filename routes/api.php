@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\api\RiwayatDataController;
+use App\Http\Controllers\Api\RiwayatDataController;
 use App\Http\Controllers\NilaiSensorAPIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\RuanganBlachingController;
+use App\Http\Controllers\Api\RuanganBlanchingController;
 use App\Http\Controllers\Api\RuanganFermentasiController;
 use App\Http\Controllers\Api\RuanganPengeringanController;
 use App\Http\Controllers\Api\GudangController;
@@ -22,7 +22,7 @@ use App\Http\Controllers\Api\GudangController;
     });
 
     Route::prefix('api-ruangan-perebusan')->group(function () {
-        Route::get('data/sensor/sensor/{id}', [RuanganBlachingController::class, 'getDataSensor']);
+        Route::get('data/sensor/sensor/{id}', [RuanganBlanchingController::class, 'getDataSensor']);
     });
 
     Route::prefix('api-ruangan-fermentasi')->group(function () {
@@ -36,13 +36,13 @@ use App\Http\Controllers\Api\GudangController;
             // Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower']);
         });
 
-    Route::resource('api-riwayat-data', RiwayatDataController::class);
-        Route::prefix('api-riwayat-data')->group(function() {
-            Route::get('blanching/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
-            Route::get('fermentasi/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
-            Route::get('pengeringan/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
-             Route::get('get-ruangan/{id}', [RiwayatDataController::class, 'getRuangan']);
-        });
+    // Route::resource('api-riwayat-data', RiwayatDataController::class);
+    //     Route::prefix('api-riwayat-data')->group(function() {
+    //         Route::get('blanching/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
+    //         Route::get('fermentasi/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
+    //         Route::get('pengeringan/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
+    //          Route::get('get-ruangan/{id}', [RiwayatDataController::class, 'getRuangan']);
+    //     });
     
     Route::prefix('gudang')->group(function () {
         Route::get('/', [GudangController::class, 'index']);
@@ -52,6 +52,12 @@ use App\Http\Controllers\Api\GudangController;
         Route::post('/', [GudangController::class, 'store']);
         Route::put('/{id}', [GudangController::class, 'update']);
         Route::delete('/{id}', [GudangController::class, 'destroy']);
+    });
+
+    Route::prefix('api-riwayat-data')->controller(RiwayatDataController::class)->group(function () {
+        Route::get('get-ruangan/{id_gudang}', 'getRuangan');
+        Route::get('sensor/{id}/{tgl}', 'getDataSensor');
+        Route::get('blower/{id}/{tgl}', 'getDataBlowerHistory');
     });
 
     Route::prefix('send/')->group(function() {
