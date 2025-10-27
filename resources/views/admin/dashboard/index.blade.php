@@ -44,12 +44,12 @@
                                         @if($dataRuangan[0]['suhu_bleaching'])
                                             <h2 class="fw-bold mb-0">{{ $dataRuangan[0]['suhu_bleaching'] }}°C</h2>
                                             <p class="text-dark small mb-2">
-                                                <strong>Suhu Terakhir Alat Bleaching(07:00 - 10:00)</strong>
+                                                <strong>Suhu Terakhir Alat Bleaching (07:00 - 10:00)</strong>
                                             </p>
                                         @else
                                             <h2 class="fw-bold mb-0 text-muted">-</h2>
                                             <p class="text-dark small mb-2">
-                                                <strong>Suhu Terakhir Alat Bleaching(07:00 - 10:00)</strong>
+                                                <strong>Suhu Terakhir Alat Bleaching (07:00 - 10:00)</strong>
                                             </p>
                                             <p class="text-muted small mb-0">
                                                 <i>Belum ada data hari ini</i>
