@@ -52,64 +52,64 @@
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
-              <small class="text-muted">Perubahan suhu dalam 24 jam terakhir</small>
+              <small class="text-muted">Perubahan suhu dalam 11 data terakhir</small>
             </div>
 
             <div class="card-body">
               <canvas id="chartSuhu" height="150"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah 24 jam terakhir</small>
+                <small class="text-muted">*data yang ditampilkan 11 data terakhir</small>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-  <div class="row g-4 mb-4">
-  <!-- Timer Bleaching -->
-  <div class="col-xl-6 col-lg-6 col-md-12">
-    <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
-      <div class="card-header bg-transparent border-0">
-        <h5 class="card-title mb-1 mt-2">Timer Bleaching</h5>
-        <small class="text-muted">Hitung mundur proses Bleaching</small>
-      </div>
+      <div class="row g-4 mb-4">
+        <!-- Timer Bleaching -->
+        <div class="col-xl-6 col-lg-6 col-md-12">
+          <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">Timer Bleaching</h5>
+              <small class="text-muted">Hitung mundur proses Bleaching</small>
+            </div>
 
-      <div class="card-body text-center d-flex flex-column justify-content-center">
-        <h1 id="timer-display" class="fw-bold display-3 text-danger mb-4">00:00</h1>
-        <div class="d-flex justify-content-center">
-          <button id="stop-timer" class="btn btn-danger px-4">Hentikan</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Informasi Proses -->
-  <div class="col-xl-6 col-lg-6 col-md-12">
-    <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
-      <div class="card-header bg-transparent border-0">
-        <h5 class="card-title mb-1 mt-2">Informasi Proses</h5>
-        <small class="text-muted">Detail waktu dan status proses Bleaching</small>
-      </div>
-
-      <div class="card-body d-flex flex-column justify-content-center">
-        <div class="row">
-          <div class="col-md-6">
-            <p><b>Waktu Mulai:</b> <span id="waktu-mulai">-</span></p>
-            <p><b>Perkiraan Selesai:</b> <span id="waktu-selesai">-</span></p>
-            <p><b>Status:</b> <span id="status-proses" class="badge bg-secondary">Menunggu</span></p>
+            <div class="card-body text-center d-flex flex-column justify-content-center">
+              <h1 id="timer-display" class="fw-bold display-3 text-danger mb-4">00:00</h1>
+              <div class="d-flex justify-content-center">
+                <button id="stop-timer" class="btn btn-danger px-4">Hentikan</button>
+              </div>
+            </div>
           </div>
-          <div class="col-md-6">
-            <label for="durasi-input" class="form-label mb-1 fw-bold">Durasi Bleaching (menit)</label>
-            <div class="input-group">
-              <input type="number" id="durasi-input" class="form-control" placeholder="Masukkan durasi">
-              <button id="set-durasi" class="btn btn-primary">Atur</button>
+        </div>
+
+        <!-- Informasi Proses -->
+        <div class="col-xl-6 col-lg-6 col-md-12">
+          <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">Informasi Proses</h5>
+              <small class="text-muted">Detail waktu dan status proses Bleaching</small>
+            </div>
+
+            <div class="card-body d-flex flex-column justify-content-center">
+              <div class="row">
+                <div class="col-md-6">
+                  <p><b>Waktu Mulai:</b> <span id="waktu-mulai">-</span></p>
+                  <p><b>Perkiraan Selesai:</b> <span id="waktu-selesai">-</span></p>
+                  <p><b>Status:</b> <span id="status-proses" class="badge bg-secondary">Menunggu</span></p>
+                </div>
+                <div class="col-md-6">
+                  <label for="durasi-input" class="form-label mb-1 fw-bold">Durasi Bleaching (menit)</label>
+                  <div class="input-group">
+                    <input type="number" id="durasi-input" class="form-control" placeholder="Masukkan durasi">
+                    <button id="set-durasi" class="btn btn-primary">Atur</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
   </main>
 @endsection
 
@@ -117,69 +117,69 @@
   <script>
 
     let countdown;
-  let totalSeconds = 0;
-  let isRunning = false;
+    let totalSeconds = 0;
+    let isRunning = false;
 
-  const timerDisplay = document.getElementById('timer-display');
-  const waktuMulai = document.getElementById('waktu-mulai');
-  const waktuSelesai = document.getElementById('waktu-selesai');
-  const statusProses = document.getElementById('status-proses');
-  const durasiInput = document.getElementById('durasi-input');
+    const timerDisplay = document.getElementById('timer-display');
+    const waktuMulai = document.getElementById('waktu-mulai');
+    const waktuSelesai = document.getElementById('waktu-selesai');
+    const statusProses = document.getElementById('status-proses');
+    const durasiInput = document.getElementById('durasi-input');
 
-  document.getElementById('set-durasi').addEventListener('click', function() {
-    const durasiMenit = parseInt(durasiInput.value);
+    document.getElementById('set-durasi').addEventListener('click', function () {
+      const durasiMenit = parseInt(durasiInput.value);
 
-    if (isNaN(durasiMenit) || durasiMenit <= 0) {
-      alert('Masukkan durasi yang valid (lebih dari 0 menit)');
-      return;
-    }
+      if (isNaN(durasiMenit) || durasiMenit <= 0) {
+        alert('Masukkan durasi yang valid (lebih dari 0 menit)');
+        return;
+      }
 
-    if (isRunning) {
-      clearInterval(countdown);
-    }
+      if (isRunning) {
+        clearInterval(countdown);
+      }
 
-    totalSeconds = durasiMenit * 60;
-    isRunning = true;
+      totalSeconds = durasiMenit * 60;
+      isRunning = true;
 
-    const startTime = new Date();
-    const endTime = new Date(startTime.getTime() + totalSeconds * 1000);
+      const startTime = new Date();
+      const endTime = new Date(startTime.getTime() + totalSeconds * 1000);
 
-    waktuMulai.textContent = startTime.toLocaleTimeString();
-    waktuSelesai.textContent = endTime.toLocaleTimeString();
-    statusProses.textContent = 'Berlangsung ⏳';
-    statusProses.className = 'badge bg-warning text-dark';
+      waktuMulai.textContent = startTime.toLocaleTimeString();
+      waktuSelesai.textContent = endTime.toLocaleTimeString();
+      statusProses.textContent = 'Berlangsung ⏳';
+      statusProses.className = 'badge bg-warning text-dark';
 
-    updateDisplay(totalSeconds);
-
-    countdown = setInterval(() => {
-      totalSeconds--;
       updateDisplay(totalSeconds);
 
-      if (totalSeconds <= 0) {
+      countdown = setInterval(() => {
+        totalSeconds--;
+        updateDisplay(totalSeconds);
+
+        if (totalSeconds <= 0) {
+          clearInterval(countdown);
+          isRunning = false;
+          statusProses.textContent = 'Selesai ✅';
+          statusProses.className = 'badge bg-success';
+        }
+      }, 1000);
+    });
+
+    document.getElementById('stop-timer').addEventListener('click', function () {
+      if (isRunning) {
         clearInterval(countdown);
         isRunning = false;
-        statusProses.textContent = 'Selesai ✅';
-        statusProses.className = 'badge bg-success';
+        statusProses.textContent = 'Dihentikan ⛔';
+        statusProses.className = 'badge bg-danger';
       }
-    }, 1000);
-  });
+    });
 
-  document.getElementById('stop-timer').addEventListener('click', function() {
-    if (isRunning) {
-      clearInterval(countdown);
-      isRunning = false;
-      statusProses.textContent = 'Dihentikan ⛔';
-      statusProses.className = 'badge bg-danger';
+    function updateDisplay(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
+      timerDisplay.textContent = `${m}:${s}`;
     }
-  });
 
-  function updateDisplay(seconds) {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    timerDisplay.textContent = `${m}:${s}`;
-  }
-
-  const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
+    const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
 
     let suhuChart = new Chart(ctxSuhu, {
       type: 'line',
@@ -194,11 +194,12 @@
         }],
         labels: []
       },
+
       options: {
         responsive: true,
         scales: {
-          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: false }, 
-          x: { title: { display: true, text: 'Waktu (pada 2025-10-26)', color: '#888' } }
+          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
+          x: { title: { display: true, text: 'Waktu', color: '#888' } }
         },
         animation: {
           duration: 800,
@@ -206,43 +207,51 @@
       }
     });
 
-   function getDataSensor() {
-      $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function(data, status) {
-        if (data.status === true) {
-          
-          let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
-          let rataRataSuhu = parseFloat(data.rataRataSuhu_7_10);
-          $('#suhu-rata-rata').text(rataRataSuhu.toFixed(2));
-          $('.card-header small:contains("Pantauan kondisi suhu alat bleaching")')
-              .text("Rata-rata suhu jam 07:00 - 10:00");
-
-          classListSuhu.remove('text-success', 'text-warning', 'text-danger', 'text-info');
-          if(rataRataSuhu >= 85 && rataRataSuhu <= 95) {
-              $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
-              classListSuhu.add('text-success');
-
-          } else if (rataRataSuhu > 100) {
-              $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
-              classListSuhu.add('text-danger');
-          } else {
-              $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-              classListSuhu.add('text-warning');
+    $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function (data, status) {
+      if (data.status === true) {
+        let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
+        let suhuTotal = 0;
+        let totalDataSuhu = 0;
+        data.dataSensor.forEach(sensor => {
+          if (sensor.flag_sensor.includes('suhu')) {
+            sensor.value.forEach(v => {
+              suhuTotal += parseFloat(v);
+              totalDataSuhu++;
+            });
           }
+        });
 
-          if (data.graphSuhu && data.graphWaktu) {
-            suhuChart.data.labels = data.graphWaktu; 
-            suhuChart.data.datasets[0].data = data.graphSuhu.map(v => parseFloat(v));
-            suhuChart.update();
-          }
-          
-          $('.card-header small:contains("24 jam terakhir")')
-              .text("Perubahan suhu pada 26-10-2025");
-          $('.card-body small:contains("*data yang ditampilkan adalah data 24 jam terakhir")')
-              .text("*Data yang ditampilkan adalah semua data dari 26-10-2025");
+        let rataRataSuhu = (suhuTotal / totalDataSuhu).toFixed(2);
+        $('#suhu-rata-rata').text(rataRataSuhu);
+
+        if (rataRataSuhu > 20 && rataRataSuhu < 30) {
+          $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
+          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+          classListSuhu.add('text-success');
+        } else if (rataRataSuhu > 30 && rataRataSuhu < 50) {
+          $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
+          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+          classListSuhu.add('text-warning');
+        } else if (rataRataSuhu > 50 && rataRataSuhu < 100) {
+          $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
+          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+          classListSuhu.add('text-danger');
+        } else {
+          $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
+          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+          classListSuhu.add('text-warning');
         }
-      });
-    }
-    getDataSensor();
-    setInterval(getDataSensor, 60000); 
+
+        let suhuData = data.dataSensor.find(e => e.flag_sensor === 'suhu_1');
+        let waktuData = data.dataWaktuSensor.find(e => e.flag_sensor === 'suhu_1');
+
+        if (suhuData && waktuData) {
+          suhuChart.data.labels = waktuData.value.reverse();
+          suhuChart.data.datasets[0].data = suhuData.value.reverse().map(v => parseFloat(v));
+          suhuChart.update();
+        }
+      }
+    });
+    setInterval(getDataSensor, 1000);
   </script>
 @endsection
