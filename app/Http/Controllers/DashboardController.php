@@ -68,18 +68,20 @@ class DashboardController extends Controller
                 ? ModeBlowerModel::where('id_sensor', $sensorBlower->id_sensor)->latest()->first()
                 : null;
 
-            $status = 'Perlu Cek';
-            if ($avgSuhu !== null) {
-                if ($isBleaching) {
-                    if ($avgSuhu >= 50 && $avgSuhu <= 70) {
-                        $status = 'Normal';
-                    }
-                } else if ($avgKelembapan !== null) {
-                    if ($avgSuhu >= 25 && $avgSuhu <= 35 && $avgKelembapan >= 30 && $avgKelembapan <= 70) {
-                        $status = 'Normal';
-                    }
-                }
-            }
+            // $status = 'Perlu Cek';
+            // if ($avgSuhu !== null) {
+            //     if ($isBleaching) {
+            //         if ($avgSuhu >= 50 && $avgSuhu <= 70) {
+            //             $status = 'Normal';
+            //         }
+            //     } else if ($avgKelembapan !== null) {
+            //         if ($avgSuhu >= 25 && $avgSuhu <= 35 && $avgKelembapan >= 30 && $avgKelembapan <= 70) {
+            //             $status = 'Normal';
+            //         }
+            //     }
+            // }
+
+            $statusInfo = $this->getStatusInfo($tipeRuangan, $avgSuhu, $avgKelembapan);
 
             $dataRuangan[$tipeRuangan] = [
                 'id_ruangan' => $r->id_ruangan,
@@ -89,7 +91,9 @@ class DashboardController extends Controller
                 'kelembapan' => $avgKelembapan ? number_format($avgKelembapan, 1) : '-',
                 'suhu_bleaching' => $suhuBleaching ? number_format($suhuBleaching, 1) : null,
                 'blower' => $nilaiBlower->nilai_sensor ?? '-',
-                'status' => $status,
+                'status' => $statusInfo['status'],
+                'status_color' => $statusInfo['color'],
+                'status_icon' => $statusInfo['icon'],
                 'is_bleaching' => $isBleaching,
             ];
 
@@ -159,5 +163,41 @@ class DashboardController extends Controller
             'grafikKelembapan' => $grafikKelembapan,
             'grafikBleaching' => $grafikBleaching
         ]);
+    }
+
+    private function getStatusInfo($tipeRuangan, $suhu, $kelembapan)
+    {
+        if ($suhu === null) {
+            return ['status' => 'Tidak Ada Data', 'color' => 'secondary', 'icon' => '❓'];
+        }
+
+        switch ($tipeRuangan) {
+            case 1: // Bleaching
+                if ($suhu >= 50 && $suhu <= 70) {
+                    return ['status' => 'Normal', 'color' => 'success', 'icon' => '✅'];
+                } elseif ($suhu < 50) {
+                    return ['status' => 'Suhu Rendah', 'color' => 'warning', 'icon' => '⚠️'];
+                } else {
+                    return ['status' => 'Suhu Tinggi', 'color' => 'danger', 'icon' => '🔥'];
+                }
+
+            case 2: // Fermentasi
+            case 3: // Pengeringan
+                $suhuNormal = ($suhu >= 20 && $suhu <= 30);
+                $kelembapanNormal = ($kelembapan !== null && $kelembapan > 80);
+                
+                if ($suhuNormal && $kelembapanNormal) {
+                    return ['status' => 'Normal', 'color' => 'success', 'icon' => '✅'];
+                } elseif (!$suhuNormal && $kelembapanNormal) {
+                    return ['status' => 'Suhu Tidak Normal', 'color' => 'warning', 'icon' => '🌡️'];
+                } elseif ($suhuNormal && !$kelembapanNormal) {
+                    return ['status' => 'Kelembapan Rendah', 'color' => 'warning', 'icon' => '💧'];
+                } else {
+                    return ['status' => 'Kritis', 'color' => 'danger', 'icon' => '🚨'];
+                }
+
+            default:
+                return ['status' => 'Tidak Dikenal', 'color' => 'secondary', 'icon' => '❓'];
+        }
     }
 }
