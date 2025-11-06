@@ -35,7 +35,6 @@ class DashboardController extends Controller
             $suhuBleaching = null;
 
             if (!$isBleaching) {
-                // PERBAIKAN: Gunakan 11 data terakhir seperti di halaman ruangan
                 $nilaiSuhu = [];
                 foreach ($sensorSuhuList as $sensor) {
                     $recentData = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
