@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('nilai_sensor', function (Blueprint $table) {
             $table->uuid('id_nilai_sensor')->primary();
             $table->char('nilai_sensor', 5);
+            $table->double('rssi');
+            $table->double('snr');
             $table->uuid('id_sensor');
             $table->timestamps();
 
