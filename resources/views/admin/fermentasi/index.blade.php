@@ -93,9 +93,14 @@
         <!-- Grafik Suhu -->
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Suhu</h5>
-              <small class="text-muted">Perubahan Suhu di Ruang Fermentasi</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Grafik Suhu</h5>
+                <small class="text-muted">Perubahan Suhu di Ruang Fermentasi</small>
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="resetZoomSuhu()">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
+              </button>
             </div>
             <div class="card-body" style="height: 400px;">
               <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
@@ -110,9 +115,14 @@
         <!-- Grafik Kelembapan -->
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Kelembaban</h5>
-              <small class="text-muted">Perubahan Kelembaban di Ruang Fermentasi</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Grafik Kelembaban</h5>
+                <small class="text-muted">Perubahan Kelembaban di Ruang Fermentasi</small>
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="resetZoomKelembaban()">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
+              </button>
             </div>
             <div class="card-body" style="height: 400px;">
               <canvas id="chartKelembaban" style="width:100%; height:90%;"></canvas>
@@ -128,9 +138,14 @@
       <div class="row mt-4">
         <div class="col-md-12">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Perbandingan Grafik Suhu dan Kelembaban</h5>
-              <small class="text-muted">Perbandingan Suhu dan Kelembaban di Ruang Fermentasi</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Perbandingan Grafik Suhu dan Kelembaban</h5>
+                <small class="text-muted">Perbandingan Suhu dan Kelembaban di Ruang Fermentasi</small>
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="resetZoomPerbandingan()">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
+              </button>
             </div>
             <div class="card-body" style="height: 400px;">
               <canvas id="chartSuhuDanKelembaban" style="width:100%; height:90%;"></canvas>
@@ -142,28 +157,6 @@
           </div>
         </div>
       </div>
-
-      {{-- <div class="row mt-4">
-        <div class="col-md-4">
-          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Riwayat</h5>
-              <small class="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit.</small>
-            </div>
-            <div class="card-body" style="height: 400px;">
-              <div class="row p-4">
-                <div class="col-md-12">
-                  <div class="row">
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4"></div>
-        <div class="col-md-4"></div>
-      </div> --}}
     </div>
   </main>
 @endsection
@@ -196,6 +189,22 @@
         },
         animation: {
           duration: 800,
+        },
+        plugins: {
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true
+              },
+              drag: {
+                enabled: true
+              },
+              mode: 'xy',
+            }
+          }
         }
       }
     });
@@ -221,6 +230,22 @@
         },
         animation: {
           duration: 800,
+        },
+        plugins: {
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true
+              },
+              drag: {
+                enabled: true
+              },
+              mode: 'xy',
+            }
+          }
         }
       }
     });
@@ -276,11 +301,37 @@
               color: '#444',
               font: { size: 13 }
             }
+          },
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true
+              },
+              drag: {
+                enabled: true
+              },
+              mode: 'xy',
+            }
           }
         }
       }
     });
 
+    // Fungsi Reset Zoom
+    function resetZoomSuhu() {
+      suhuChart.resetZoom();
+    }
+
+    function resetZoomKelembaban() {
+      kelembabanChart.resetZoom();
+    }
+
+    function resetZoomPerbandingan() {
+      suhuDanKelembabanChart.resetZoom();
+    }
 
     function getDataSensor() {
       $.get('{{ route('ruang-fermentasi.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
@@ -390,11 +441,7 @@
 
           for (var i = 0; i < dataKelTemp[0][0].length; i++) {
             dataResultKelTemp.push((parseInt(dataKelTemp[0][0][i]) + parseInt(dataKelTemp[1][0][i])) / 2);
-            // console.log(dataKelTemp[1][0][i]);
           }
-
-          // console.log(dataKelTemp);
-          // console.log(dataResultKelTemp);
 
           suhuChart.data.labels = data.dataWaktuSensor[1].value;
           suhuChart.data.datasets[0].data = dataResultSuhuTemp;
