@@ -59,6 +59,7 @@
               <canvas id="chartSuhu" height="150"></canvas>
               <div class="p-4">
                 <small class="text-muted">*data yang ditampilkan 11 data terakhir</small>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="resetZoomChart()">Reset Zoom</button>
               </div>
             </div>
           </div>
@@ -179,6 +180,10 @@
       timerDisplay.textContent = `${m}:${s}`;
     }
 
+    function resetZoomChart() {
+      suhuChart.resetZoom();
+    }
+
     const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
 
     let suhuChart = new Chart(ctxSuhu, {
@@ -203,6 +208,22 @@
         },
         animation: {
           duration: 800,
+        },
+        plugins: {
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true
+              },
+              drag: {
+                enabled: true
+              },
+              mode: 'xy',
+            }
+          }
         }
       }
     });
