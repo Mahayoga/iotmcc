@@ -58,10 +58,18 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="{{ asset('assets\node_modules\chartjs-plugin-zoom\dist\chartjs-plugin-zoom.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/admin/js/main-2.js') }}"></script>
 
     @yield('script')
+
+    <script>
+        $(document).ready(function() {
+            document.documentElement.setAttribute("data-bs-theme", "light");
+        });
+    </script>
 
 </body>
 
