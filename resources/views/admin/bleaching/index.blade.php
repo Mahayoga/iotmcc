@@ -91,21 +91,33 @@
                 <h5 class="card-title mb-1 mt-2">Informasi Proses</h5>
                 <small class="text-muted">Status proses bleaching otomatis</small>
               </div>
-              <div class="card-body d-flex flex-column justify-content-center">
-                <p><b>Waktu Mulai:</b> <span id="waktu-mulai">-</span></p>
-                <p><b>Perkiraan Selesai:</b> <span id="waktu-selesai">-</span></p>
-                <p><b>Status:</b> <span id="status-proses" class="badge bg-secondary">Menunggu</span></p>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><b>Waktu Mulai:</b> <span id="waktu-mulai">-</span></p>
+                    <p><b>Perkiraan Selesai:</b> <span id="waktu-selesai">-</span></p>
+                    <p><b>Status:</b> <span id="status-proses" class="badge bg-secondary">Menunggu</span></p>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="durasi-input" class="form-label mb-2 fw-bold">Durasi Bleaching (menit)</label>
+                    <div class="input-group">
+                      <input type="number" id="durasi-input" class="form-control" placeholder="Masukkan durasi" min="1">
+                      <button id="set-timer-btn" class="btn btn-primary">
+                        <i class="bi bi-clock-fill"></i> Set Timer
+                      </button>
+                    </div>
+                    <small class="text-muted d-block mt-1">Timer akan berjalan otomatis dari database</small>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
   </main>
 @endsection
 
 @section('script')
-  
+
   <script>
 
     function resetZoomChart() {
@@ -204,41 +216,109 @@
       });
     }
 
-    function getDataTimer() {
+    //rada ngawur
+   function getDataTimer() {
       $.get('{{ route('alat-bleaching.getDataTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function (res) {
         if (res.status && res.dataTimer.length > 0) {
           let timer = res.dataTimer[0];
           const nilai = parseInt(timer.nilai_timer);
           const limit = parseInt(timer.limit_timer);
           const sisa = Math.max(limit - nilai, 0);
-          const m = Math.floor(sisa / 60).toString().padStart(2, '0');
-          const s = (sisa % 60).toString().padStart(2, '0');
-          $('#timer-display').text(`${m}:${s}`);
+          
+          updateDisplay(sisa);
 
-          if (sisa <= 0) {
-            $('#status-proses')
-              .text('Selesai ✅')
-              .removeClass()
-              .addClass('badge bg-success');
+          if (limit > 0) {
+            if (sisa <= 0) {
+              $('#status-proses')
+                .text('Selesai ✅')
+                .removeClass()
+                .addClass('badge bg-success');
+            } else {
+              $('#status-proses')
+                .text('Berlangsung ⏳')
+                .removeClass()
+                .addClass('badge bg-warning text-dark');
+            }
+
+            if (timer.updated_at) {
+              const waktuMulai = new Date(timer.updated_at);
+              const waktuSelesai = new Date(waktuMulai.getTime() + limit * 1000);
+              $('#waktu-mulai').text(waktuMulai.toLocaleTimeString('id-ID'));
+              $('#waktu-selesai').text(waktuSelesai.toLocaleTimeString('id-ID'));
+            }
           } else {
+            // Tidak ada timer yang diset
             $('#status-proses')
-              .text('Berlangsung ⏳')
+              .text('Menunggu')
               .removeClass()
-              .addClass('badge bg-warning text-dark');
+              .addClass('badge bg-secondary');
+            $('#waktu-mulai').text('-');
+            $('#waktu-selesai').text('-');
           }
-
-          if (timer.updated_at) {
-            const waktuMulai = new Date(timer.updated_at);
-            const waktuSelesai = new Date(waktuMulai.getTime() + limit * 1000);
-            $('#waktu-mulai').text(waktuMulai.toLocaleTimeString());
-            $('#waktu-selesai').text(waktuSelesai.toLocaleTimeString());
-          }
+        } else {
+          // Tidak ada data
+          updateDisplay(0);
+          $('#waktu-mulai').text('-');
+          $('#waktu-selesai').text('-');
+          $('#status-proses')
+            .text('Menunggu')
+            .removeClass()
+            .addClass('badge bg-secondary');
         }
       }).fail(function (xhr, status, error) {
         console.error('Gagal mengambil data timer:', error);
       });
     }
 
+    function updateDisplay(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
+      $('#timer-display').text(`${m}:${s}`);
+    }
+
+    $('#set-timer-btn').on('click', function () {
+      const durasiMenit = parseInt($('#durasi-input').val());
+      
+      if (isNaN(durasiMenit) || durasiMenit <= 0) {
+        alert('Masukkan durasi yang valid (lebih dari 0 menit)');
+        return;
+      }
+
+    
+      $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
+
+      $.ajax({
+        url: '{{ route('alat-bleaching.setLimitTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}',
+        method: 'POST',
+        data: {
+          limit_timer: durasiMenit,
+          flag_sensor: 'timer_1', 
+          _token: '{{ csrf_token() }}'
+        },
+        success: function (response) {
+          if (response.status) {
+            alert('Timer berhasil diset! Timer akan berjalan otomatis.');
+            $('#durasi-input').val('');
+            
+            getDataTimer();
+          } else {
+            alert('Gagal set timer: ' + response.message);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error('Error:', error);
+          alert('Terjadi kesalahan saat set timer');
+        },
+        complete: function () {
+          $('#set-timer-btn').prop('disabled', false).html('<i class="bi bi-clock-fill"></i> Set Timer');
+        }
+      });
+    });
+
     setInterval(getDataSensor, 1000);
+    setInterval(getDataTimer, 1000);
+    
+    getDataSensor();
+    getDataTimer();
   </script>
 @endsection

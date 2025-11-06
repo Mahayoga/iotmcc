@@ -88,8 +88,109 @@ class AlatBleachingController extends Controller
         ]);
     }
 
-     public function index()
+    public function setLimitTimer(Request $request, string $id)
+    {
+        $request->validate([
+            'limit_timer' => 'required|integer|min:1',
+            'flag_sensor' => 'required|string|in:timer_1,timer_2'
+        ]);
+
+        try {
+            $dataGudang = GudangModel::findOrFail($id);
+            $dataRuangan = $dataGudang->getDataRuangan;
+
+            foreach ($dataRuangan as $ruangan) {
+                if ($ruangan->tipe_ruangan == 1) {
+                    foreach ($ruangan->getDataSensor as $sensor) {
+                        if ($sensor->flag_sensor === $request->flag_sensor) {
+                            ModeTimerModel::updateOrCreate(
+                                ['id_sensor' => $sensor->id_sensor],
+                                ['limit_timer' => $request->limit_timer * 60] 
+                            );
+
+                            NilaiTimerModel::create([
+                                'flag_timer' => $request->flag_sensor,
+                                'nilai_timer' => 0,
+                                'id_sensor' => $sensor->id_sensor,
+                                'rssi' => 0,
+                                'snr' => 0,
+                            ]);
+
+                            return response()->json([
+                                'status' => true,
+                                'message' => 'Timer berhasil diset'
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Sensor tidak ditemukan'
+            ], 404);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal set timer: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
         return view("admin.bleaching.index");
+    }
+   
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }
