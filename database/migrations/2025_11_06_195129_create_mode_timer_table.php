@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nilai_sensor', function (Blueprint $table) {
-            $table->uuid('id_nilai_sensor')->primary();
-            $table->char('nilai_sensor', 5);
-            $table->double('rssi');
-            $table->double('snr');
+        Schema::create('mode_timer', function (Blueprint $table) {
+            $table->uuid('id_mode_timer')->primary();
+            $table->char('limit_timer', 50);
             $table->uuid('id_sensor');
             $table->timestamps();
 
-            // Foreign Key
             $table->foreign('id_sensor')->references('id_sensor')->on('sensor')->onDelete('cascade');
         });
     }
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nilai_sensor');
+        Schema::dropIfExists('mode_timer');
     }
 };

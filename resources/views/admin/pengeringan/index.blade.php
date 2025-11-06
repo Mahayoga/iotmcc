@@ -75,42 +75,64 @@
 
       <!-- Grafik -->
       <div class="row mt-4">
+        <!-- Grafik Suhu -->
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Suhu</h5>
-              <small class="text-muted">Perubahan Suhu di Ruang Pengeringan</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Grafik Suhu</h5>
+                <small class="text-muted">Perubahan Suhu di Ruang Pengeringan</small>
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="resetZoomSuhu()">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
+              </button>
             </div>
-            <div class="card-body" style="height: 350px;">
+            <div class="card-body" style="height: 400px;">
               <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah 11 data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu">-</span> data
+                  terakhir</small>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Grafik Kelembaban -->
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Kelembaban</h5>
-              <small class="text-muted">Perubahan Kelembaban di Ruang Pengeringan</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Grafik Kelembaban</h5>
+                <small class="text-muted">Perubahan Kelembaban di Ruang Pengeringan</small>
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="resetZoomKelembaban()">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
+              </button>
             </div>
-            <div class="card-body" style="height: 350px;">
+            <div class="card-body" style="height: 400px;">
               <canvas id="chartKelembaban" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah 11 data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah <span id="total-kelembaban">-</span> data
+                  terakhir</small>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
 
+      <!-- Grafik Perbandingan -->
+      <div class="row mt-4">
         <div class="col-md-12">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Perbandingan Grafik Suhu dan Kelembaban</h5>
-              <small class="text-muted">Perbandingan Suhu dan Kelembaban di Ruang Pengeringan</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Perbandingan Grafik Suhu dan Kelembaban</h5>
+                <small class="text-muted">Perbandingan Suhu dan Kelembaban di Ruang Pengeringan</small>
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="resetZoomPerbandingan()">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
+              </button>
             </div>
             <div class="card-body" style="height: 400px;">
               <canvas id="chartSuhuDanKelembaban" style="width:100%; height:90%;"></canvas>
@@ -121,116 +143,116 @@
             </div>
           </div>
         </div>
-
       </div>
+    </div>
 
-      <!-- Blower -->
-      <div class="row mt-4">
-        <div class="col-12">
-          <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0 position-relative text-center">
-              <div>
-                <h5 class="card-title mb-1 mt-2 fw-semibold">Daftar Blower</h5>
-                <small class="text-muted">Indikator Operasional Blower (Total 8 Unit)</small>
+    <!-- Blower -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
+          <div class="card-header bg-transparent border-0 position-relative text-center">
+            <div>
+              <h5 class="card-title mb-1 mt-2 fw-semibold">Daftar Blower</h5>
+              <small class="text-muted">Indikator Operasional Blower (Total 8 Unit)</small>
+            </div>
+            <div class="position-absolute bottom-0 end-0 mb-2 me-3"
+              style="border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.25rem 0.5rem; background-color: #f8f9fa;">
+              <div class="form-check form-switch d-flex align-items-center m-0">
+                <input class="form-check-input" type="checkbox" id="switch-all" style="margin:0;">
+                <label class="form-check-label small text-muted fw-semibold ms-2 mb-0" for="switch-all">
+                  Switch all
+                </label>
               </div>
-              <div class="position-absolute bottom-0 end-0 mb-2 me-3"
-                style="border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.25rem 0.5rem; background-color: #f8f9fa;">
-                <div class="form-check form-switch d-flex align-items-center m-0">
-                  <input class="form-check-input" type="checkbox" id="switch-all" style="margin:0;">
-                  <label class="form-check-label small text-muted fw-semibold ms-2 mb-0" for="switch-all">
-                    Switch all
-                  </label>
-                </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="container">
+              <!-- Baris Pertama: Blower 1-4 -->
+              <div class="row mb-3">
+                @for ($i = 1; $i <= 4; $i++)
+                  <div class="col-md-3 mb-2">
+                    <div
+                      class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
+                      style="background:#f8f9fa;">
+                      <div class="d-flex flex-column align-items-center mb-3">
+                        <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
+                        <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
+                      </div>
+
+                      <div class="d-flex flex-column align-items-center">
+                        <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
+                          data-id="{{ $i }}" style="margin:0;">
+                        <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
+                          for="switch-{{ $i }}">
+                          Mati
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                @endfor
+              </div>
+
+              <!-- Baris Kedua: Blower 5-8 -->
+              <div class="row mb-3">
+                @for ($i = 5; $i <= 8; $i++)
+                  <div class="col-md-3 mb-2">
+                    <div
+                      class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
+                      style="background:#f8f9fa;">
+                      <div class="d-flex flex-column align-items-center mb-3">
+                        <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
+                        <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
+                      </div>
+
+                      <div class="d-flex flex-column align-items-center">
+                        <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
+                          data-id="{{ $i }}" style="margin:0;">
+                        <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
+                          for="switch-{{ $i }}">
+                          Mati
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                @endfor
               </div>
             </div>
 
-            <div class="card-body">
-              <div class="container">
-                <!-- Baris Pertama: Blower 1-4 -->
-                <div class="row mb-3">
-                  @for ($i = 1; $i <= 4; $i++)
-                    <div class="col-md-3 mb-2">
-                      <div
-                        class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
-                        style="background:#f8f9fa;">
-                        <div class="d-flex flex-column align-items-center mb-3">
-                          <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
-                          <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
-                        </div>
-
-                        <div class="d-flex flex-column align-items-center">
-                          <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
-                            data-id="{{ $i }}" style="margin:0;">
-                          <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
-                            for="switch-{{ $i }}">
-                            Mati
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  @endfor
-                </div>
-
-                <!-- Baris Kedua: Blower 5-8 -->
-                <div class="row mb-3">
-                  @for ($i = 5; $i <= 8; $i++)
-                    <div class="col-md-3 mb-2">
-                      <div
-                        class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
-                        style="background:#f8f9fa;">
-                        <div class="d-flex flex-column align-items-center mb-3">
-                          <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
-                          <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
-                        </div>
-
-                        <div class="d-flex flex-column align-items-center">
-                          <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
-                            data-id="{{ $i }}" style="margin:0;">
-                          <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
-                            for="switch-{{ $i }}">
-                            Mati
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  @endfor
-                </div>
-              </div>
-
-              <!-- Deskripsi -->
-              <div class="mt-4 text-start">
-                <h6 class="fw-bold">Deskripsi</h6>
-                <p class="mb-1">
-                  <span class="badge bg-success"
-                    style="width:15px; height:15px; background-image: linear-gradient(to right, #A9DA2E, #6EA017); border-color: #A9DA2E;">&nbsp;</span>
-                  Blower Menyala
-                </p>
-                <p class="mb-1">
-                  <span class="badge bg-secondary me-2" style="width:15px; height:15px;">&nbsp;</span>
-                  Blower Mati
-                </p>
-                <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower</small>
-              </div>
+            <!-- Deskripsi -->
+            <div class="mt-4 text-start">
+              <h6 class="fw-bold">Deskripsi</h6>
+              <p class="mb-1">
+                <span class="badge bg-success"
+                  style="width:15px; height:15px; background-image: linear-gradient(to right, #A9DA2E, #6EA017); border-color: #A9DA2E;">&nbsp;</span>
+                Blower Menyala
+              </p>
+              <p class="mb-1">
+                <span class="badge bg-secondary me-2" style="width:15px; height:15px;">&nbsp;</span>
+                Blower Mati
+              </p>
+              <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower</small>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <style>
-        .form-check-input {
-          width: 3rem;
-          height: 1.5rem;
-          cursor: pointer;
-          transition: background-color 0.3s, border-color 0.3s;
-        }
+    <style>
+      .form-check-input {
+        width: 3rem;
+        height: 1.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s, border-color 0.3s;
+      }
 
-        .form-check-input:checked {
-          background-color: #6EA017 !important;
-          border-color: #6EA017 !important;
-          background-image: linear-gradient(to right, #A9DA2E, #6EA017);
-          transition: background-color 0.3s, border-color 0.3s;
-        }
-      </style>
+      .form-check-input:checked {
+        background-color: #6EA017 !important;
+        border-color: #6EA017 !important;
+        background-image: linear-gradient(to right, #A9DA2E, #6EA017);
+        transition: background-color 0.3s, border-color 0.3s;
+      }
+    </style>
 
   </main>
 @endsection
@@ -277,17 +299,19 @@
     style.innerHTML = `
         .bi-fan-spin {
           animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `;
+          }
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `;
     document.head.appendChild(style);
+
 
     let suhuChart = new Chart(ctxSuhu, {
       type: 'line',
       data: {
+        labels: [],
         datasets: [{
           label: "Suhu (°C)",
           data: [],
@@ -295,25 +319,45 @@
           borderColor: '#C8F76A',
           pointBorderColor: '#0f172abf',
           fill: true
-        }],
-        labels: []
+        }]
       },
-
       options: {
         responsive: true,
         scales: {
-          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
-          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Suhu (°C)',
+              color: '#888'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Waktu',
+              color: '#888'
+            }
+          }
         },
-        animation: {
-          duration: 800,
+        plugins: {
+          zoom: {
+            zoom: {
+              wheel: { enabled: true },
+              pinch: { enabled: true },
+              drag: { enabled: true },
+              mode: 'xy'
+            }
+          }
         }
       }
     });
 
+
     let kelembabanChart = new Chart(ctxKelembaban, {
       type: 'line',
       data: {
+        labels: [],
         datasets: [{
           label: "Kelembaban (%)",
           data: [],
@@ -321,17 +365,36 @@
           borderColor: '#C8F76A',
           pointBorderColor: '#0f172abf',
           fill: true
-        }],
-        labels: []
+        }]
       },
       options: {
         responsive: true,
         scales: {
-          y: { title: { display: true, text: 'Kelembaban (%)', color: '#888' }, beginAtZero: true },
-          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Kelembaban (%)',
+              color: '#888'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Waktu',
+              color: '#888'
+            }
+          }
         },
-        animation: {
-          duration: 800,
+        plugins: {
+          zoom: {
+            zoom: {
+              wheel: { enabled: true },
+              pinch: { enabled: true },
+              drag: { enabled: true },
+              mode: 'xy'
+            }
+          }
         }
       }
     });
@@ -339,13 +402,13 @@
     let suhuDanKelembabanChart = new Chart(ctxSuhuDanKelembaban, {
       type: 'line',
       data: {
+        labels: [],
         datasets: [
           {
             label: "Kelembaban (%)",
             data: [],
             backgroundColor: 'rgba(135, 206, 235, 0.25)',
             borderColor: 'rgba(135, 206, 235, 0.8)',
-            pointBorderColor: '#0f172abf',
             fill: true
           },
           {
@@ -353,45 +416,55 @@
             data: [],
             backgroundColor: 'rgba(255, 182, 193, 0.25)',
             borderColor: 'rgba(255, 182, 193, 0.8)',
-            pointBorderColor: '#0f172abf',
             fill: true
           }
-        ],
-        labels: []
+        ]
       },
       options: {
         responsive: true,
         scales: {
           y: {
+            beginAtZero: true,
             title: {
               display: true,
               text: 'Data Suhu dan Kelembaban',
               color: '#666'
-            },
-            beginAtZero: true,
-            grid: { color: 'rgba(200,200,200,0.2)' }
+            }
           },
           x: {
             title: {
               display: true,
               text: 'Waktu',
               color: '#666'
-            },
-            grid: { color: 'rgba(200,200,200,0.2)' }
+            }
           }
         },
-        animation: { duration: 800 },
         plugins: {
-          legend: {
-            labels: {
-              color: '#444',
-              font: { size: 13 }
+          zoom: {
+            zoom: {
+              wheel: { enabled: true },
+              pinch: { enabled: true },
+              drag: { enabled: true },
+              mode: 'xy'
             }
           }
         }
       }
     });
 
+
+    //fungsi reset 
+    function resetZoomSuhu() {
+      suhuChart.resetZoom();
+    }
+
+    function resetZoomKelembaban() {
+      kelembabanChart.resetZoom();
+    }
+
+    function resetZoomPerbandingan() {
+      suhuDanKelembabanChart.resetZoom();
+    }
 
     function getDataSensor() {
       $.get('{{ route('ruang-pengeringan.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
