@@ -2,55 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\GudangModel;
 use App\Models\NilaiSensorModel;
 use App\Models\SensorModel;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class AlatBleachingController extends Controller
 {
-    public function getDataSensor(string $id)
-    {
+    public function getDataSensor(string $id) {
+        $dataSensor = [];
+        $dataWaktuSensor = [];
         $dataGudang = GudangModel::findOrFail($id);
         $dataRuangan = $dataGudang->getDataRuangan;
+        $nilaiSensorTemp = [];
+        $waktuSensorTemp = [];
 
-        $avgSuhu = 0;
-        $nilaiSensorGraph = [];
-        $waktuSensorGraph = [];
-        $targetDate = '2025-10-26';
-         
-        foreach ($dataRuangan as $value) {
-            if ($value->tipe_ruangan == 1) {
-                $sensorSuhu = $value->getDataSensor->firstWhere('flag_sensor', 'suhu_1');
-                if ($sensorSuhu) {
-                    $avgSuhu = $sensorSuhu->getDataNilaiSensor()
-                                         ->whereDate('created_at', $targetDate)
-                                         ->whereTime('created_at', '>=', '07:00:00')
-                                         ->whereTime('created_at', '<=', '10:00:00')
-                                         ->avg('nilai_sensor');
-
-                    $graphData = $sensorSuhu->getDataNilaiSensor()
-                                           ->whereDate('created_at', $targetDate)
-                                           ->orderBy('created_at', 'asc')
-                                           ->get();
-
-                    foreach ($graphData as $dataPoint) {
-                        $nilaiSensorGraph[] = $dataPoint->nilai_sensor;
-                        $waktuSensorGraph[] = Carbon::parse($dataPoint->created_at)->format('G:i:s');
+        foreach ($dataRuangan as $value) { 
+            if($value->tipe_ruangan == 1) {
+                $statusRuangan = $value->status_ruangan;
+                foreach($value->getDataSensor as $value2) {
+                    if($value2->flag_sensor == "timer_1") {
+                        break;
                     }
-                    
-                    break; 
+                    foreach($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(11)->get() as $value3) {
+                        $nilaiSensorTemp[] = $value3->nilai_sensor;
+                        $waktuSensorTemp[] = date('G:i:s', $value3->created_at->timestamp);
+                    }
+                    array_push($dataSensor, [
+                        'type' => 'sensor',
+                        'flag_sensor' => $value2->flag_sensor,
+                        'value' => $nilaiSensorTemp,
+                        'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
+                    ]);
+                    array_push($dataWaktuSensor, [
+                        'type' => 'waktu',
+                        'flag_sensor' => $value2->flag_sensor,
+                        'value' => $waktuSensorTemp
+                    ]);
+                    $nilaiSensorTemp = [];
+                    $waktuSensorTemp = [];
                 }
             }
         }
 
-        return response()->json([
+         return response()->json([
             'status' => true,
-            'rataRataSuhu_7_10' => number_format($avgSuhu, 2), 
-            'graphSuhu' => $nilaiSensorGraph,                
-            'graphWaktu' => $waktuSensorGraph,               
+            'dataSensor' => $dataSensor,
+            'dataWaktuSensor' => $dataWaktuSensor,
         ]);
+
     }
 
 

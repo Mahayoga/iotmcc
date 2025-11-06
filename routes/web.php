@@ -15,15 +15,9 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('user.index');
 
-// Custom tampilan lupa password (pakai Blade kamu sendiri)
-Route::get('/forgot-password', function () {
-    return view('forgot-password');
-})->middleware('guest')->name('password.request');
-
-// Proses kirim link reset password (pakai controller Breeze bawaan)
-Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
-    ->middleware('guest')
-    ->name('password.email');
+// Route reset password
+Route::get('/forgot-password', function () {return view('forgot-password');})->middleware('guest')->name('password.request');
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->middleware('guest')->name('password.email');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('dashboard', DashboardController::class);
