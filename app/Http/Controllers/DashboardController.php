@@ -82,8 +82,8 @@ class DashboardController extends Controller
                 'id_ruangan' => $r->id_ruangan,
                 'nama_ruangan' => $r->nama_ruangan,
                 'tipe_ruangan' => $tipeRuangan,
-                'suhu' => $avgSuhu ? number_format($avgSuhu, 2) : '-', // Format 2 desimal seperti frontend
-                'kelembapan' => $avgKelembapan ? number_format($avgKelembapan, 2) : '-', // Format 2 desimal seperti frontend
+                'suhu' => $avgSuhu ? number_format($avgSuhu, 2) : '-',
+                'kelembapan' => $avgKelembapan ? number_format($avgKelembapan, 2) : '-',
                 'suhu_bleaching' => $suhuBleaching ? number_format($suhuBleaching, 1) : null,
                 'blower' => $nilaiBlower->nilai_sensor ?? '-',
                 'status' => $statusInfo['status'],
