@@ -23,20 +23,20 @@ class RuanganFermentasiController extends Controller
             'kelembaban' => ['values' => [], 'waktu' => []]
         ];
 
-        foreach ($dataRuangan as $ruangan) { 
+        foreach ($dataRuangan as $ruangan) {
             if($ruangan->tipe_ruangan == 2) {
                 $statusRuangan = $ruangan->status_ruangan;
-                
+
                 foreach($ruangan->getDataSensor as $sensor) {
                     $nilaiSensor = [];
                     $waktuSensor = [];
-                    
+
                     // Ambil 11 data terbaru
                     $dataNilaiSensor = $sensor->getDataNilaiSensor()
                         ->orderBy('created_at', 'desc')
                         ->limit(11)
                         ->get();
-                    
+
                     foreach($dataNilaiSensor as $nilai) {
                         $nilaiSensor[] = (float) $nilai->nilai_sensor;
                         $waktuSensor[] = date('G:i:s', $nilai->created_at->timestamp);
@@ -48,7 +48,7 @@ class RuanganFermentasiController extends Controller
                         'waktu' => $waktuSensor,
                         'avg' => count($nilaiSensor) > 0 ? array_sum($nilaiSensor) / count($nilaiSensor) : 0
                     ];
-                    
+
                     // Format data sensor untuk response
                     $dataSensor[] = [
                         'type' => 'sensor',
@@ -56,7 +56,7 @@ class RuanganFermentasiController extends Controller
                         'value' => $nilaiSensor,
                         'avg' => number_format($allSensorData[$sensor->flag_sensor]['avg'], 1),
                     ];
-                    
+
                     // Format data waktu untuk response
                     $dataWaktuSensor[] = [
                         'type' => 'waktu',
@@ -69,21 +69,21 @@ class RuanganFermentasiController extends Controller
 
         // PROSES AVERAGING UNTUK SETIAP DATA POINT
         $averagedValues = [];
-        
+
         // Ambil data suhu_1 dan suhu_2
         $suhu1 = $allSensorData['suhu_1'] ?? null;
         $suhu2 = $allSensorData['suhu_2'] ?? null;
-        
-        // Ambil data kelembaban_1 dan kelembaban_2  
+
+        // Ambil data kelembaban_1 dan kelembaban_2
         $kelembaban1 = $allSensorData['kelembaban_1'] ?? null;
         $kelembaban2 = $allSensorData['kelembaban_2'] ?? null;
-        
+
         // Averaging untuk setiap data point (11 data)
         for ($i = 0; $i < 11; $i++) {
             // Averaging suhu
             $suhuAvg = 0;
             $suhuCount = 0;
-            
+
             if ($suhu1 && isset($suhu1['values'][$i])) {
                 $suhuAvg += $suhu1['values'][$i];
                 $suhuCount++;
@@ -92,17 +92,16 @@ class RuanganFermentasiController extends Controller
                 $suhuAvg += $suhu2['values'][$i];
                 $suhuCount++;
             }
-            
+
             if ($suhuCount > 0) {
                 $averagedValues['suhu']['values'][] = number_format($suhuAvg / $suhuCount, 1);
                 // Ambil waktu dari sensor mana saja yang ada data
                 $averagedValues['suhu']['waktu'][] = $suhu1['waktu'][$i] ?? $suhu2['waktu'][$i] ?? '00:00:00';
             }
-            
-            // Averaging kelembaban
+
             $kelembabanAvg = 0;
             $kelembabanCount = 0;
-            
+
             if ($kelembaban1 && isset($kelembaban1['values'][$i])) {
                 $kelembabanAvg += $kelembaban1['values'][$i];
                 $kelembabanCount++;
@@ -111,21 +110,20 @@ class RuanganFermentasiController extends Controller
                 $kelembabanAvg += $kelembaban2['values'][$i];
                 $kelembabanCount++;
             }
-            
+
             if ($kelembabanCount > 0) {
                 $averagedValues['kelembaban']['values'][] = number_format($kelembabanAvg / $kelembabanCount, 1);
                 $averagedValues['kelembaban']['waktu'][] = $kelembaban1['waktu'][$i] ?? $kelembaban2['waktu'][$i] ?? '00:00:00';
             }
         }
 
-        // Hitung rata-rata global untuk display
         $globalAverages = [];
-        
+
         if (isset($averagedValues['suhu']['values'])) {
             $suhuValues = array_map('floatval', $averagedValues['suhu']['values']);
             $globalAverages['suhu'] = number_format(array_sum($suhuValues) / count($suhuValues), 1);
         }
-        
+
         if (isset($averagedValues['kelembaban']['values'])) {
             $kelembabanValues = array_map('floatval', $averagedValues['kelembaban']['values']);
             $globalAverages['kelembaban'] = number_format(array_sum($kelembabanValues) / count($kelembabanValues), 1);
@@ -137,7 +135,7 @@ class RuanganFermentasiController extends Controller
             'dataWaktuSensor' => $dataWaktuSensor,
             'statusRuangan' => $statusRuangan,
             'avg' => $globalAverages,
-            'averaged_data' => $averagedValues, // DATA YANG SUDAH DI-AVERAGE
+            'averaged_data' => $averagedValues,
             'sensor_info' => [
                 'total_sensors' => count($allSensorData),
                 'suhu_sensors' => [$suhu1 ? 'suhu_1' : null, $suhu2 ? 'suhu_2' : null],
