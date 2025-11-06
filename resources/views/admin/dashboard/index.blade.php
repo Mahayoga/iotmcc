@@ -120,7 +120,7 @@
             <div class="col-lg-4 mb-4">
                 <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
                     <div class="card-header bg-transparent border-0">
-                        <h5 class="card-title mb-1 mt-2">Grafik Suhu Bleaching</h5>
+                        <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
                         <small class="text-muted">Perubahan Suhu Alat (Jam 7-10 Pagi)</small>
                     </div>
                     <div class="card-body" style="height: 300px;">
