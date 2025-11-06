@@ -58,12 +58,8 @@
             <div class="card-body">
               <canvas id="chartSuhu" height="150"></canvas>
               <div class="p-4">
-<<<<<<< HEAD
                 <small class="text-muted">*data yang ditampilkan adalah 24 jam terakhir</small>
                 <button type="button" class="btn btn-secondary btn-sm" onclick="resetZoomChart()">Reset Zoom</button>
-=======
-                <small class="text-muted">*data yang ditampilkan 11 data terakhir</small>
->>>>>>> 7ddd10f (remove hardcode alat bleaching)
               </div>
             </div>
           </div>
@@ -228,7 +224,6 @@
       }
     });
 
-<<<<<<< HEAD
     function resetZoomChart() {
       suhuChart.resetZoom();
     }
@@ -254,19 +249,6 @@
           } else {
               $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
               classListSuhu.add('text-warning');
-=======
-    $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function (data, status) {
-      if (data.status === true) {
-        let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
-        let suhuTotal = 0;
-        let totalDataSuhu = 0;
-        data.dataSensor.forEach(sensor => {
-          if (sensor.flag_sensor.includes('suhu')) {
-            sensor.value.forEach(v => {
-              suhuTotal += parseFloat(v);
-              totalDataSuhu++;
-            });
->>>>>>> 7ddd10f (remove hardcode alat bleaching)
           }
         });
 
