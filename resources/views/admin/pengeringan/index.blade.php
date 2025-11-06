@@ -105,7 +105,7 @@
           </div>
         </div>
 
-        
+
         <div class="col-md-12">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0">
@@ -115,7 +115,8 @@
             <div class="card-body" style="height: 400px;">
               <canvas id="chartSuhuDanKelembaban" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu-dan-kelembaban">-</span> data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu-dan-kelembaban">-</span> data
+                  terakhir</small>
               </div>
             </div>
           </div>
@@ -125,9 +126,6 @@
 
       <!-- Blower -->
       <div class="row mt-4">
-        {{-- <p id="status-proses-blower" class="badge bg-secondary fs-6 px-3 py-2">
-          Dalam pengerjaan ⏳
-        </p> --}}
         <div class="col-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
             <div class="card-header bg-transparent border-0 position-relative text-center">
@@ -148,22 +146,55 @@
 
             <div class="card-body">
               <div class="container">
-                @for ($i = 1; $i <= 8; $i++)
-                  <div class="d-flex justify-content-between align-items-center py-3 px-3 mb-2 border rounded-3 shadow-sm"
-                    style="background:#f8f9fa;">
-                    <div class="d-flex align-items-center">
-                      <i id="blower-{{ $i }}" class="bi bi-fan me-3" style="font-size: 1.5rem; color: gray;"></i>
-                      <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
-                    </div>
+                <!-- Baris Pertama: Blower 1-4 -->
+                <div class="row mb-3">
+                  @for ($i = 1; $i <= 4; $i++)
+                    <div class="col-md-3 mb-2">
+                      <div
+                        class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
+                        style="background:#f8f9fa;">
+                        <div class="d-flex flex-column align-items-center mb-3">
+                          <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
+                          <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
+                        </div>
 
-                    <div class="form-check form-switch d-flex align-items-center">
-                      <input class="form-check-input blower-switch me-2" type="checkbox" id="switch-{{ $i }}"
-                        data-id="{{ $i }}">
-                      <label class="form-check-label fw-semibold text-muted blower-label" for="switch-{{ $i }}"
-                        style="width: 50px; display: inline-block; text-align: center;">Mati</label>
+                        <div class="d-flex flex-column align-items-center">
+                          <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
+                            data-id="{{ $i }}" style="margin:0;">
+                          <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
+                            for="switch-{{ $i }}">
+                            Mati
+                          </label>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                @endfor
+                  @endfor
+                </div>
+
+                <!-- Baris Kedua: Blower 5-8 -->
+                <div class="row mb-3">
+                  @for ($i = 5; $i <= 8; $i++)
+                    <div class="col-md-3 mb-2">
+                      <div
+                        class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
+                        style="background:#f8f9fa;">
+                        <div class="d-flex flex-column align-items-center mb-3">
+                          <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
+                          <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
+                        </div>
+
+                        <div class="d-flex flex-column align-items-center">
+                          <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
+                            data-id="{{ $i }}" style="margin:0;">
+                          <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
+                            for="switch-{{ $i }}">
+                            Mati
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  @endfor
+                </div>
               </div>
 
               <!-- Deskripsi -->
@@ -244,14 +275,14 @@
     // Animasi kipas
     const style = document.createElement('style');
     style.innerHTML = `
-      .bi-fan-spin {
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-    `;
+        .bi-fan-spin {
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `;
     document.head.appendChild(style);
 
     let suhuChart = new Chart(ctxSuhu, {
@@ -312,7 +343,7 @@
           {
             label: "Kelembaban (%)",
             data: [],
-            backgroundColor: 'rgba(135, 206, 235, 0.25)', 
+            backgroundColor: 'rgba(135, 206, 235, 0.25)',
             borderColor: 'rgba(135, 206, 235, 0.8)',
             pointBorderColor: '#0f172abf',
             fill: true
@@ -320,7 +351,7 @@
           {
             label: "Suhu (°C)",
             data: [],
-            backgroundColor: 'rgba(255, 182, 193, 0.25)', 
+            backgroundColor: 'rgba(255, 182, 193, 0.25)',
             borderColor: 'rgba(255, 182, 193, 0.8)',
             pointBorderColor: '#0f172abf',
             fill: true
