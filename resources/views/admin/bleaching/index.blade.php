@@ -59,6 +59,7 @@
               <canvas id="chartSuhu" height="150"></canvas>
               <div class="p-4">
                 <small class="text-muted">*data yang ditampilkan adalah 24 jam terakhir</small>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="resetZoomChart()">Reset Zoom</button>
               </div>
             </div>
           </div>
@@ -202,9 +203,29 @@
         },
         animation: {
           duration: 800,
+        },
+        plugins: {
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true
+              },
+              drag: {
+                enabled: true
+              },
+              mode: 'xy',
+            }
+          }
         }
       }
     });
+
+    function resetZoomChart() {
+      suhuChart.resetZoom();
+    }
 
    function getDataSensor() {
       $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function(data, status) {
