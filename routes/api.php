@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\RiwayatDataController;
 use App\Http\Controllers\NilaiSensorAPIController;
+use App\Http\Controllers\NilaiTimerAPIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -62,4 +63,5 @@ use App\Http\Controllers\Api\GudangController;
 
     Route::prefix('send/')->group(function() {
         Route::post('/nilai/sensor', [NilaiSensorAPIController::class, 'store']);
+        Route::post('/nilai/timer', [NilaiTimerAPIController::class, 'store']);
     });
