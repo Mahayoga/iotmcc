@@ -121,7 +121,7 @@
                 <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
                     <div class="card-header bg-transparent border-0">
                         <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
-                        <small class="text-muted">Perubahan Suhu Alat (Jam 7-10 Pagi)</small>
+                        <small class="text-muted">Perubahan Suhu Alat (Jam 7-10 Pagi dengan Interval 10 Menit)</small>
                     </div>
                     <div class="card-body" style="height: 300px;">
                         <canvas id="chartBleaching" style="width:100%; height:100%;"></canvas>
