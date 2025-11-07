@@ -44,7 +44,7 @@ use App\Http\Controllers\Api\GudangController;
     //         Route::get('pengeringan/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
     //          Route::get('get-ruangan/{id}', [RiwayatDataController::class, 'getRuangan']);
     //     });
-    
+
     Route::prefix('gudang')->group(function () {
         Route::get('/', [GudangController::class, 'index']);
         Route::get('/active', [GudangController::class, 'getActiveGudang']);
@@ -55,10 +55,9 @@ use App\Http\Controllers\Api\GudangController;
         Route::delete('/{id}', [GudangController::class, 'destroy']);
     });
 
-    Route::prefix('api-riwayat-data')->controller(RiwayatDataController::class)->group(function () {
-        Route::get('get-ruangan/{id_gudang}', 'getRuangan');
-        Route::get('sensor/{id}/{tgl}', 'getDataSensor');
-        Route::get('blower/{id}/{tgl}', 'getDataBlowerHistory');
+    Route::prefix('api-riwayat-data')->group(function () {
+        Route::get('/gudang/{idGudang}/ruangan', [RiwayatDataController::class, 'getRuangan']);
+        Route::get('/ruangan/{id}/sensor/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
     });
 
     Route::prefix('send/')->group(function() {
