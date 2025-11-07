@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('alat-bleaching')->group(function () {
         Route::get('/data/sensor/sensor/{id}', [AlatBleachingController::class, 'getDataSensor'])->name('alat-bleaching.getDataSensor');
         Route::get('/data/timer/timer/{id}', [AlatBleachingController::class, 'getDataTimer'])->name('alat-bleaching.getDataTimer');
+        Route::post('alat-bleaching/{id}/set-timer', [AlatBleachingController::class, 'setLimitTimer'])->name('alat-bleaching.setLimitTimer');
     });
     Route::resource('ruang-fermentasi', RuanganFermentasiController::class);
     Route::prefix('ruang-fermentasi')->group(function () {
