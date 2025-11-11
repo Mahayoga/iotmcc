@@ -98,12 +98,9 @@
                 <h5 class="card-title mb-1 mt-2">Grafik Suhu</h5>
                 <small class="text-muted">Perubahan Suhu di Ruang Fermentasi</small>
               </div>
-              <button type="button" class="btn btn-secondary" onclick="resetZoomSuhu()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
-              </button>
             </div>
-            <div class="card-body" style="height: 400px;">
-              <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
+            <div class="card-body">
+              <div id="chartSuhu"></div>
               <div class="p-4">
                 <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu">-</span> data
                   terakhir</small>
@@ -120,12 +117,9 @@
                 <h5 class="card-title mb-1 mt-2">Grafik Kelembaban</h5>
                 <small class="text-muted">Perubahan Kelembaban di Ruang Fermentasi</small>
               </div>
-              <button type="button" class="btn btn-secondary" onclick="resetZoomKelembaban()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
-              </button>
             </div>
-            <div class="card-body" style="height: 400px;">
-              <canvas id="chartKelembaban" style="width:100%; height:90%;"></canvas>
+            <div class="card-body">
+              <div id="chartKelembaban"></div>
               <div class="p-4">
                 <small class="text-muted">*data yang ditampilkan adalah <span id="total-kelembaban">-</span> data
                   terakhir</small>
@@ -143,12 +137,9 @@
                 <h5 class="card-title mb-1 mt-2">Perbandingan Grafik Suhu dan Kelembaban</h5>
                 <small class="text-muted">Perbandingan Suhu dan Kelembaban di Ruang Fermentasi</small>
               </div>
-              <button type="button" class="btn btn-secondary" onclick="resetZoomPerbandingan()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
-              </button>
             </div>
-            <div class="card-body" style="height: 400px;">
-              <canvas id="chartSuhuDanKelembaban" style="width:100%; height:90%;"></canvas>
+            <div class="card-body">
+              <div id="chartSuhuDanKelembaban"></div>
               <div class="p-4">
                 <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu-dan-kelembaban">-</span> data
                   terakhir</small>
@@ -163,174 +154,40 @@
 
 @section('script')
   <script>
-    const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
-    const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
-    const ctxSuhuDanKelembaban = document.getElementById('chartSuhuDanKelembaban')?.getContext('2d');
+    // const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
+    // const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
+    // const ctxSuhuDanKelembaban = document.getElementById('chartSuhuDanKelembaban')?.getContext('2d');
+    let apexSuhu = null;
+    let apexKelembaban = null;
+    let apexSuhuDanKelembaban = null;
 
-    let suhuChart = new Chart(ctxSuhu, {
-      type: 'line',
-      data: {
-        datasets: [{
-          label: "Suhu (°C)",
-          data: [],
-          backgroundColor: '#C8F76A33',
-          borderColor: '#C8F76A',
-          pointBorderColor: '#0f172abf',
-          fill: true
+    function initializeCharts() {
+      let options = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        series: [{
+          name: '?',
+          data: []
         }],
-        labels: []
-      },
-
-      options: {
-        responsive: true,
-        scales: {
-          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
-          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        xaxis: {
+          categories: []
         },
-        animation: {
-          duration: 800,
+        stroke: {
+          curve: 'smooth'
         },
-        plugins: {
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true
-              },
-              drag: {
-                enabled: true
-              },
-              mode: 'xy',
-            }
-          }
-        }
+        markers: {
+          size: 5
+        },
       }
-    });
+      apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
+      apexKelembaban = new ApexCharts($('#chartKelembaban')[0], options);
+      apexSuhuDanKelembaban = new ApexCharts($('#chartSuhuDanKelembaban')[0], options);
 
-    let kelembabanChart = new Chart(ctxKelembaban, {
-      type: 'line',
-      data: {
-        datasets: [{
-          label: "Kelembaban (%)",
-          data: [],
-          backgroundColor: '#C8F76A33',
-          borderColor: '#C8F76A',
-          pointBorderColor: '#0f172abf',
-          fill: true
-        }],
-        labels: []
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { title: { display: true, text: 'Kelembaban (%)', color: '#888' }, beginAtZero: true },
-          x: { title: { display: true, text: 'Waktu', color: '#888' } }
-        },
-        animation: {
-          duration: 800,
-        },
-        plugins: {
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true
-              },
-              drag: {
-                enabled: true
-              },
-              mode: 'xy',
-            }
-          }
-        }
-      }
-    });
-
-    let suhuDanKelembabanChart = new Chart(ctxSuhuDanKelembaban, {
-      type: 'line',
-      data: {
-        datasets: [
-          {
-            label: "Kelembaban (%)",
-            data: [],
-            backgroundColor: 'rgba(135, 206, 235, 0.25)', 
-            borderColor: 'rgba(135, 206, 235, 0.8)',
-            pointBorderColor: '#0f172abf',
-            fill: true
-          },
-          {
-            label: "Suhu (°C)",
-            data: [],
-            backgroundColor: 'rgba(255, 182, 193, 0.25)', 
-            borderColor: 'rgba(255, 182, 193, 0.8)',
-            pointBorderColor: '#0f172abf',
-            fill: true
-          }
-        ],
-        labels: []
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            title: {
-              display: true,
-              text: 'Data Suhu dan Kelembaban',
-              color: '#666'
-            },
-            beginAtZero: true,
-            grid: { color: 'rgba(200,200,200,0.2)' }
-          },
-          x: {
-            title: {
-              display: true,
-              text: 'Waktu',
-              color: '#666'
-            },
-            grid: { color: 'rgba(200,200,200,0.2)' }
-          }
-        },
-        animation: { duration: 800 },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#444',
-              font: { size: 13 }
-            }
-          },
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true
-              },
-              drag: {
-                enabled: true
-              },
-              mode: 'xy',
-            }
-          }
-        }
-      }
-    });
-
-    // Fungsi Reset Zoom
-    function resetZoomSuhu() {
-      suhuChart.resetZoom();
-    }
-
-    function resetZoomKelembaban() {
-      kelembabanChart.resetZoom();
-    }
-
-    function resetZoomPerbandingan() {
-      suhuDanKelembabanChart.resetZoom();
+      apexSuhu.render();
+      apexKelembaban.render();
+      apexSuhuDanKelembaban.render();
     }
 
     function getDataSensor() {
@@ -443,26 +300,50 @@
             dataResultKelTemp.push((parseInt(dataKelTemp[0][0][i]) + parseInt(dataKelTemp[1][0][i])) / 2);
           }
 
-          suhuChart.data.labels = data.dataWaktuSensor[1].value;
-          suhuChart.data.datasets[0].data = dataResultSuhuTemp;
-
-          kelembabanChart.data.labels = data.dataWaktuSensor[0].value;
-          kelembabanChart.data.datasets[0].data = dataResultKelTemp;
-
-          suhuDanKelembabanChart.data.labels = data.dataWaktuSensor[1].value;
-          suhuDanKelembabanChart.data.datasets[0].data = dataResultKelTemp; 
-          suhuDanKelembabanChart.data.datasets[1].data = dataResultSuhuTemp;
+          apexSuhu.updateOptions({
+            series: [{
+              name: 'Suhu (°C)',
+              data: dataResultSuhuTemp
+            }],
+            xaxis: {
+              categories: data.dataWaktuSensor[1].value
+            }
+          });
+          apexKelembaban.updateOptions({
+            series: [{
+              name: 'Kelembaban (%)',
+              data: dataResultKelTemp
+            }],
+            xaxis: {
+              categories: data.dataWaktuSensor[0].value
+            }
+          });
+          apexSuhuDanKelembaban.updateOptions({
+            series: [{
+              name: 'Kelembaban (%)',
+              data: dataResultKelTemp
+            }, {
+              name: 'Suhu (°C)',
+              data: dataResultSuhuTemp
+            }],
+            xaxis: {
+              categories: data.dataWaktuSensor[1].value
+            }
+          });
 
           $('#total-suhu').text(dataResultSuhuTemp.length);
           $('#total-kelembaban').text(dataResultKelTemp.length);
           $('#total-suhu-dan-kelembaban').text(dataResultSuhuTemp.length);
 
-          suhuChart.update();
-          kelembabanChart.update();
-          suhuDanKelembabanChart.update();
+          // apexSuhu.render();
+          // apexKelembaban.render();
+          // apexSuhuDanKelembaban.render();
         }
       });
     }
+    initializeCharts();
     setInterval(getDataSensor, 1000);
+
+    // getDataSensor();
   </script>
 @endsection
