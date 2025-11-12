@@ -298,9 +298,9 @@
 
     initializeCharts();
     getDataSensor();
-    getDataTimer();
-    setInterval(getDataSensor, 1000);
-    setInterval(getDataTimer, 1000);
-    
+    //getDataTimer();
+    setInterval(getDataSensor, 60000);
+    //setInterval(getDataTimer, 1000);
+
   </script>
 @endsection
