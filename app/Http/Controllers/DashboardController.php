@@ -37,13 +37,7 @@ class DashboardController extends Controller
             if (!$isBleaching) {
                 $nilaiSuhu = [];
                 foreach ($sensorSuhuList as $sensor) {
-                    // ensure we have an id regardless of array or object item
-                    $idSensor = is_object($sensor) ? ($sensor->id_sensor ?? null) : ($sensor['id_sensor'] ?? null);
-                    if (!$idSensor) {
-                        continue;
-                    }
-
-                    $recentData = NilaiSensorModel::where('id_sensor', $idSensor)
+                    $recentData = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
                         ->orderBy('created_at', 'desc')
                         ->take(11)
                         ->pluck('nilai_sensor')
@@ -54,12 +48,7 @@ class DashboardController extends Controller
 
                 $nilaiKelembapan = [];
                 foreach ($sensorKelembapanList as $sensor) {
-                    $idSensor = is_object($sensor) ? ($sensor->id_sensor ?? null) : ($sensor['id_sensor'] ?? null);
-                    if (!$idSensor) {
-                        continue;
-                    }
-
-                    $recentData = NilaiSensorModel::where('id_sensor', $idSensor)
+                    $recentData = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
                         ->orderBy('created_at', 'desc')
                         ->take(11)
                         ->pluck('nilai_sensor')
@@ -69,12 +58,7 @@ class DashboardController extends Controller
                 $avgKelembapan = count($nilaiKelembapan) ? array_sum($nilaiKelembapan) / count($nilaiKelembapan) : null;
             } else {
                 foreach ($sensorSuhuList as $sensor) {
-                    $idSensor = is_object($sensor) ? ($sensor->id_sensor ?? null) : ($sensor['id_sensor'] ?? null);
-                    if (!$idSensor) {
-                        continue;
-                    }
-
-                    $suhuTerakhir = NilaiSensorModel::where('id_sensor', $idSensor)
+                    $suhuTerakhir = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
                         ->whereTime('created_at', '>=', '07:00:00')
                         ->whereTime('created_at', '<=', '10:00:00')
                         ->latest()
@@ -88,13 +72,9 @@ class DashboardController extends Controller
                 $avgSuhu = $suhuBleaching;
             }
 
-            $nilaiBlower = null;
-            if ($sensorBlower) {
-                $sensorBlowerId = is_object($sensorBlower) ? ($sensorBlower->id_sensor ?? null) : ($sensorBlower['id_sensor'] ?? null);
-                if ($sensorBlowerId) {
-                    $nilaiBlower = ModeBlowerModel::where('id_sensor', $sensorBlowerId)->latest()->first();
-                }
-            }
+            $nilaiBlower = $sensorBlower
+                ? ModeBlowerModel::where('id_sensor', $sensorBlower->id_sensor)->latest()->first()
+                : null;
 
             $statusInfo = $this->getStatusInfo($tipeRuangan, $avgSuhu, $avgKelembapan);
 
@@ -115,66 +95,57 @@ class DashboardController extends Controller
             if (!$isBleaching) {
                 if ($sensorSuhuList->isNotEmpty()) {
                     $firstSuhu = $sensorSuhuList->first();
-                    $firstSuhuId = is_object($firstSuhu) ? ($firstSuhu->id_sensor ?? null) : ($firstSuhu['id_sensor'] ?? null);
-                    if ($firstSuhuId) {
-                        $grafikSuhu[$r->nama_ruangan] = collect(
-                            NilaiSensorModel::where('id_sensor', $firstSuhuId)
-                                ->orderBy('created_at', 'desc')
-                                ->take(11)
-                                ->get(['nilai_sensor', 'created_at'])
-                        )
-                            ->reverse()
-                            ->values()
-                            ->map(fn($row) => [
-                                'nilai' => (float) $row->nilai_sensor,
-                                'waktu' => Carbon::parse($row->created_at)->format('H:i'),
-                            ]);
-                    }
+                    $grafikSuhu[$r->nama_ruangan] = collect(
+                        NilaiSensorModel::where('id_sensor', $firstSuhu->id_sensor)
+                            ->orderBy('created_at', 'desc')
+                            ->take(11)
+                            ->get(['nilai_sensor', 'created_at'])
+                    )
+                        ->reverse()
+                        ->values()
+                        ->map(fn($row) => [
+                            'nilai' => (float) $row->nilai_sensor,
+                            'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+                        ]);
                 }
 
                 if ($sensorKelembapanList->isNotEmpty()) {
                     $firstKelembapan = $sensorKelembapanList->first();
-                    $firstKelembapanId = is_object($firstKelembapan) ? ($firstKelembapan->id_sensor ?? null) : ($firstKelembapan['id_sensor'] ?? null);
-                    if ($firstKelembapanId) {
-                        $grafikKelembapan[$r->nama_ruangan] = collect(
-                            NilaiSensorModel::where('id_sensor', $firstKelembapanId)
-                                ->orderBy('created_at', 'desc')
-                                ->take(11)
-                                ->get(['nilai_sensor', 'created_at'])
-                        )
-                            ->reverse()
-                            ->values()
-                            ->map(fn($row) => [
-                                'nilai' => (float) $row->nilai_sensor,
-                                'waktu' => Carbon::parse($row->created_at)->format('H:i'),
-                            ]);
-                    }
+                    $grafikKelembapan[$r->nama_ruangan] = collect(
+                        NilaiSensorModel::where('id_sensor', $firstKelembapan->id_sensor)
+                            ->orderBy('created_at', 'desc')
+                            ->take(11)
+                            ->get(['nilai_sensor', 'created_at'])
+                    )
+                        ->reverse()
+                        ->values()
+                        ->map(fn($row) => [
+                            'nilai' => (float) $row->nilai_sensor,
+                            'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+                        ]);
                 }
             } else {
                 if ($sensorSuhuList->isNotEmpty()) {
                     $firstSuhu = $sensorSuhuList->first();
-                    $firstSuhuId = is_object($firstSuhu) ? ($firstSuhu->id_sensor ?? null) : ($firstSuhu['id_sensor'] ?? null);
-                    if ($firstSuhuId) {
-                        $latestDate = NilaiSensorModel::where('id_sensor', $firstSuhuId)
-                            ->whereTime('created_at', '>=', '07:00:00')
-                            ->whereTime('created_at', '<=', '10:00:00')
-                            ->latest('created_at')
-                            ->value('created_at');
+                    $latestDate = NilaiSensorModel::where('id_sensor', $firstSuhu->id_sensor)
+                        ->whereTime('created_at', '>=', '07:00:00')
+                        ->whereTime('created_at', '<=', '10:00:00')
+                        ->latest('created_at')
+                        ->value('created_at');
 
-                        if ($latestDate) {
-                            $grafikBleaching[$r->nama_ruangan] = collect(
-                                NilaiSensorModel::where('id_sensor', $firstSuhuId)
-                                    ->whereDate('created_at', Carbon::parse($latestDate)->format('Y-m-d'))
-                                    ->whereTime('created_at', '>=', '07:00:00')
-                                    ->whereTime('created_at', '<=', '10:00:00')
-                                    ->orderBy('created_at', 'asc')
-                                    ->get(['nilai_sensor', 'created_at'])
-                            )
-                                ->map(fn($row) => [
-                                    'nilai' => (float) $row->nilai_sensor,
-                                    'waktu' => Carbon::parse($row->created_at)->format('H:i'),
-                                ]);
-                        }
+                    if ($latestDate) {
+                        $grafikBleaching[$r->nama_ruangan] = collect(
+                            NilaiSensorModel::where('id_sensor', $firstSuhu->id_sensor)
+                                ->whereDate('created_at', Carbon::parse($latestDate)->format('Y-m-d'))
+                                ->whereTime('created_at', '>=', '07:00:00')
+                                ->whereTime('created_at', '<=', '10:00:00')
+                                ->orderBy('created_at', 'asc')
+                                ->get(['nilai_sensor', 'created_at'])
+                        )
+                            ->map(fn($row) => [
+                                'nilai' => (float) $row->nilai_sensor,
+                                'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+                            ]);
                     }
                 }
             }
