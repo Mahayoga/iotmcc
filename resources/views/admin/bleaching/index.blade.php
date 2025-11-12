@@ -53,17 +53,14 @@
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
               <div>
                 <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
-                <small class="text-muted">Perubahan suhu dalam 11 data terakhir</small>
+                <small class="text-muted">Perubahan suhu dalam alat bleaching</small>
               </div>
-              <button type="button" class="btn btn-secondary" onclick="resetZoomChart()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
-              </button>
             </div>
 
             <div class="card-body">
-              <canvas id="chartSuhu" height="150"></canvas>
+              <div id="chartSuhu"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan 11 data terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu">-</span> data terakhir</small>
               </div>
             </div>
           </div>
@@ -112,61 +109,39 @@
               </div>
             </div>
           </div>
-
+        </div>
+      </div>
+    </div>
   </main>
 @endsection
 
 @section('script')
-
   <script>
+    let apexSuhu = null;
 
-    function resetZoomChart() {
-      suhuChart.resetZoom();
-    }
-
-    const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
-
-    let suhuChart = new Chart(ctxSuhu, {
-      type: 'line',
-      data: {
-        datasets: [{
-          label: "Suhu (°C)",
-          data: [],
-          backgroundColor: '#C8F76A33',
-          borderColor: '#C8F76A',
-          pointBorderColor: '#0f172abf',
-          fill: true
+    function initializeCharts() {
+      let options = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        series: [{
+          name: 'Suhu (°C)',
+          data: []
         }],
-        labels: []
-      },
-
-      options: {
-        responsive: true,
-        scales: {
-          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
-          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        xaxis: {
+          categories: []
         },
-        animation: {
-          duration: 800,
+        stroke: {
+          curve: 'smooth'
         },
-        plugins: {
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true
-              },
-              drag: {
-                enabled: true
-              },
-              mode: 'xy',
-            }
-          }
-        }
+        markers: {
+          size: 5
+        },
       }
-    });
+      apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
+      apexSuhu.render();
+    }
 
     function getDataSensor() {
       $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
@@ -209,15 +184,24 @@
         let waktuData = data.dataWaktuSensor.find(e => e.flag_sensor === 'suhu_1');
 
         if (suhuData && waktuData) {
-          suhuChart.data.labels = waktuData.value.reverse();
-          suhuChart.data.datasets[0].data = suhuData.value.reverse().map(v => parseFloat(v));
-          suhuChart.update();
+          let suhuValues = suhuData.value.map(v => parseFloat(v));
+          
+          apexSuhu.updateOptions({
+            series: [{
+              name: 'Suhu (°C)',
+              data: suhuValues
+            }],
+            xaxis: {
+              categories: waktuData.value
+            }
+          });
+
+          $('#total-suhu').text(suhuValues.length);
         }
       });
     }
 
-    //rada ngawur
-   function getDataTimer() {
+    function getDataTimer() {
       $.get('{{ route('alat-bleaching.getDataTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function (res) {
         if (res.status && res.dataTimer.length > 0) {
           let timer = res.dataTimer[0];
@@ -247,7 +231,6 @@
               $('#waktu-selesai').text(waktuSelesai.toLocaleTimeString('id-ID'));
             }
           } else {
-            // Tidak ada timer yang diset
             $('#status-proses')
               .text('Menunggu')
               .removeClass()
@@ -256,7 +239,6 @@
             $('#waktu-selesai').text('-');
           }
         } else {
-          // Tidak ada data
           updateDisplay(0);
           $('#waktu-mulai').text('-');
           $('#waktu-selesai').text('-');
@@ -284,7 +266,6 @@
         return;
       }
 
-    
       $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
 
       $.ajax({
@@ -315,10 +296,11 @@
       });
     });
 
-    setInterval(getDataSensor, 1000);
-    setInterval(getDataTimer, 1000);
-    
+    initializeCharts();
     getDataSensor();
-    getDataTimer();
+    //getDataTimer();
+    setInterval(getDataSensor, 60000);
+    //setInterval(getDataTimer, 1000);
+
   </script>
 @endsection
