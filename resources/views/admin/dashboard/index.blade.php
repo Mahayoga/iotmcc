@@ -118,7 +118,7 @@
               <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
               <small class="text-muted">Perubahan Suhu Alat (Jam 7-10 Pagi dengan Interval 5 Menit)</small>
             </div>
-            <div class="card-body" style="height: 350px;">
+            <div class="card-body">
               <div id="chartBleaching" style="width:100%; height:100%;"></div>
             </div>
           </div>
@@ -131,7 +131,7 @@
               <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruangan</h5>
               <small class="text-muted">Fermentasi & Pengeringan</small>
             </div>
-            <div class="card-body" style="height: 300px;">
+            <div class="card-body">
               <div id="chartSuhu" style="width:100%; height:100%;"></div>
             </div>
           </div>
@@ -144,7 +144,7 @@
               <h5 class="card-title mb-1 mt-2">Grafik Kelembapan</h5>
               <small class="text-muted">Fermentasi & Pengeringan</small>
             </div>
-            <div class="card-body" style="height: 300px;">
+            <div class="card-body">
               <div id="chartKelembapan" style="width:100%; height:100%;"></div>
             </div>
           </div>
@@ -170,7 +170,7 @@
 
         new ApexCharts(document.querySelector("#chartBleaching"), {
           chart: { type: 'line', height: 330, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
-          stroke: { curve: 'monotoneCubic', width: 3 },
+          stroke: { curve: 'smooth', width: 3 },
           markers: { size: 4, strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
           series: series,
           xaxis: { categories: labels, labels: { rotate: -45 } },
@@ -189,7 +189,7 @@
 
         new ApexCharts(document.querySelector("#chartSuhu"), {
           chart: { type: 'line', height: 280, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
-          stroke: { curve: 'monotoneCubic', width: 3 },
+          stroke: { curve: 'smooth', width: 3 },
           markers: { size: 4, strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
           series: series,
           xaxis: { categories: labels, labels: { rotate: -45 } },
@@ -208,7 +208,7 @@
 
         new ApexCharts(document.querySelector("#chartKelembapan"), {
           chart: { type: 'line', height: 280, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
-          stroke: { curve: 'monotoneCubic', width: 3 },
+          stroke: { curve: 'msmooth', width: 3 },
           markers: { size: 4, strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
           series: series,
           xaxis: { categories: labels, labels: { rotate: -45 } },
