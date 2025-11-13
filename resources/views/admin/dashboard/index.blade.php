@@ -5,7 +5,7 @@
 @section('content')
   <main class="admin-main">
     <div class="container-fluid p-4 p-lg-5">
-      <!-- Page Header -->
+
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 class="h3 mb-0">Dashboard</h1>
@@ -13,6 +13,7 @@
         </div>
       </div>
 
+      {{-- rekap ruang gudang --}}
       <div class="row g-4 mb-4">
         <div class="col-12">
           <div class="card border-0 shadow-sm" style="border-radius: 18px;">
@@ -21,7 +22,7 @@
               <small class="text-muted">Pantauan Kondisi di Setiap Ruang Gudang Vanili</small>
             </div>
 
-            {{-- card belaching --}}
+            {{-- card bleaching --}}
             <div class="card-body">
               <div class="row gy-4">
                 <div class="col-xl-4 col-md-6">
@@ -107,21 +108,22 @@
         </div>
       </div>
 
+      {{-- bagian grafik --}}
       <div class="row mt-4">
-        
-        {{-- grafik alat bleaching --}}
+
+        {{-- grafik bleaching --}}
         <div class="col-12 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
               <small class="text-muted">Perubahan Suhu Alat (Jam 7-10 Pagi dengan Interval 5 Menit)</small>
             </div>
-            <div class="card-body" style="height: 400px;">
+            <div class="card-body" style="height: 350px;">
               <div id="chartBleaching" style="width:100%; height:100%;"></div>
             </div>
           </div>
         </div>
-         
+
         {{-- grafik suhu --}}
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
@@ -129,7 +131,7 @@
               <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruangan</h5>
               <small class="text-muted">Fermentasi & Pengeringan</small>
             </div>
-            <div class="card-body" style="height: 350px;">
+            <div class="card-body" style="height: 300px;">
               <div id="chartSuhu" style="width:100%; height:100%;"></div>
             </div>
           </div>
@@ -142,7 +144,7 @@
               <h5 class="card-title mb-1 mt-2">Grafik Kelembapan</h5>
               <small class="text-muted">Fermentasi & Pengeringan</small>
             </div>
-            <div class="card-body" style="height: 350px;">
+            <div class="card-body" style="height: 300px;">
               <div id="chartKelembapan" style="width:100%; height:100%;"></div>
             </div>
           </div>
@@ -151,17 +153,15 @@
     </div>
   </main>
 
+  {{-- apexcharts --}}
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const grafikSuhu = @json($grafikSuhu ?? []);
       const grafikKelembapan = @json($grafikKelembapan ?? []);
       const grafikBleaching = @json($grafikBleaching ?? []);
 
-      console.log("📊 Data grafikBleaching:", grafikBleaching);
-      console.log("📊 Data grafikSuhu:", grafikSuhu);
-      console.log("📊 Data grafikKelembapan:", grafikKelembapan);
-
-      // grafik alat bleaching
+      // grafik bleaching
       if (Object.keys(grafikBleaching).length > 0) {
         const labels = grafikBleaching[Object.keys(grafikBleaching)[0]].map(i => i.waktu);
         const series = Object.entries(grafikBleaching).map(([nama, data]) => ({
@@ -169,8 +169,9 @@
         }));
 
         new ApexCharts(document.querySelector("#chartBleaching"), {
-          chart: { type: 'line', height: 400, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
-          stroke: { curve: 'smooth', width: 3 },
+          chart: { type: 'line', height: 330, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
+          stroke: { curve: 'monotoneCubic', width: 3 },
+          markers: { size: 4, strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
           series: series,
           xaxis: { categories: labels, labels: { rotate: -45 } },
           yaxis: { title: { text: 'Suhu (°C)' } },
@@ -187,8 +188,9 @@
         }));
 
         new ApexCharts(document.querySelector("#chartSuhu"), {
-          chart: { type: 'line', height: 350, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
-          stroke: { curve: 'smooth', width: 3 },
+          chart: { type: 'line', height: 280, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
+          stroke: { curve: 'monotoneCubic', width: 3 },
+          markers: { size: 4, strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
           series: series,
           xaxis: { categories: labels, labels: { rotate: -45 } },
           yaxis: { title: { text: 'Suhu (°C)' } },
@@ -197,7 +199,7 @@
         }).render();
       }
 
-      // grafik kelembaban
+      // grafik kelembapan
       if (Object.keys(grafikKelembapan).length > 0) {
         const labels = grafikKelembapan[Object.keys(grafikKelembapan)[0]].map(i => i.waktu);
         const series = Object.entries(grafikKelembapan).map(([nama, data]) => ({
@@ -205,8 +207,9 @@
         }));
 
         new ApexCharts(document.querySelector("#chartKelembapan"), {
-          chart: { type: 'line', height: 350, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
-          stroke: { curve: 'smooth', width: 3 },
+          chart: { type: 'line', height: 280, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
+          stroke: { curve: 'monotoneCubic', width: 3 },
+          markers: { size: 4, strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
           series: series,
           xaxis: { categories: labels, labels: { rotate: -45 } },
           yaxis: { title: { text: 'Kelembapan (%)' } },
