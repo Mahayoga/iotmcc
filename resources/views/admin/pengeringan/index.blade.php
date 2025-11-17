@@ -320,15 +320,13 @@
     let apexSuhuDanKelembaban = null;
 
     function initializeCharts() {
-      // Options untuk grafik Suhu
-      let optionsSuhu = {
+      let options = {
         chart: {
           type: 'line',
           height: '350px',
         },
-        colors: ['#C8F76A'], // Warna untuk Suhu (hijau terang)
         series: [{
-          name: 'Suhu (°C)',
+          name: '?',
           data: []
         }],
         xaxis: {
@@ -340,83 +338,16 @@
         markers: {
           size: 5
         },
-        dataLabels: {
-          enabled: false
-        }
       }
-
-      // Options untuk grafik Kelembaban
-      let optionsKelembaban = {
-        chart: {
-          type: 'line',
-          height: '350px',
-        },
-        colors: ['#008FFB'], // Warna untuk Kelembaban (biru)
-        series: [{
-          name: 'Kelembaban (%)',
-          data: []
-        }],
-        xaxis: {
-          categories: []
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        markers: {
-          size: 5
-        },
-        dataLabels: {
-          enabled: false
-        }
-      }
-
-      // Options untuk grafik Suhu dan Kelembaban (kombinasi)
-      let optionsSuhuDanKelembaban = {
-        chart: {
-          type: 'line',
-          height: '350px',
-        },
-        colors: ['#008FFB', '#C8F76A'], // Warna untuk kedua series
-        series: [{
-          name: 'Kelembaban (%)',
-          data: []
-        }, {
-          name: 'Suhu (°C)',
-          data: []
-        }],
-        xaxis: {
-          categories: []
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        markers: {
-          size: 5
-        },
-        dataLabels: {
-          enabled: false
-        },
-        yaxis: [{
-          title: {
-            text: 'Kelembaban (%)'
-          }
-        }, {
-          opposite: true,
-          title: {
-            text: 'Suhu (°C)'
-          }
-        }]
-      }
-
-      apexSuhu = new ApexCharts($('#chartSuhu')[0], optionsSuhu);
-      apexKelembaban = new ApexCharts($('#chartKelembaban')[0], optionsKelembaban);
-      apexSuhuDanKelembaban = new ApexCharts($('#chartSuhuDanKelembaban')[0], optionsSuhuDanKelembaban);
+      apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
+      apexKelembaban = new ApexCharts($('#chartKelembaban')[0], options);
+      apexSuhuDanKelembaban = new ApexCharts($('#chartSuhuDanKelembaban')[0], options);
 
       apexSuhu.render();
       apexKelembaban.render();
       apexSuhuDanKelembaban.render();
     }
-
+    
     function getDataSensor() {
       $.get('{{ route('ruang-pengeringan.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
 

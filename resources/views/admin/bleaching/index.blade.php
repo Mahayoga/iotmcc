@@ -125,7 +125,6 @@ function initializeCharts() {
       type: 'line',
       height: '350px',
     },
-    colors: ['#C8F76A'],
     series: [{
       name: 'Suhu (°C)',
       data: []
