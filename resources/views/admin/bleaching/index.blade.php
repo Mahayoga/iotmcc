@@ -119,29 +119,33 @@
   <script>
     let apexSuhu = null;
 
-    function initializeCharts() {
-      let options = {
-        chart: {
-          type: 'line',
-          height: '350px',
-        },
-        series: [{
-          name: 'Suhu (°C)',
-          data: []
-        }],
-        xaxis: {
-          categories: []
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        markers: {
-          size: 5
-        },
-      }
-      apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
-      apexSuhu.render();
+function initializeCharts() {
+  let options = {
+    chart: {
+      type: 'line',
+      height: '350px',
+    },
+    colors: ['#C8F76A'],
+    series: [{
+      name: 'Suhu (°C)',
+      data: []
+    }],
+    xaxis: {
+      categories: []
+    },
+    stroke: {
+      curve: 'smooth'
+    },
+    markers: {
+      size: 5
+    },
+    dataLabels: {
+      enabled: false
     }
+  }
+  apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
+  apexSuhu.render();
+}
 
     function getDataSensor() {
       $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
@@ -298,9 +302,9 @@
 
     initializeCharts();
     getDataSensor();
-    //getDataTimer();
+    getDataTimer();
     setInterval(getDataSensor, 60000);
-    //setInterval(getDataTimer, 1000);
+    setInterval(getDataTimer, 1000);
 
   </script>
 @endsection
