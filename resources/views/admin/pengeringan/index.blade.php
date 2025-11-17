@@ -144,7 +144,7 @@
           <div class="card-header bg-transparent border-0 position-relative text-center">
             <div>
               <h5 class="card-title mb-1 mt-2 fw-semibold">Daftar Blower</h5>
-              <small class="text-muted">Indikator Operasional Blower (Total 8 Unit)</small>
+              <small class="text-muted">Indikator Operasional Blower (Total 8 Unit - 2 Aktif, 6 Tidak Digunakan)</small>
             </div>
             <div class="position-absolute bottom-0 end-0 mb-2 me-3"
               style="border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.25rem 0.5rem; background-color: #f8f9fa;">
@@ -164,21 +164,28 @@
                 @for ($i = 1; $i <= 4; $i++)
                   <div class="col-md-3 mb-2">
                     <div
-                      class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
-                      style="background:#f8f9fa;">
+                      class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100 {{ $i > 2 ? 'blower-disabled' : '' }}"
+                      style="background:{{ $i > 2 ? '#e9ecef' : '#f8f9fa' }};">
                       <div class="d-flex flex-column align-items-center mb-3">
-                        <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
-                        <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
+                        <i id="blower-{{ $i }}" class="bi bi-fan mb-2"
+                          style="font-size: 2rem; color: {{ $i > 2 ? '#adb5bd' : 'gray' }};"></i>
+                        <h6 class="mb-0 fw-semibold {{ $i > 2 ? 'text-secondary' : 'text-muted' }}">Blower {{ $i }}</h6>
                       </div>
 
-                      <div class="d-flex flex-column align-items-center">
-                        <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
-                          data-id="{{ $i }}" style="margin:0;">
-                        <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
-                          for="switch-{{ $i }}">
-                          Mati
-                        </label>
-                      </div>
+                      @if($i <= 2)
+                        <div class="d-flex flex-column align-items-center">
+                          <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
+                            data-id="{{ $i }}" style="margin:0;">
+                          <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
+                            for="switch-{{ $i }}">
+                            Mati
+                          </label>
+                        </div>
+                      @else
+                        <div class="d-flex flex-column align-items-center">
+                          <span class="badge bg-secondary px-3 py-2">Not Use</span>
+                        </div>
+                      @endif
                     </div>
                   </div>
                 @endfor
@@ -189,20 +196,15 @@
                 @for ($i = 5; $i <= 8; $i++)
                   <div class="col-md-3 mb-2">
                     <div
-                      class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
-                      style="background:#f8f9fa;">
+                      class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100 blower-disabled"
+                      style="background:#e9ecef;">
                       <div class="d-flex flex-column align-items-center mb-3">
-                        <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
-                        <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
+                        <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: #adb5bd;"></i>
+                        <h6 class="mb-0 fw-semibold text-secondary">Blower {{ $i }}</h6>
                       </div>
 
                       <div class="d-flex flex-column align-items-center">
-                        <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
-                          data-id="{{ $i }}" style="margin:0;">
-                        <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
-                          for="switch-{{ $i }}">
-                          Mati
-                        </label>
+                        <span class="badge bg-secondary px-3 py-2">Not Use</span>
                       </div>
                     </div>
                   </div>
@@ -222,7 +224,11 @@
                 <span class="badge bg-secondary me-2" style="width:15px; height:15px;">&nbsp;</span>
                 Blower Mati
               </p>
-              <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower</small>
+              <p class="mb-1">
+                <span class="badge bg-secondary me-2" style="width:15px; height:15px; opacity: 0.6;">&nbsp;</span>
+                Blower Tidak Digunakan
+              </p>
+              <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower aktif (Blower 1-2)</small>
             </div>
           </div>
         </div>
@@ -242,6 +248,16 @@
         border-color: #6EA017 !important;
         background-image: linear-gradient(to right, #A9DA2E, #6EA017);
         transition: background-color 0.3s, border-color 0.3s;
+      }
+
+      .blower-disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      .blower-disabled .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
       }
     </style>
 
@@ -270,7 +286,7 @@
       });
     });
 
-    // Event tombol “Hidupkan Semua”
+    // Event tombol 
     const switchAll = document.getElementById('switch-all');
     switchAll.addEventListener('change', function () {
       const allSwitches = document.querySelectorAll('.blower-switch');
@@ -278,20 +294,20 @@
       allSwitches.forEach((switchEl) => {
         if (switchEl.checked !== turnOn) switchEl.click();
       });
-      this.nextElementSibling.textContent = turnOn ? 'switch of' : 'switch on';
+      this.nextElementSibling.textContent = turnOn ? 'switch off' : 'switch all';
     });
 
     // Animasi kipas
     const style = document.createElement('style');
     style.innerHTML = `
-        .bi-fan-spin {
-          animation: spin 1s linear infinite;
-          }
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `;
+      .bi-fan-spin {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `;
     document.head.appendChild(style);
 
     // const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
@@ -299,107 +315,107 @@
     // const ctxSuhuDanKelembaban = document.getElementById('chartSuhuDanKelembaban')?.getContext('2d');
 
     //inisialisasi grafik
-let apexSuhu = null;
-let apexKelembaban = null;
-let apexSuhuDanKelembaban = null;
+    let apexSuhu = null;
+    let apexKelembaban = null;
+    let apexSuhuDanKelembaban = null;
 
-function initializeCharts() {
-  // Options untuk grafik Suhu
-  let optionsSuhu = {
-    chart: {
-      type: 'line',
-      height: '350px',
-    },
-    colors: ['#C8F76A'], // Warna untuk Suhu (hijau terang)
-    series: [{
-      name: 'Suhu (°C)',
-      data: []
-    }],
-    xaxis: {
-      categories: []
-    },
-    stroke: {
-      curve: 'smooth'
-    },
-    markers: {
-      size: 5
-    },
-    dataLabels: {
-      enabled: false
-    }
-  }
-
-  // Options untuk grafik Kelembaban
-  let optionsKelembaban = {
-    chart: {
-      type: 'line',
-      height: '350px',
-    },
-    colors: ['#008FFB'], // Warna untuk Kelembaban (biru)
-    series: [{
-      name: 'Kelembaban (%)',
-      data: []
-    }],
-    xaxis: {
-      categories: []
-    },
-    stroke: {
-      curve: 'smooth'
-    },
-    markers: {
-      size: 5
-    },
-    dataLabels: {
-      enabled: false
-    }
-  }
-
-  // Options untuk grafik Suhu dan Kelembaban (kombinasi)
-  let optionsSuhuDanKelembaban = {
-    chart: {
-      type: 'line',
-      height: '350px',
-    },
-    colors: ['#008FFB', '#C8F76A'], // Warna untuk kedua series
-    series: [{
-      name: 'Kelembaban (%)',
-      data: []
-    }, {
-      name: 'Suhu (°C)',
-      data: []
-    }],
-    xaxis: {
-      categories: []
-    },
-    stroke: {
-      curve: 'smooth'
-    },
-    markers: {
-      size: 5
-    },
-    dataLabels: {
-      enabled: false
-    },
-    yaxis: [{
-      title: {
-        text: 'Kelembaban (%)'
+    function initializeCharts() {
+      // Options untuk grafik Suhu
+      let optionsSuhu = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        colors: ['#C8F76A'], // Warna untuk Suhu (hijau terang)
+        series: [{
+          name: 'Suhu (°C)',
+          data: []
+        }],
+        xaxis: {
+          categories: []
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        markers: {
+          size: 5
+        },
+        dataLabels: {
+          enabled: false
+        }
       }
-    }, {
-      opposite: true,
-      title: {
-        text: 'Suhu (°C)'
+
+      // Options untuk grafik Kelembaban
+      let optionsKelembaban = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        colors: ['#008FFB'], // Warna untuk Kelembaban (biru)
+        series: [{
+          name: 'Kelembaban (%)',
+          data: []
+        }],
+        xaxis: {
+          categories: []
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        markers: {
+          size: 5
+        },
+        dataLabels: {
+          enabled: false
+        }
       }
-    }]
-  }
 
-  apexSuhu = new ApexCharts($('#chartSuhu')[0], optionsSuhu);
-  apexKelembaban = new ApexCharts($('#chartKelembaban')[0], optionsKelembaban);
-  apexSuhuDanKelembaban = new ApexCharts($('#chartSuhuDanKelembaban')[0], optionsSuhuDanKelembaban);
+      // Options untuk grafik Suhu dan Kelembaban (kombinasi)
+      let optionsSuhuDanKelembaban = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        colors: ['#008FFB', '#C8F76A'], // Warna untuk kedua series
+        series: [{
+          name: 'Kelembaban (%)',
+          data: []
+        }, {
+          name: 'Suhu (°C)',
+          data: []
+        }],
+        xaxis: {
+          categories: []
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        markers: {
+          size: 5
+        },
+        dataLabels: {
+          enabled: false
+        },
+        yaxis: [{
+          title: {
+            text: 'Kelembaban (%)'
+          }
+        }, {
+          opposite: true,
+          title: {
+            text: 'Suhu (°C)'
+          }
+        }]
+      }
 
-  apexSuhu.render();
-  apexKelembaban.render();
-  apexSuhuDanKelembaban.render();
-}
+      apexSuhu = new ApexCharts($('#chartSuhu')[0], optionsSuhu);
+      apexKelembaban = new ApexCharts($('#chartKelembaban')[0], optionsKelembaban);
+      apexSuhuDanKelembaban = new ApexCharts($('#chartSuhuDanKelembaban')[0], optionsSuhuDanKelembaban);
+
+      apexSuhu.render();
+      apexKelembaban.render();
+      apexSuhuDanKelembaban.render();
+    }
 
     function getDataSensor() {
       $.get('{{ route('ruang-pengeringan.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
