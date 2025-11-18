@@ -91,7 +91,7 @@
       {{-- Grafik Monitoring Suhu dan Kelembapan --}}
       <div class="row mt-4">
         <!-- Grafik Suhu -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
               <div>
@@ -105,7 +105,7 @@
             <div class="card-body" style="height: 400px;">
               <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -113,7 +113,7 @@
         </div>
 
         <!-- Grafik Kelembapan -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
               <div>
@@ -127,7 +127,7 @@
             <div class="card-body" style="height: 400px;">
               <canvas id="chartKelembaban" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah <span id="total-kelembaban">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-kelembaban">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -150,7 +150,49 @@
             <div class="card-body" style="height: 400px;">
               <canvas id="chartSuhuDanKelembaban" style="width:100%; height:90%;"></canvas>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu-dan-kelembaban">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu-dan-kelembaban">-</span> data
+                  terakhir</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Std Dev Suhu -->
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Kestabilan Suhu dalam Ruangan</h5>
+                <small class="text-muted">Seberapa stabil suhu di ruang fermentasi</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="chartStddevSuhu"></div>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-suhu">-</span> data
+                  terakhir</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Std Dev Kelembaban -->
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Kestabilan Kelembaban dalam Ruangan</h5>
+                <small class="text-muted">Seberapa stabil kelembaban di ruang fermentasi</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="chartStddevKelembaban"></div>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-kelembaban">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -163,9 +205,14 @@
 
 @section('script')
   <script>
-    const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
-    const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
-    const ctxSuhuDanKelembaban = document.getElementById('chartSuhuDanKelembaban')?.getContext('2d');
+    // const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
+    // const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
+    // const ctxSuhuDanKelembaban = document.getElementById('chartSuhuDanKelembaban')?.getContext('2d');
+    let apexSuhu = null;
+    let apexKelembaban = null;
+    let apexSuhuDanKelembaban = null;
+    let apexStddevSuhu = null;
+    let apexStddevKelembaban = null;
 
     let suhuChart = new Chart(ctxSuhu, {
       type: 'line',
@@ -178,159 +225,53 @@
           pointBorderColor: '#0f172abf',
           fill: true
         }],
-        labels: []
-      },
-
-      options: {
-        responsive: true,
-        scales: {
-          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
-          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        xaxis: {
+          categories: []
         },
-        animation: {
-          duration: 800,
+        stroke: {
+          curve: 'smooth'
         },
-        plugins: {
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true
-              },
-              drag: {
-                enabled: true
-              },
-              mode: 'xy',
-            }
-          }
-        }
+        markers: {
+          size: 5
+        },
       }
-    });
-
-    let kelembabanChart = new Chart(ctxKelembaban, {
-      type: 'line',
-      data: {
-        datasets: [{
-          label: "Kelembaban (%)",
-          data: [],
-          backgroundColor: '#C8F76A33',
-          borderColor: '#C8F76A',
-          pointBorderColor: '#0f172abf',
-          fill: true
+      let options2 = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        series: [{
+          name: '?',
+          data: []
         }],
-        labels: []
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { title: { display: true, text: 'Kelembaban (%)', color: '#888' }, beginAtZero: true },
-          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        xaxis: {
+          type: 'datetime',
+          categories: []
         },
-        animation: {
-          duration: 800,
+        stroke: {
+          curve: 'smooth'
         },
-        plugins: {
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true
-              },
-              drag: {
-                enabled: true
-              },
-              mode: 'xy',
-            }
-          }
-        }
+        markers: {
+          size: 5
+        },
       }
-    });
+      apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
+      apexKelembaban = new ApexCharts($('#chartKelembaban')[0], options);
+      apexSuhuDanKelembaban = new ApexCharts($('#chartSuhuDanKelembaban')[0], options);
+      apexStddevSuhu = new ApexCharts($('#chartStddevSuhu')[0], options2);
+      apexStddevKelembaban = new ApexCharts($('#chartStddevKelembaban')[0], options2);
 
-    let suhuDanKelembabanChart = new Chart(ctxSuhuDanKelembaban, {
-      type: 'line',
-      data: {
-        datasets: [
-          {
-            label: "Kelembaban (%)",
-            data: [],
-            backgroundColor: 'rgba(135, 206, 235, 0.25)', 
-            borderColor: 'rgba(135, 206, 235, 0.8)',
-            pointBorderColor: '#0f172abf',
-            fill: true
-          },
-          {
-            label: "Suhu (°C)",
-            data: [],
-            backgroundColor: 'rgba(255, 182, 193, 0.25)', 
-            borderColor: 'rgba(255, 182, 193, 0.8)',
-            pointBorderColor: '#0f172abf',
-            fill: true
-          }
-        ],
-        labels: []
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            title: {
-              display: true,
-              text: 'Data Suhu dan Kelembaban',
-              color: '#666'
-            },
-            beginAtZero: true,
-            grid: { color: 'rgba(200,200,200,0.2)' }
-          },
-          x: {
-            title: {
-              display: true,
-              text: 'Waktu',
-              color: '#666'
-            },
-            grid: { color: 'rgba(200,200,200,0.2)' }
-          }
-        },
-        animation: { duration: 800 },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#444',
-              font: { size: 13 }
-            }
-          },
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true
-              },
-              drag: {
-                enabled: true
-              },
-              mode: 'xy',
-            }
-          }
-        }
-      }
-    });
+      apexSuhu.render();
+      apexKelembaban.render();
+      apexSuhuDanKelembaban.render();
+      apexStddevSuhu.render();
+      apexStddevKelembaban.render();
 
-    // Fungsi Reset Zoom
-    function resetZoomSuhu() {
-      suhuChart.resetZoom();
-    }
-
-    function resetZoomKelembaban() {
-      kelembabanChart.resetZoom();
-    }
-
-    function resetZoomPerbandingan() {
-      suhuDanKelembabanChart.resetZoom();
+      apexSuhu.updateSeries([]);
+      apexKelembaban.updateSeries([]);
+      apexSuhuDanKelembaban.updateSeries([]);
+      apexStddevSuhu.updateSeries([]);
+      apexStddevKelembaban.updateSeries([]);
     }
 
     function getDataSensor() {
@@ -340,44 +281,121 @@
         if (data.status == true) {
           let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
           let classListKelembaban = document.getElementById('status-kelembaban-ruangan').classList;
+          apexSuhu.updateSeries([]);
+          apexKelembaban.updateSeries([]);
+          apexSuhuDanKelembaban.updateSeries([]);
+          apexStddevSuhu.updateSeries([]);
+          apexStddevKelembaban.updateSeries([]);
 
-          let suhuTotal = 0;
-          let totalDataSuhu = 0;
-          let kelTotal = 0;
-          let totalDataKel = 0;
+          apexSuhu.updateOptions({
+            xaxis: {
+              categories: data.dataWaktuSensor[0].value
+            }
+          });
+          apexKelembaban.updateOptions({
+            xaxis: {
+              categories: data.dataWaktuSensor[0].value
+            }
+          });
+          apexSuhuDanKelembaban.updateOptions({
+            xaxis: {
+              categories: data.dataWaktuSensor[0].value
+            }
+          });
+          apexStddevSuhu.updateOptions({
+            yaxis: { title: { text: 'Std Dev Suhu' } },
+            annotations: {
+              yaxis: [
+                { y: 1.0, borderColor: '#d40624', label: { text: 'batas kestabilan suhu' }},
+              ],
+            }
+          });
+          apexStddevKelembaban.updateOptions({
+            yaxis: { title: { text: 'Std Dev Kelembaban' } },
+            annotations: {
+              yaxis: [
+                { y: 5.0, borderColor: '#d40624', label: { text: 'batas kestabilan kelembaban' }},
+              ],
+            }
+          });
+          // $('#total-suhu').text(dataResultSuhuTemp.length);
+          // $('#total-kelembaban').text(dataResultKelTemp.length);
+          // $('#total-suhu-dan-kelembaban').text(dataResultSuhuTemp.length);
+          // { y2: 5.0, borderColor: '#d40624', label: { text: 'batas kestabilan kelembaban' }}
+
           data.dataSensor.forEach(element => {
-            if (element.flag_sensor.includes('suhu')) {
-              element.value.forEach(element2 => {
-                suhuTotal += parseFloat(element2);
-                totalDataSuhu += 1;
+            $('#total-suhu').text(element.value.length);
+            $('#total-kelembaban').text(element.value.length);
+            $('#total-suhu-dan-kelembaban').text(element.value.length);
+            $('#total-stddev-suhu').text(element.value.length);
+            $('#total-stddev-kelembaban').text(element.value.length);
+            if(element.flag_sensor == 'suhu_1') {
+              apexSuhu.appendSeries({
+                name: 'Suhu 1 (°C)',
+                data: element.value
+              });
+              apexSuhuDanKelembaban.appendSeries({
+                name: 'Suhu 1 (°C)',
+                data: element.value
+              });
+              apexStddevSuhu.appendSeries({
+                name: "Suhu 1 (stddev)",
+                data: element.stddev
+              });
+            } else if(element.flag_sensor == 'kelembaban_1') {
+              apexKelembaban.appendSeries({
+                name: 'Kelembaban 1 (%)',
+                data: element.value
+              });
+              apexSuhuDanKelembaban.appendSeries({
+                name: 'Kelembaban 1 (%)',
+                data: element.value
+              });
+              apexStddevKelembaban.appendSeries({
+                name: "Kelembaban 1 (stddev)",
+                data: element.stddev
+              });
+            } else if(element.flag_sensor == 'suhu_2') {
+              apexSuhu.appendSeries({
+                name: 'Suhu 2 (°C)',
+                data: element.value
+              });
+              apexSuhuDanKelembaban.appendSeries({
+                name: 'Suhu 2 (°C)',
+                data: element.value
+              });
+              apexStddevSuhu.appendSeries({
+                name: "Suhu 2 (stddev)",
+                data: element.stddev
+              });
+            } else if(element.flag_sensor == 'kelembaban_2') {
+              apexKelembaban.appendSeries({
+                name: 'Kelembaban 2 (%)',
+                data: element.value
+              });
+              apexSuhuDanKelembaban.appendSeries({
+                name: 'Kelembaban 2 (%)',
+                data: element.value
+              });
+              apexStddevKelembaban.appendSeries({
+                name: "Kelembaban 2 (stddev)",
+                data: element.stddev
               });
             }
           });
 
-          data.dataSensor.forEach(element => {
-            if (element.flag_sensor.includes('kelembaban')) {
-              element.value.forEach(element2 => {
-                kelTotal += parseFloat(element2);
-                totalDataKel += 1;
-              });
-            }
-          });
+          $('#suhu-rata-rata')[0].innerHTML = data.currentSuhu;
+          $('#kelembaban-rata-rata')[0].innerHTML = data.currentKelembaban;
 
-          let rataRataSuhu = (suhuTotal / totalDataSuhu).toFixed(2);
-          let rataRataKel = (kelTotal / totalDataKel).toFixed(2);
-
-          $('#suhu-rata-rata')[0].innerHTML = rataRataSuhu;
-          $('#kelembaban-rata-rata')[0].innerHTML = rataRataKel;
-
-          if (rataRataSuhu > 20 && rataRataSuhu < 30) {
+          if (parseFloat(data.currentSuhu) > 20 && parseFloat(data.currentSuhu) < 30) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-success');
-          } else if (rataRataSuhu > 30 && rataRataSuhu < 50) {
+          } else if (parseFloat(data.currentSuhu) > 30 && parseFloat(data.currentSuhu) < 50) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-warning');
-          } else if (rataRataSuhu > 50 && rataRataSuhu < 100) {
+          } else if (parseFloat(data.currentSuhu) > 50 && parseFloat(data.currentSuhu) < 100) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-danger');
@@ -387,15 +405,15 @@
             classListSuhu.add('text-warning');
           }
 
-          if (rataRataKel > 80) {
+          if (parseFloat(data.currentKelembaban) > 80) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Normal';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-success');
-          } else if (rataRataKel > 60) {
+          } else if (parseFloat(data.currentKelembaban) > 60) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Peringatan';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-warning');
-          } else if (rataRataKel > 0) {
+          } else if (parseFloat(data.currentKelembaban) > 0) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Bahaya';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-danger');
@@ -404,65 +422,12 @@
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-danger');
           }
-
-          let dataSuhuTemp = [
-            [],
-            []
-          ];
-          let dataResultSuhuTemp = [];
-          data.dataSensor.forEach(element => {
-            if (element.flag_sensor.includes('suhu_1')) {
-              dataSuhuTemp[0].push(element.value);
-            }
-
-            if (element.flag_sensor.includes('suhu_2')) {
-              dataSuhuTemp[1].push(element.value);
-            }
-          });
-
-          for (var i = 0; i < dataSuhuTemp[0][0].length; i++) {
-            dataResultSuhuTemp.push((parseInt(dataSuhuTemp[0][0][i]) + parseInt(dataSuhuTemp[1][0][0])) / 2);
-          }
-
-          let dataKelTemp = [
-            [],
-            []
-          ];
-          let dataResultKelTemp = [];
-          data.dataSensor.forEach(element => {
-            if (element.flag_sensor.includes('kelembaban_1')) {
-              dataKelTemp[0].push(element.value);
-            }
-
-            if (element.flag_sensor.includes('kelembaban_2')) {
-              dataKelTemp[1].push(element.value);
-            }
-          });
-
-          for (var i = 0; i < dataKelTemp[0][0].length; i++) {
-            dataResultKelTemp.push((parseInt(dataKelTemp[0][0][i]) + parseInt(dataKelTemp[1][0][i])) / 2);
-          }
-
-          suhuChart.data.labels = data.dataWaktuSensor[1].value;
-          suhuChart.data.datasets[0].data = dataResultSuhuTemp;
-
-          kelembabanChart.data.labels = data.dataWaktuSensor[0].value;
-          kelembabanChart.data.datasets[0].data = dataResultKelTemp;
-
-          suhuDanKelembabanChart.data.labels = data.dataWaktuSensor[1].value;
-          suhuDanKelembabanChart.data.datasets[0].data = dataResultKelTemp; 
-          suhuDanKelembabanChart.data.datasets[1].data = dataResultSuhuTemp;
-
-          $('#total-suhu').text(dataResultSuhuTemp.length);
-          $('#total-kelembaban').text(dataResultKelTemp.length);
-          $('#total-suhu-dan-kelembaban').text(dataResultSuhuTemp.length);
-
-          suhuChart.update();
-          kelembabanChart.update();
-          suhuDanKelembabanChart.update();
         }
       });
     }
-    setInterval(getDataSensor, 1000);
+    initializeCharts();
+    setInterval(getDataSensor, 60000);
+
+    getDataSensor();
   </script>
 @endsection
