@@ -66,7 +66,12 @@ class NilaiBlowerAPIController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $blower = ModeBlowerModel::findOrFail($id);
+        return response()->json([
+            'status' => true,
+            'id_blower' => $blower->id_mode_blower,
+            'status_mode' => $blower->nilai_sensor
+        ]);
     }
 
     /**
