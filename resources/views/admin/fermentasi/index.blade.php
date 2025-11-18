@@ -98,12 +98,9 @@
                 <h5 class="card-title mb-1 mt-2">Grafik Suhu</h5>
                 <small class="text-muted">Perubahan Suhu di Ruang Fermentasi</small>
               </div>
-              <button type="button" class="btn btn-secondary" onclick="resetZoomSuhu()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
-              </button>
             </div>
-            <div class="card-body" style="height: 400px;">
-              <canvas id="chartSuhu" style="width:100%; height:90%;"></canvas>
+            <div class="card-body">
+              <div id="chartSuhu"></div>
               <div class="p-4">
                 <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu">-</span> data
                   terakhir</small>
@@ -120,12 +117,9 @@
                 <h5 class="card-title mb-1 mt-2">Grafik Kelembaban</h5>
                 <small class="text-muted">Perubahan Kelembaban di Ruang Fermentasi</small>
               </div>
-              <button type="button" class="btn btn-secondary" onclick="resetZoomKelembaban()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
-              </button>
             </div>
-            <div class="card-body" style="height: 400px;">
-              <canvas id="chartKelembaban" style="width:100%; height:90%;"></canvas>
+            <div class="card-body">
+              <div id="chartKelembaban"></div>
               <div class="p-4">
                 <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-kelembaban">-</span> data
                   terakhir</small>
@@ -143,12 +137,9 @@
                 <h5 class="card-title mb-1 mt-2">Perbandingan Grafik Suhu dan Kelembaban</h5>
                 <small class="text-muted">Perbandingan Suhu dan Kelembaban di Ruang Fermentasi</small>
               </div>
-              <button type="button" class="btn btn-secondary" onclick="resetZoomPerbandingan()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
-              </button>
             </div>
-            <div class="card-body" style="height: 400px;">
-              <canvas id="chartSuhuDanKelembaban" style="width:100%; height:90%;"></canvas>
+            <div class="card-body">
+              <div id="chartSuhuDanKelembaban"></div>
               <div class="p-4">
                 <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu-dan-kelembaban">-</span> data
                   terakhir</small>
@@ -214,16 +205,15 @@
     let apexStddevSuhu = null;
     let apexStddevKelembaban = null;
 
-    let suhuChart = new Chart(ctxSuhu, {
-      type: 'line',
-      data: {
-        datasets: [{
-          label: "Suhu (°C)",
-          data: [],
-          backgroundColor: '#C8F76A33',
-          borderColor: '#C8F76A',
-          pointBorderColor: '#0f172abf',
-          fill: true
+    function initializeCharts() {
+      let options = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        series: [{
+          name: '?',
+          data: []
         }],
         xaxis: {
           categories: []
