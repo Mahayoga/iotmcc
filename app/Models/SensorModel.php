@@ -41,4 +41,8 @@ class SensorModel extends Model
     public function getDataNilaiSensor() {
         return $this->hasMany(NilaiSensorModel::class, 'id_sensor', 'id_sensor');
     }
+
+    public function getDataNilaiBlower() {
+        return $this->hasOne(ModeBlowerModel::class, 'id_sensor', 'id_sensor');
+    }
 }

@@ -3,6 +3,7 @@
 @section('title', 'Ruang Pengeringan')
 
 @section('content')
+
   <main class="admin-main">
     <div class="container-fluid p-4 p-lg-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -135,168 +136,332 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Blower -->
-    <div class="row mt-4">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
-          <div class="card-header bg-transparent border-0 position-relative text-center">
-            <div>
-              <h5 class="card-title mb-1 mt-2 fw-semibold">Daftar Blower</h5>
-              <small class="text-muted">Indikator Operasional Blower (Total 8 Unit)</small>
-            </div>
-            <div class="position-absolute bottom-0 end-0 mb-2 me-3"
-              style="border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.25rem 0.5rem; background-color: #f8f9fa;">
-              <div class="form-check form-switch d-flex align-items-center m-0">
-                <input class="form-check-input" type="checkbox" id="switch-all" style="margin:0;">
-                <label class="form-check-label small text-muted fw-semibold ms-2 mb-0" for="switch-all">
-                  Switch all
-                </label>
+      <!-- Blower Section -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0 position-relative text-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2 fw-semibold">Daftar Blower</h5>
+                <small class="text-muted">Indikator Operasional Blower (Total 8 Unit - 2 Aktif, 6 Tidak Digunakan)</small>
+              </div>
+              <div class="position-absolute bottom-0 end-0 mb-2 me-3"
+                style="border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.25rem 0.5rem; background-color: #f8f9fa;">
+                <div class="form-check form-switch d-flex align-items-center m-0">
+                  <input class="form-check-input" type="checkbox" id="switch-all" style="margin:0;">
+                  <label class="form-check-label small text-muted fw-semibold ms-2 mb-0" for="switch-all">
+                    Switch all
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="card-body">
-            <div class="container">
-              <!-- Baris Pertama: Blower 1-4 -->
-              <div class="row mb-3">
-                @for ($i = 1; $i <= 4; $i++)
-                  <div class="col-md-3 mb-2">
-                    <div
-                      class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
-                      style="background:#f8f9fa;">
-                      <div class="d-flex flex-column align-items-center mb-3">
-                        <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
-                        <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
-                      </div>
+            <div class="card-body">
+              <div class="container">
 
-                      <div class="d-flex flex-column align-items-center">
-                        <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
-                          data-id="{{ $i }}" style="margin:0;">
-                        <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
-                          for="switch-{{ $i }}">
-                          Mati
-                        </label>
+                <!-- Baris Pertama: Blower 1-4 -->
+                <div class="row mb-3">
+                  @for ($i = 1; $i <= 4; $i++)
+                    <div class="col-md-3 mb-2">
+                      <div
+                        class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100 {{ $i > 2 ? 'blower-disabled' : '' }}"
+                        style="background:{{ $i > 2 ? '#e9ecef' : '#f8f9fa' }};">
+
+                        <div class="d-flex flex-column align-items-center mb-3">
+                          <i id="blower-{{ $i }}" class="bi bi-fan mb-2"
+                            style="font-size: 2rem; color: {{ $i > 2 ? '#adb5bd' : 'gray' }};"></i>
+                          <h6 class="mb-0 fw-semibold {{ $i > 2 ? 'text-secondary' : 'text-muted' }}">
+                            Blower {{ $i }}
+                          </h6>
+                        </div>
+
+                        @if($i <= 2)
+                          <div class="d-flex flex-column align-items-center">
+                            <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
+                              data-id="{{ $i }}" data-sensor-id="{{ $blowerSensors[$i] }}" style="margin:0;">
+
+                            <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
+                              for="switch-{{ $i }}">
+                              Mati
+                            </label>
+                          </div>
+                        @else
+                          <div class="d-flex flex-column align-items-center">
+                            <span class="badge bg-secondary px-3 py-2">Not Use</span>
+                          </div>
+                        @endif
+
                       </div>
                     </div>
-                  </div>
-                @endfor
-              </div>
+                  @endfor
+                </div>
 
-              <!-- Baris Kedua: Blower 5-8 -->
-              <div class="row mb-3">
-                @for ($i = 5; $i <= 8; $i++)
-                  <div class="col-md-3 mb-2">
-                    <div
-                      class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
-                      style="background:#f8f9fa;">
-                      <div class="d-flex flex-column align-items-center mb-3">
-                        <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: gray;"></i>
-                        <h6 class="mb-0 fw-semibold text-muted">Blower {{ $i }}</h6>
-                      </div>
+                <!-- Baris Kedua: Blower 5-8 -->
+                <div class="row mb-3">
+                  @for ($i = 5; $i <= 8; $i++)
+                    <div class="col-md-3 mb-2">
+                      <div
+                        class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100 blower-disabled"
+                        style="background:#e9ecef;">
+                        <div class="d-flex flex-column align-items-center mb-3">
+                          <i id="blower-{{ $i }}" class="bi bi-fan mb-2" style="font-size: 2rem; color: #adb5bd;"></i>
+                          <h6 class="mb-0 fw-semibold text-secondary">Blower {{ $i }}</h6>
+                        </div>
 
-                      <div class="d-flex flex-column align-items-center">
-                        <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
-                          data-id="{{ $i }}" style="margin:0;">
-                        <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
-                          for="switch-{{ $i }}">
-                          Mati
-                        </label>
+                        <div class="d-flex flex-column align-items-center">
+                          <span class="badge bg-secondary px-3 py-2">Not Use</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                @endfor
-              </div>
-            </div>
+                  @endfor
+                </div>
 
-            <!-- Deskripsi -->
-            <div class="mt-4 text-start">
-              <h6 class="fw-bold">Deskripsi</h6>
-              <p class="mb-1">
-                <span class="badge bg-success"
-                  style="width:15px; height:15px; background-image: linear-gradient(to right, #A9DA2E, #6EA017); border-color: #A9DA2E;">&nbsp;</span>
-                Blower Menyala
-              </p>
-              <p class="mb-1">
-                <span class="badge bg-secondary me-2" style="width:15px; height:15px;">&nbsp;</span>
-                Blower Mati
-              </p>
-              <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower</small>
+              </div>
+
+              <!-- Deskripsi -->
+              <div class="mt-4 text-start">
+                <h6 class="fw-bold">Deskripsi</h6>
+                <p class="mb-1">
+                  <span class="badge bg-success"
+                    style="width:15px; height:15px; background-image: linear-gradient(to right, #A9DA2E, #6EA017); border-color: #A9DA2E;">&nbsp;</span>
+                  Blower Menyala
+                </p>
+                <p class="mb-1">
+                  <span class="badge bg-secondary me-2" style="width:15px; height:15px;">&nbsp;</span>
+                  Blower Mati
+                </p>
+                <p class="mb-1">
+                  <span class="badge bg-secondary me-2" style="width:15px; height:15px; opacity: 0.6;">&nbsp;</span>
+                  Blower Tidak Digunakan
+                </p>
+                <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower aktif (Blower
+                  1-2)</small>
+              </div>
+
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <style>
-      .form-check-input {
-        width: 3rem;
-        height: 1.5rem;
-        cursor: pointer;
-        transition: background-color 0.3s, border-color 0.3s;
-      }
 
-      .form-check-input:checked {
-        background-color: #6EA017 !important;
-        border-color: #6EA017 !important;
-        background-image: linear-gradient(to right, #A9DA2E, #6EA017);
-        transition: background-color 0.3s, border-color 0.3s;
-      }
-    </style>
+      <style>
+        .form-check-input {
+          width: 3rem;
+          height: 1.5rem;
+          cursor: pointer;
+          transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .form-check-input:checked {
+          background-color: #6EA017 !important;
+          border-color: #6EA017 !important;
+          background-image: linear-gradient(to right, #A9DA2E, #6EA017);
+          transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .blower-disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
+        .blower-disabled .badge {
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
+        .form-check-input:disabled {
+          cursor: not-allowed;
+          opacity: 0.5;
+        }
+
+        .blower-loading {
+          position: relative;
+          pointer-events: none;
+          opacity: 0.6;
+        }
+
+        .blower-loading::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 20px;
+          height: 20px;
+          border: 2px solid #f3f3f3;
+          border-top: 2px solid #6EA017;
+          border-radius: 50%;
+          animation: spin-loader 1s linear infinite;
+        }
+
+        @keyframes spin-loader {
+          from {
+            transform: translate(-50%, -50%) rotate(0deg);
+          }
+
+          to {
+            transform: translate(-50%, -50%) rotate(360deg);
+          }
+        }
+      </style>
 
   </main>
 @endsection
 
 @section('script')
   <script>
-    // Event blower
+
+    // Fungsi untuk update status blower via AJAX
+    function updateBlowerStatus(blowerId, status, sensorId) {
+      const switchEl = document.getElementById(`switch-${blowerId}`);
+      const parentDiv = switchEl.closest('.d-flex');
+
+      parentDiv.classList.add('blower-loading');
+      switchEl.disabled = true;
+
+      $.ajax({
+        url: '/api/send/nilai/blower',
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: JSON.stringify({
+          id_sensor: sensorId,
+          nilai_sensor: status ? '1' : '0'
+        }),
+        contentType: 'application/json',
+        success: function (data) {
+          parentDiv.classList.remove('blower-loading');
+          switchEl.disabled = false;
+
+          if (data.status) {
+            console.log('Status blower berhasil diupdate:', data.msg);
+            showNotification('success', data.msg);
+          } else {
+            console.error('Gagal update status:', data.msg);
+            showNotification('error', data.msg)
+            switchEl.checked = !status;
+            updateBlowerUI(blowerId, !status);
+          }
+        },
+        error: function (xhr, status, error) {
+          parentDiv.classList.remove('blower-loading');
+          switchEl.disabled = false;
+
+          console.error('Error:', error);
+          showNotification('error', 'Terjadi kesalahan saat mengupdate status blower');
+          switchEl.checked = !status;
+          updateBlowerUI(blowerId, !status);
+        }
+      });
+    }
+
+    // Fungsi load status blower dari database
+    function loadBlowerStatus(blowerId, sensorId) {
+      $.ajax({
+        url: `/data/sensor/blower/${sensorId}`,
+        method: 'GET',
+        success: function (data) {
+          if (data.status) {
+            const switchEl = document.getElementById(`switch-${blowerId}`);
+            switchEl.checked = data.data.is_active;
+            updateBlowerUI(blowerId, data.data.is_active);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error('Error loading blower status:', error);
+        }
+      });
+    }
+
+    // Fungsi untuk update UI blower
+    function updateBlowerUI(blowerId, isActive) {
+      const switchEl = document.getElementById(`switch-${blowerId}`);
+      const label = switchEl.nextElementSibling;
+      const blowerIcon = document.getElementById(`blower-${blowerId}`);
+
+      if (isActive) {
+        label.textContent = 'Hidup';
+        label.style.color = '#6EA017';
+        blowerIcon.style.color = '#6EA017';
+        blowerIcon.classList.add('bi-fan-spin');
+      } else {
+        label.textContent = 'Mati';
+        label.style.color = 'gray';
+        blowerIcon.style.color = 'gray';
+        blowerIcon.classList.remove('bi-fan-spin');
+      }
+    }
+
+    // Fungsi notifikasi
+    function showNotification(type, message) {
+      const bgColor = type === 'success' ? '#28a745' : '#dc3545';
+      const icon = type === 'success' ? '✓' : '✗';
+
+      const notification = $(`
+          <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: ${bgColor}; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); animation: slideIn 0.3s ease-out;">
+            <strong>${icon}</strong> ${message}
+          </div>
+        `);
+
+      $('body').append(notification);
+
+      setTimeout(function () {
+        notification.css('animation', 'slideOut 0.3s ease-out');
+        setTimeout(function () {
+          notification.remove();
+        }, 300);
+      }, 3000);
+    }
+
+    // Event blower dengan AJAX
     document.querySelectorAll('.blower-switch').forEach((switchEl) => {
       switchEl.addEventListener('change', function () {
-        const label = this.nextElementSibling;
-        const blowerIcon = document.getElementById('blower-' + this.dataset.id);
+        const blowerId = this.dataset.id;
+        const sensorId = this.dataset.sensorId;
+        const isChecked = this.checked;
 
-        if (this.checked) {
-          label.textContent = 'Hidup';
-          label.style.color = '#6EA017';
-          blowerIcon.style.color = '#6EA017';
-          blowerIcon.classList.add('bi-fan-spin');
-        } else {
-          label.textContent = 'Mati';
-          label.style.color = 'gray';
-          blowerIcon.style.color = 'gray';
-          blowerIcon.classList.remove('bi-fan-spin');
-        }
+        updateBlowerUI(blowerId, isChecked);
+        updateBlowerStatus(blowerId, isChecked, sensorId);
       });
     });
 
-    // Event tombol “Hidupkan Semua”
+    // Event tombol switch all
     const switchAll = document.getElementById('switch-all');
     switchAll.addEventListener('change', function () {
       const allSwitches = document.querySelectorAll('.blower-switch');
       const turnOn = this.checked;
+
       allSwitches.forEach((switchEl) => {
-        if (switchEl.checked !== turnOn) switchEl.click();
+        if (switchEl.checked !== turnOn) {
+          switchEl.click();
+        }
       });
-      this.nextElementSibling.textContent = turnOn ? 'switch of' : 'switch on';
+
+      this.nextElementSibling.textContent = turnOn ? 'switch off' : 'switch all';
     });
 
     // Animasi kipas
-    const style = document.createElement('style');
-    style.innerHTML = `
+    const styleBlower = document.createElement('style');
+    styleBlower.innerHTML = `
         .bi-fan-spin {
-          animation: spin 1s linear infinite;
-          }
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `;
-    document.head.appendChild(style);
-
-    // const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
-    // const ctxKelembaban = document.getElementById('chartKelembaban')?.getContext('2d');
-    // const ctxSuhuDanKelembaban = document.getElementById('chartSuhuDanKelembaban')?.getContext('2d');
+          animation: fanSpin 1s linear infinite;
+        }
+        @keyframes fanSpin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100%); opacity: 0; }
+        }
+      `;
+    document.head.appendChild(styleBlower);
 
     //inisialisasi grafik
     let apexSuhu = null;
@@ -476,16 +641,22 @@
           $('#total-suhu').text(dataResultSuhuTemp.length);
           $('#total-kelembaban').text(dataResultKelTemp.length);
           $('#total-suhu-dan-kelembaban').text(dataResultSuhuTemp.length);
-
-          // apexSuhu.render();
-          // apexKelembaban.render();
-          // apexSuhuDanKelembaban.render();
         }
       });
     }
-    initializeCharts();
-    setInterval(getDataSensor, 1000);
 
-    // getDataSensor();
+    // Initialize semua fungsi saat dokumen ready
+    $(document).ready(function () {
+      // Initialize charts
+      initializeCharts();
+      setInterval(getDataSensor, 1000);
+
+      // Load status blower saat halaman dimuat
+      document.querySelectorAll('.blower-switch').forEach((switchEl) => {
+        const blowerId = switchEl.dataset.id;
+        const sensorId = switchEl.dataset.sensorId;
+        loadBlowerStatus(blowerId, sensorId);
+      });
+    });
   </script>
 @endsection
