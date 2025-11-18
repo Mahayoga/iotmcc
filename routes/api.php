@@ -66,3 +66,7 @@ use App\Http\Controllers\Api\GudangController;
         Route::post('/nilai/timer', [NilaiTimerAPIController::class, 'store']);
         Route::post('/nilai/blower', [NilaiBlowerAPIController::class, 'store']);
     });
+
+    Route::prefix('check/')->group(function() {
+        Route::get('/nilai/blower/{id}', [NilaiBlowerAPIController::class, 'show']);
+    });
