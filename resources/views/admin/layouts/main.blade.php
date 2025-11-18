@@ -60,6 +60,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="{{ asset('assets\node_modules\chartjs-plugin-zoom\dist\chartjs-plugin-zoom.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/admin/js/main-2.js') }}"></script>
 
