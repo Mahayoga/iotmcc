@@ -21,8 +21,10 @@
               <h5 class="card-title mb-1 mt-2">Rekap Ruang Pengeringan</h5>
               <small class="text-muted">Pantauan Kondisi di Ruang Pengeringan Vanili</small>
             </div>
+
             <div class="card-body">
               <div class="row gy-4">
+
                 <!-- Card Suhu -->
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-1">
@@ -35,13 +37,19 @@
                           <h5 class="mb-0 fw-bold">Suhu rata - rata</h5>
                         </div>
                       </div>
-                      <span class="badge bg-light text-success px-3 py-2" id="status-suhu-ruangan">Normal</span>
+                      <span class="badge bg-light text-success px-3 py-2" id="status-suhu-ruangan">
+                        Normal
+                      </span>
                     </div>
+
                     <div class="gudang-main mt-3">
                       <h2 class="fw-bold mb-0"><span id="suhu-rata-rata">-</span> °C</h2>
                     </div>
+
                     <div class="gudang-footer">
-                      <small class="text-muted"><i class="bi bi-cpu me-1"></i>Sensor: DHT22 (Suhu dan Kelembaban)</small>
+                      <small class="text-muted">
+                        <i class="bi bi-cpu me-1"></i>Sensor: DHT22 (Suhu dan Kelembaban)
+                      </small>
                     </div>
                   </div>
                 </div>
@@ -74,10 +82,10 @@
         </div>
       </div>
 
-      <!-- Grafik -->
+      <!--Grafik-->
       <div class="row mt-4">
         <!-- Grafik Suhu -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
               <div>
@@ -88,7 +96,7 @@
             <div class="card-body">
               <div id="chartSuhu"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -96,7 +104,7 @@
         </div>
 
         <!-- Grafik Kelembapan -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
               <div>
@@ -107,7 +115,7 @@
             <div class="card-body">
               <div id="chartKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah <span id="total-kelembaban">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-kelembaban">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -115,8 +123,6 @@
         </div>
       </div>
 
-
-      <!-- Grafik Perbandingan -->
       <div class="row mt-4">
         <div class="col-md-12">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
@@ -129,7 +135,49 @@
             <div class="card-body">
               <div id="chartSuhuDanKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah <span id="total-suhu-dan-kelembaban">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu-dan-kelembaban">-</span> data
+                  terakhir</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Std Dev Suhu -->
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Kestabilan Suhu dalam Ruangan</h5>
+                <small class="text-muted">Seberapa stabil suhu di ruang Pengeringan</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="chartStddevSuhu"></div>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-suhu">-</span> data
+                  terakhir</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Std Dev Kelembaban -->
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Kestabilan Kelembaban dalam Ruangan</h5>
+                <small class="text-muted">Seberapa stabil kelembaban di ruang Pengeringan</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="chartStddevKelembaban"></div>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-kelembaban">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -216,7 +264,6 @@
                     </div>
                   @endfor
                 </div>
-
               </div>
 
               <!-- Deskripsi -->
@@ -238,7 +285,6 @@
                 <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower aktif (Blower
                   1-2)</small>
               </div>
-
             </div>
           </div>
         </div>
@@ -467,6 +513,8 @@
     let apexSuhu = null;
     let apexKelembaban = null;
     let apexSuhuDanKelembaban = null;
+    let apexStddevSuhu = null;
+    let apexStddevKelembaban = null;
 
     function initializeCharts() {
       let options = {
@@ -488,14 +536,45 @@
           size: 5
         },
       }
+      let options2 = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        series: [{
+          name: '?',
+          data: []
+        }],
+        xaxis: {
+          type: 'datetime',
+          categories: []
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        markers: {
+          size: 5
+        },
+      }
       apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
       apexKelembaban = new ApexCharts($('#chartKelembaban')[0], options);
       apexSuhuDanKelembaban = new ApexCharts($('#chartSuhuDanKelembaban')[0], options);
+      apexStddevSuhu = new ApexCharts($('#chartStddevSuhu')[0], options2);
+      apexStddevKelembaban = new ApexCharts($('#chartStddevKelembaban')[0], options2);
 
       apexSuhu.render();
       apexKelembaban.render();
       apexSuhuDanKelembaban.render();
+      apexStddevSuhu.render();
+      apexStddevKelembaban.render();
+
+      apexSuhu.updateSeries([]);
+      apexKelembaban.updateSeries([]);
+      apexSuhuDanKelembaban.updateSeries([]);
+      apexStddevSuhu.updateSeries([]);
+      apexStddevKelembaban.updateSeries([]);
     }
+
 
     function getDataSensor() {
       $.get('{{ route('ruang-pengeringan.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
@@ -504,44 +583,121 @@
         if (data.status == true) {
           let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
           let classListKelembaban = document.getElementById('status-kelembaban-ruangan').classList;
+          apexSuhu.updateSeries([]);
+          apexKelembaban.updateSeries([]);
+          apexSuhuDanKelembaban.updateSeries([]);
+          apexStddevSuhu.updateSeries([]);
+          apexStddevKelembaban.updateSeries([]);
 
-          let suhuTotal = 0;
-          let totalDataSuhu = 0;
-          let kelTotal = 0;
-          let totalDataKel = 0;
+          apexSuhu.updateOptions({
+            xaxis: {
+              categories: data.dataWaktuSensor[0].value
+            }
+          });
+          apexKelembaban.updateOptions({
+            xaxis: {
+              categories: data.dataWaktuSensor[0].value
+            }
+          });
+          apexSuhuDanKelembaban.updateOptions({
+            xaxis: {
+              categories: data.dataWaktuSensor[0].value
+            }
+          });
+          apexStddevSuhu.updateOptions({
+            yaxis: { title: { text: 'Std Dev Suhu' } },
+            annotations: {
+              yaxis: [
+                { y: 1.0, borderColor: '#d40624', label: { text: 'batas kestabilan suhu' }},
+              ],
+            }
+          });
+          apexStddevKelembaban.updateOptions({
+            yaxis: { title: { text: 'Std Dev Kelembaban' } },
+            annotations: {
+              yaxis: [
+                { y: 5.0, borderColor: '#d40624', label: { text: 'batas kestabilan kelembaban' }},
+              ],
+            }
+          });
+          // $('#total-suhu').text(dataResultSuhuTemp.length);
+          // $('#total-kelembaban').text(dataResultKelTemp.length);
+          // $('#total-suhu-dan-kelembaban').text(dataResultSuhuTemp.length);
+          // { y2: 5.0, borderColor: '#d40624', label: { text: 'batas kestabilan kelembaban' }}
+
           data.dataSensor.forEach(element => {
-            if (element.flag_sensor.includes('suhu')) {
-              element.value.forEach(element2 => {
-                suhuTotal += parseFloat(element2);
-                totalDataSuhu += 1;
+            $('#total-suhu').text(element.value.length);
+            $('#total-kelembaban').text(element.value.length);
+            $('#total-suhu-dan-kelembaban').text(element.value.length);
+            $('#total-stddev-suhu').text(element.value.length);
+            $('#total-stddev-kelembaban').text(element.value.length);
+            if(element.flag_sensor == 'suhu_1') {
+              apexSuhu.appendSeries({
+                name: 'Suhu 1 (°C)',
+                data: element.value
+              });
+              apexSuhuDanKelembaban.appendSeries({
+                name: 'Suhu 1 (°C)',
+                data: element.value
+              });
+              apexStddevSuhu.appendSeries({
+                name: "Suhu 1 (stddev)",
+                data: element.stddev
+              });
+            } else if(element.flag_sensor == 'kelembaban_1') {
+              apexKelembaban.appendSeries({
+                name: 'Kelembaban 1 (%)',
+                data: element.value
+              });
+              apexSuhuDanKelembaban.appendSeries({
+                name: 'Kelembaban 1 (%)',
+                data: element.value
+              });
+              apexStddevKelembaban.appendSeries({
+                name: "Kelembaban 1 (stddev)",
+                data: element.stddev
+              });
+            } else if(element.flag_sensor == 'suhu_2') {
+              apexSuhu.appendSeries({
+                name: 'Suhu 2 (°C)',
+                data: element.value
+              });
+              apexSuhuDanKelembaban.appendSeries({
+                name: 'Suhu 2 (°C)',
+                data: element.value
+              });
+              apexStddevSuhu.appendSeries({
+                name: "Suhu 2 (stddev)",
+                data: element.stddev
+              });
+            } else if(element.flag_sensor == 'kelembaban_2') {
+              apexKelembaban.appendSeries({
+                name: 'Kelembaban 2 (%)',
+                data: element.value
+              });
+              apexSuhuDanKelembaban.appendSeries({
+                name: 'Kelembaban 2 (%)',
+                data: element.value
+              });
+              apexStddevKelembaban.appendSeries({
+                name: "Kelembaban 2 (stddev)",
+                data: element.stddev
               });
             }
           });
 
-          data.dataSensor.forEach(element => {
-            if (element.flag_sensor.includes('kelembaban')) {
-              element.value.forEach(element2 => {
-                kelTotal += parseFloat(element2);
-                totalDataKel += 1;
-              });
-            }
-          });
+          $('#suhu-rata-rata')[0].innerHTML = data.currentSuhu;
+          $('#kelembaban-rata-rata')[0].innerHTML = data.currentKelembaban;
 
-          let rataRataSuhu = (suhuTotal / totalDataSuhu).toFixed(2);
-          let rataRataKel = (kelTotal / totalDataKel).toFixed(2);
-
-          $('#suhu-rata-rata')[0].innerHTML = rataRataSuhu;
-          $('#kelembaban-rata-rata')[0].innerHTML = rataRataKel;
-
-          if (rataRataSuhu > 20 && rataRataSuhu < 30) {
+          if (parseFloat(data.currentSuhu) > 20 && parseFloat(data.currentSuhu) < 30) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-success');
-          } else if (rataRataSuhu > 30 && rataRataSuhu < 50) {
+          } else if (parseFloat(data.currentSuhu) > 30 && parseFloat(data.currentSuhu) < 50) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-warning');
-          } else if (rataRataSuhu > 50 && rataRataSuhu < 100) {
+          } else if (parseFloat(data.currentSuhu) > 50 && parseFloat(data.currentSuhu) < 100) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
             classListSuhu.add('text-danger');
@@ -551,15 +707,15 @@
             classListSuhu.add('text-warning');
           }
 
-          if (rataRataKel > 80) {
+          if (parseFloat(data.currentKelembaban) > 80) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Normal';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-success');
-          } else if (rataRataKel > 60) {
+          } else if (parseFloat(data.currentKelembaban) > 60) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Peringatan';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-warning');
-          } else if (rataRataKel > 0) {
+          } else if (parseFloat(data.currentKelembaban) > 0) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Bahaya';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-danger');
@@ -568,95 +724,23 @@
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-danger');
           }
-
-          let dataSuhuTemp = [
-            [],
-            []
-          ];
-          let dataResultSuhuTemp = [];
-          data.dataSensor.forEach(element => {
-            if (element.flag_sensor.includes('suhu_1')) {
-              dataSuhuTemp[0].push(element.value);
-            }
-
-            if (element.flag_sensor.includes('suhu_2')) {
-              dataSuhuTemp[1].push(element.value);
-            }
-          });
-
-          for (var i = 0; i < dataSuhuTemp[0][0].length; i++) {
-            dataResultSuhuTemp.push((parseInt(dataSuhuTemp[0][0][i]) + parseInt(dataSuhuTemp[1][0][0])) / 2);
-          }
-
-          let dataKelTemp = [
-            [],
-            []
-          ];
-          let dataResultKelTemp = [];
-          data.dataSensor.forEach(element => {
-            if (element.flag_sensor.includes('kelembaban_1')) {
-              dataKelTemp[0].push(element.value);
-            }
-
-            if (element.flag_sensor.includes('kelembaban_2')) {
-              dataKelTemp[1].push(element.value);
-            }
-          });
-
-          for (var i = 0; i < dataKelTemp[0][0].length; i++) {
-            dataResultKelTemp.push((parseInt(dataKelTemp[0][0][i]) + parseInt(dataKelTemp[1][0][i])) / 2);
-          }
-
-          apexSuhu.updateOptions({
-            series: [{
-              name: 'Suhu (°C)',
-              data: dataResultSuhuTemp
-            }],
-            xaxis: {
-              categories: data.dataWaktuSensor[1].value
-            }
-          });
-          apexKelembaban.updateOptions({
-            series: [{
-              name: 'Kelembaban (%)',
-              data: dataResultKelTemp
-            }],
-            xaxis: {
-              categories: data.dataWaktuSensor[0].value
-            }
-          });
-          apexSuhuDanKelembaban.updateOptions({
-            series: [{
-              name: 'Kelembaban (%)',
-              data: dataResultKelTemp
-            }, {
-              name: 'Suhu (°C)',
-              data: dataResultSuhuTemp
-            }],
-            xaxis: {
-              categories: data.dataWaktuSensor[1].value
-            }
-          });
-
-          $('#total-suhu').text(dataResultSuhuTemp.length);
-          $('#total-kelembaban').text(dataResultKelTemp.length);
-          $('#total-suhu-dan-kelembaban').text(dataResultSuhuTemp.length);
         }
       });
     }
+    
+    $(document).ready(function () { 
 
-    // Initialize semua fungsi saat dokumen ready
-    $(document).ready(function () {
       // Initialize charts
       initializeCharts();
-      setInterval(getDataSensor, 1000);
+      setInterval(getDataSensor, 60000);
+      getDataSensor();
 
-      // Load status blower saat halaman dimuat
       document.querySelectorAll('.blower-switch').forEach((switchEl) => {
         const blowerId = switchEl.dataset.id;
         const sensorId = switchEl.dataset.sensorId;
         loadBlowerStatus(blowerId, sensorId);
       });
     });
+     
   </script>
 @endsection
