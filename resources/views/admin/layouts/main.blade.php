@@ -8,6 +8,8 @@
     <meta name="description" content="Modern Bootstrap 5 Admin Template - Clean, responsive dashboard">
     <meta name="keywords" content="bootstrap, admin, dashboard, template, modern, responsive">
     <meta name="author" content="Bootstrap Admin Template">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Modern Bootstrap Admin Template">
