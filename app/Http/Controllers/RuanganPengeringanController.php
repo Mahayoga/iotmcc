@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\GudangModel;
 use App\Models\NilaiSensorModel;
 use App\Models\SensorModel;
 use App\Models\ModeBlowerModel;
 use App\Models\LogModeBlowerModel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 class RuanganPengeringanController extends Controller
 {
-
   public $LIMIT = 50;
 
   public function getDataSensor(string $id)
@@ -21,67 +20,59 @@ class RuanganPengeringanController extends Controller
     $dataWaktuSensor = [];
     $dataGudang = GudangModel::findOrFail($id);
     $dataRuangan = $dataGudang->getDataRuangan;
-
     $nilaiSensorTemp = [];
     $waktuSensorTemp = [];
     $stddevTemp = [];
-
-    $currentSuhu = 0;
-    $currentKelembaban = 0;
-    $countSuhu = 0;
-    $countKelembaban = 0;
+    $currentSuhu = null;
+    $currentKelembaban = null;
 
     $selectRawQuery = "
-        DATE(created_at) as tgl,
-        HOUR(created_at) as jam,
-        FLOOR(MINUTE(created_at)/15) as menit_group,
-        AVG(nilai_sensor) as avg_nilai,
-        MIN(created_at) as waktu_asli,
-        STDDEV_SAMP(nilai_sensor) as stddev,
-        MIN(nilai_sensor) as min_nilai,
-        MAX(nilai_sensor) as max_nilai
-    ";
+            DATE(created_at) as tgl,
+            HOUR(created_at) as jam,
+            FLOOR(MINUTE(created_at)/15) as menit_group,
+            AVG(nilai_sensor) as avg_nilai,
+            MIN(created_at) as waktu_asli,
+            STDDEV_SAMP(nilai_sensor) as stddev,
+            MIN(nilai_sensor) as min_nilai,
+            MAX(nilai_sensor) as max_nilai
+        ";
 
     foreach ($dataRuangan as $value) {
       if ($value->tipe_ruangan == 3) {
+        $statusRuangan = $value->status_ruangan;
         foreach ($value->getDataSensor as $value2) {
-          if (str_contains($value2->flag_sensor, "blower")) {
+          if (str_contains($value2->flag_sensor, 'blower')) {
             continue;
           }
           $dateNow = '%' . date("Y-m-d") . '%';
-          if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->count() == 0) {
-            $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->limit(1)->first();
-            if ($temp) {
-              $dateNow = '%' . $temp->created_at->format('Y-m-d') . '%';
+          if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
+            $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->limit(1)->get();
+            if (!$temp->isEmpty()) {
+              $dateNow = '%' . date('Y-m-d', Carbon::parse($temp[0]->created_at)->timestamp) . '%';
             }
           }
 
-          $records = $value2->getDataNilaiSensor()
+          foreach ($value2->getDataNilaiSensor()
             ->selectRaw($selectRawQuery)
             ->where('created_at', 'LIKE', $dateNow)
             ->groupBy('tgl', 'jam', 'menit_group')
             ->orderBy('waktu_asli', 'DESC')
             ->limit($this->LIMIT)
-            ->get();
-
-          foreach ($records as $r) {
-            $nilaiSensorTemp[] = number_format($r->avg_nilai, 2);
-            $waktuSensorTemp[] = date('G:i', strtotime($r->waktu_asli));
-            $stddevTemp[] = [strtotime($r->waktu_asli) * 1000, number_format($r->stddev, 2)];
+            ->get() as $value3) {
+            $nilaiSensorTemp[] = number_format($value3->avg_nilai, 2);
+            $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
+            $stddevTemp[] = [Carbon::parse($value3->waktu_asli)->valueOf(), number_format($value3->stddev, 2)];
           }
 
-          $latest = $value2->getDataNilaiSensor()
+          foreach ($value2->getDataNilaiSensor()
             ->where('created_at', 'LIKE', $dateNow)
             ->orderBy('created_at', 'DESC')
-            ->first();
-
-          if ($latest) {
+            ->limit(1)
+            ->get() as $value3) {
             if (str_contains($value2->flag_sensor, 'suhu')) {
-              $currentSuhu += (float) $latest->nilai_sensor;
-              $countSuhu++;
+              $currentSuhu += (int) $value3->nilai_sensor;
             } else if (str_contains($value2->flag_sensor, 'kelembaban')) {
-              $currentKelembaban += (float) $latest->nilai_sensor;
-              $countKelembaban++;
+              $currentKelembaban += (int) $value3->nilai_sensor;
             }
           }
 
@@ -89,9 +80,7 @@ class RuanganPengeringanController extends Controller
             'type' => 'sensor',
             'flag_sensor' => $value2->flag_sensor,
             'value' => $nilaiSensorTemp,
-            'avg' => count($nilaiSensorTemp) > 0
-              ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1)
-              : 0,
+            'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
             'stddev' => $stddevTemp,
           ]);
 
@@ -112,8 +101,8 @@ class RuanganPengeringanController extends Controller
       'status' => true,
       'dataSensor' => $dataSensor,
       'dataWaktuSensor' => $dataWaktuSensor,
-      'currentSuhu' => $countSuhu > 0 ? number_format($currentSuhu / $countSuhu, 2) : 0,
-      'currentKelembaban' => $countKelembaban > 0 ? number_format($currentKelembaban / $countKelembaban, 2) : 0,
+      'currentSuhu' => number_format($currentSuhu / 2, 2),
+      'currentKelembaban' => number_format($currentKelembaban / 2, 2)
     ]);
   }
 
@@ -133,10 +122,10 @@ class RuanganPengeringanController extends Controller
       return response()->json([
         'status' => true,
         'data' => [
-          'id_sensor' => $sensor->id_sensor,
-          'nilai_sensor' => $sensor->getDataNilaiBlower->nilai_sensor,
-          'is_active' => $sensor->getDataNilaiBlower->nilai_sensor == '1'
-        ]
+            'id_sensor' => $sensor->id_sensor,
+            'nilai_sensor' => $sensor->getDataNilaiBlower->nilai_sensor,
+            'is_active' => $sensor->getDataNilaiBlower->nilai_sensor == '1'
+          ]
       ]);
 
     } catch (\Exception $e) {
