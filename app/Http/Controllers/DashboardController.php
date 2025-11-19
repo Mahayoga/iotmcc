@@ -21,7 +21,12 @@ class DashboardController extends Controller
         $grafikSuhu = [];
         $grafikKelembapan = [];
         $grafikBleaching = [];
+        $perbandinganSuhu = [];
+        $perbandinganKelembapan = [];
+        $perbandinganBleaching = [];
 
+        
+        // data grafik
         foreach ($ruangan as $r) {
             $sensorSuhuList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor ?? '', 'suhu'));
             $sensorKelembapanList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor ?? '', 'kelembaban'));
@@ -151,15 +156,91 @@ class DashboardController extends Controller
             }
         }
 
+
+        //data perbandingan
+        $latestDate = NilaiSensorModel::selectRaw('DATE(created_at) as dt')
+            ->orderByDesc('dt')
+            ->value('dt');
+
+        $prevDate = null;
+        if ($latestDate) {
+            $prevDate = NilaiSensorModel::selectRaw('DATE(created_at) as dt')
+                ->whereRaw('DATE(created_at) < ?', [$latestDate])
+                ->orderByDesc('dt')
+                ->value('dt');
+        }
+
+        $avgForSensorsOnDate = function ($sensorCollection, $date, $timeStart = null, $timeEnd = null) {
+            $values = [];
+            foreach ($sensorCollection as $sensor) {
+                $query = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
+                    ->whereDate('created_at', $date);
+
+                if ($timeStart && $timeEnd) {
+                    $query->whereTime('created_at', '>=', $timeStart)
+                          ->whereTime('created_at', '<=', $timeEnd);
+                }
+
+                $rows = $query->pluck('nilai_sensor')->toArray();
+                if (!empty($rows)) {
+                    $values = array_merge($values, $rows);
+                }
+            }
+
+            if (count($values) === 0) return null;
+            return array_sum($values) / count($values);
+        };
+
+
+        foreach ($ruangan as $r) {
+            $nama = $r->nama_ruangan;
+            $sensorSuhuList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor ?? '', 'suhu'));
+            $sensorKelembapanList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor ?? '', 'kelembaban'));
+
+            $hariIniSuhu = $latestDate ? $avgForSensorsOnDate($sensorSuhuList, $latestDate) : null;
+            $kemarinSuhu = $prevDate ? $avgForSensorsOnDate($sensorSuhuList, $prevDate) : null;
+
+            $hariIniKelembapan = $latestDate ? $avgForSensorsOnDate($sensorKelembapanList, $latestDate) : null;
+            $kemarinKelembapan = $prevDate ? $avgForSensorsOnDate($sensorKelembapanList, $prevDate) : null;
+
+            if ($r->tipe_ruangan == 1) {
+                $hariIniBleach = $latestDate ? $avgForSensorsOnDate($sensorSuhuList, $latestDate, '07:00:00', '10:00:00') : null;
+                $kemarinBleach = $prevDate ? $avgForSensorsOnDate($sensorSuhuList, $prevDate, '07:00:00', '10:00:00') : null;
+
+                $perbandinganBleaching[$nama] = [
+                    'hari_ini' => $hariIniBleach !== null ? round($hariIniBleach, 2) : null,
+                    'kemarin'  => $kemarinBleach !== null ? round($kemarinBleach, 2) : null,
+                ];
+            }
+
+            $perbandinganSuhu[$nama] = [
+                'hari_ini' => $hariIniSuhu !== null ? round($hariIniSuhu, 2) : null,
+                'kemarin'  => $kemarinSuhu !== null ? round($kemarinSuhu, 2) : null,
+            ];
+
+            $perbandinganKelembapan[$nama] = [
+                'hari_ini' => $hariIniKelembapan !== null ? round($hariIniKelembapan, 2) : null,
+                'kemarin'  => $kemarinKelembapan !== null ? round($kemarinKelembapan, 2) : null,
+            ];
+        }
+
+        
+        // return data to view
         return view('admin.dashboard.index', [
             'gudang' => $gudang,
             'dataRuangan' => $dataRuangan,
             'grafikSuhu' => $grafikSuhu,
             'grafikKelembapan' => $grafikKelembapan,
-            'grafikBleaching' => $grafikBleaching
+            'grafikBleaching' => $grafikBleaching,
+            'perbandinganSuhu' => $perbandinganSuhu,
+            'perbandinganKelembapan' => $perbandinganKelembapan,
+            'perbandinganBleaching' => $perbandinganBleaching,
+            'latestDate' => $latestDate,
+            'prevDate' => $prevDate
         ]);
     }
 
+    //data status
     private function getStatusInfo($tipeRuangan, $suhu, $kelembapan)
     {
         if ($suhu === null) {
