@@ -116,9 +116,16 @@ class AlatBleachingController extends Controller
                         if($nilaiTimer->flag_timer == 'start') {
                             $dataTimer = [
                                 'status' => true,
-                                'status_timer' => $nilaiTimer->flag_timer,
+                                'status_timer' => 'stop',
                                 'sisa_timer' => number_format((float) $nilaiTimer->nilai_timer - microtime(true), 2),
                             ];
+                            NilaiTimerModel::create([
+                                'flag_timer' => 'stop',
+                                'nilai_timer' => microtime(true),
+                                'id_sensor' => $sensor->id_sensor,
+                                'rssi' => 0,
+                                'snr' => 0,
+                            ]);
                         } else if($nilaiTimer->flag_timer == 'stop') {
                             NilaiTimerModel::create([
                                 'flag_timer' => 'start',
@@ -129,7 +136,7 @@ class AlatBleachingController extends Controller
                             ]);
                             $dataTimer = [
                                 'status' => true,
-                                'status_timer' => $nilaiTimer->flag_timer,
+                                'status_timer' => 'start',
                                 'sisa_timer' => number_format((float) $nilaiTimer->nilai_timer - microtime(true), 2),
                             ];
                         }
@@ -231,13 +238,13 @@ class AlatBleachingController extends Controller
                                 $statusTimer = 'stop';
                             }
 
-                            NilaiTimerModel::create([
-                                'flag_timer' => $statusTimer,
-                                'nilai_timer' => microtime(true),
-                                'id_sensor' => $sensor->id_sensor,
-                                'rssi' => 0,
-                                'snr' => 0,
-                            ]);
+                            // NilaiTimerModel::create([
+                            //     'flag_timer' => $statusTimer,
+                            //     'nilai_timer' => microtime(true),
+                            //     'id_sensor' => $sensor->id_sensor,
+                            //     'rssi' => 0,
+                            //     'snr' => 0,
+                            // ]);
 
                             return response()->json([
                                 'status' => true,

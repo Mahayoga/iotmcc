@@ -238,19 +238,21 @@
         // console.log(res);
         if(res.status) {
           let data = res.dataTimer[0];
-          updateDisplay(parseInt(data.sisa_timer));
+          updateDisplay(parseInt(data.limit_timer) - parseInt(data.sisa_timer));
           if(data.flag_timer == 'start') {
-            let startTime = new Date(parseInt(data.nilai_timer));
-            let stopTime = new Date(parseInt(data.nilai_timer) + (parseInt(data.limit_timer) * 1000));
+            let startTime = new Date(parseInt(data.nilai_timer) * 1000);
+            let stopTime = new Date((parseInt(data.nilai_timer) + parseInt(data.limit_timer)) * 1000);
             $('#waktu-mulai').text(startTime.toLocaleTimeString('id-ID'));
             $('#waktu-selesai').text(stopTime.toLocaleTimeString('id-ID'));
             $('#status-proses').text('Masih Berlangsung!').removeClass().addClass('badge bg-warning text-dark');
             $('#start-stop-text-btn').text('Stop Timer');
+            $('#start-stop-timer-btn').removeClass().addClass('btn btn-danger btn-sm mt-3');
           } else if(data.flag_timer == 'stop') {
             $('#waktu-mulai').text('-');
             $('#waktu-selesai').text('-');
             $('#status-proses').text('Selesai!').removeClass().addClass('badge bg-success');
             $('#start-stop-text-btn').text('Mulai Timer');
+            $('#start-stop-timer-btn').removeClass().addClass('btn btn-success btn-sm mt-3');
           }
         }
       });
@@ -267,15 +269,37 @@
       {
         _token: '{{ csrf_token() }}'
       },function(data) {
-        console.log()
-        if() {
+        console.log(data);
+        // if() {
 
-        }
+        // }
       });
     });
     
     $('#set-timer-btn').on('click', function () {
-      
+      const durasiMenit = parseInt($('#durasi-input').val());
+      if (isNaN(durasiMenit) || durasiMenit <= 0) {
+        alert('Masukkan durasi yang valid (lebih dari 0 menit)');
+        return;
+      }
+      $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
+
+      $.post('{{ route('alat-bleaching.setLimitTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}',
+        {
+          _token: '{{ csrf_token() }}',
+          limit_timer: durasiMenit,
+          flag_sensor: 'timer_1'
+        },
+        function(data) {
+          if(data.status) {
+            alert('Durasi timer berhasil diset!');
+          } else {
+            alert('Gagal menyet durasi timer!');
+          }
+          $('#set-timer-btn').prop('disabled', false).html('<i class="bi bi-clock-fill"></i> Set Timer');
+          $('#durasi-input').val('');
+        }
+      );
     });
 
     initializeCharts();
