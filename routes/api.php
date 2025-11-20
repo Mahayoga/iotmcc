@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\RiwayatDataController;
+use App\Http\Controllers\NilaiBlowerAPIController;
 use App\Http\Controllers\NilaiSensorAPIController;
 use App\Http\Controllers\NilaiTimerAPIController;
 use Illuminate\Http\Request;
@@ -63,4 +64,9 @@ use App\Http\Controllers\Api\GudangController;
     Route::prefix('send/')->group(function() {
         Route::post('/nilai/sensor', [NilaiSensorAPIController::class, 'store']);
         Route::post('/nilai/timer', [NilaiTimerAPIController::class, 'store']);
+        Route::post('/nilai/blower', [NilaiBlowerAPIController::class, 'store']);
+    });
+
+    Route::prefix('check/')->group(function() {
+        Route::get('/nilai/blower/{id}', [NilaiBlowerAPIController::class, 'show']);
     });
