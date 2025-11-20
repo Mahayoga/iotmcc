@@ -99,6 +99,57 @@ class AlatBleachingController extends Controller
         ]);
     }
 
+    public function startStopTimer(string $id) {
+        $dataGudang = GudangModel::findOrFail($id);
+        $dataRuangan = $dataGudang->getDataRuangan;
+        $dataTimer = [];
+
+        foreach ($dataRuangan as $ruangan) {
+            if ($ruangan->tipe_ruangan == 1) {
+                foreach ($ruangan->getDataSensor as $sensor) {
+                    if (in_array($sensor->flag_sensor, ['timer_1', 'timer_2'])) {
+                        $nilaiTimer = NilaiTimerModel::where('id_sensor', $sensor->id_sensor)
+                            ->orderBy('created_at', 'desc')->first();
+
+                        $modeTimer = ModeTimerModel::where('id_sensor', $sensor->id_sensor)->first();
+
+                        if($nilaiTimer->flag_timer == 'start') {
+                            $dataTimer = [
+                                'status' => true,
+                                'status_timer' => 'stop',
+                                'sisa_timer' => number_format((float) $nilaiTimer->nilai_timer - microtime(true), 2),
+                            ];
+                            NilaiTimerModel::create([
+                                'flag_timer' => 'stop',
+                                'nilai_timer' => microtime(true),
+                                'id_sensor' => $sensor->id_sensor,
+                                'rssi' => 0,
+                                'snr' => 0,
+                            ]);
+                        } else if($nilaiTimer->flag_timer == 'stop') {
+                            NilaiTimerModel::create([
+                                'flag_timer' => 'start',
+                                'nilai_timer' => microtime(true),
+                                'id_sensor' => $sensor->id_sensor,
+                                'rssi' => 0,
+                                'snr' => 0,
+                            ]);
+                            $dataTimer = [
+                                'status' => true,
+                                'status_timer' => 'start',
+                                'sisa_timer' => number_format((float) $nilaiTimer->nilai_timer - microtime(true), 2),
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $dataTimer,
+        ]);
+    }
 
     public function getDataTimer(string $id)
     {
@@ -115,10 +166,38 @@ class AlatBleachingController extends Controller
 
                         $modeTimer = ModeTimerModel::where('id_sensor', $sensor->id_sensor)->first();
 
+                        $sisaTimer = microtime(true) - (float) $nilaiTimer->nilai_timer;
+                        if($nilaiTimer->flag_timer == 'stop') {
+                            $dataTimer[] = [
+                                'flag_timer' => $nilaiTimer->flag_timer,
+                                'nilai_timer' => $nilaiTimer?->nilai_timer ?? 0,
+                                'limit_timer' => $modeTimer?->limit_timer ?? null,
+                                'sisa_timer' => 0,
+                                'updated_at' => $nilaiTimer?->created_at?->format('Y-m-d H:i:s'),
+                            ];
+                            return response()->json([
+                                'status' => true,
+                                'dataTimer' => $dataTimer,
+                            ]);
+                        }
+                        if((float) $sisaTimer > (float) $modeTimer->limit_timer) {
+                            $sisaTimer = 0;
+                            if($nilaiTimer->flag_timer == 'start') {
+                                NilaiTimerModel::create([
+                                    'flag_timer' => 'stop',
+                                    'nilai_timer' => microtime(true),
+                                    'id_sensor' => $sensor->id_sensor,
+                                    'rssi' => 0,
+                                    'snr' => 0,
+                                ]);
+                            }
+                        }
+
                         $dataTimer[] = [
-                            'flag_timer' => $sensor->flag_sensor,
+                            'flag_timer' => $nilaiTimer->flag_timer,
                             'nilai_timer' => $nilaiTimer?->nilai_timer ?? 0,
-                            'limit_timer' => $modeTimer?->limit_timer ?? null,
+                            'limit_timer' => $modeTimer?->limit_timer ?? 0,
+                            'sisa_timer' => $sisaTimer,
                             'updated_at' => $nilaiTimer?->created_at?->format('Y-m-d H:i:s'),
                         ];
                     }
@@ -152,13 +231,20 @@ class AlatBleachingController extends Controller
                                 ['limit_timer' => $request->limit_timer * 60]
                             );
 
-                            NilaiTimerModel::create([
-                                'flag_timer' => $request->flag_sensor,
-                                'nilai_timer' => 0,
-                                'id_sensor' => $sensor->id_sensor,
-                                'rssi' => 0,
-                                'snr' => 0,
-                            ]);
+                            $statusTimer = NilaiTimerModel::where('id_sensor', $sensor->id_sensor)->orderBy('created_at','desc')->limit(1)->get();
+                            if($statusTimer[0]->flag_timer == 'stop') {
+                                $statusTimer = 'start';
+                            } else {
+                                $statusTimer = 'stop';
+                            }
+
+                            // NilaiTimerModel::create([
+                            //     'flag_timer' => $statusTimer,
+                            //     'nilai_timer' => microtime(true),
+                            //     'id_sensor' => $sensor->id_sensor,
+                            //     'rssi' => 0,
+                            //     'snr' => 0,
+                            // ]);
 
                             return response()->json([
                                 'status' => true,
