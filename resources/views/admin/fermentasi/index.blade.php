@@ -3,9 +3,9 @@
 @section('title', 'Dashboard')
 
 @section('content')
+
   <main class="admin-main">
     <div class="container-fluid p-4 p-lg-5">
-      <!-- Page Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 class="h3 mb-0">Ruangan Fermentasi</h1>
@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      {{-- Rekap Kondisi Ruang Di Gudang --}}
+      <!-- Rekap Suhu & Kelembaban -->
       <div class="row g-4 mb-4">
         <div class="col-12">
           <div class="card border-0 shadow-sm" style="border-radius: 18px;">
@@ -25,7 +25,7 @@
             <div class="card-body">
               <div class="row gy-4">
 
-                <!-- Card Ruang 1 -->
+                <!-- Card Suhu -->
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-1">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -54,7 +54,7 @@
                   </div>
                 </div>
 
-                <!-- Card Ruang 2 -->
+                <!-- Card Kelembaban -->
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-1">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -88,7 +88,7 @@
         </div>
       </div>
 
-      {{-- Grafik Monitoring Suhu dan Kelembapan --}}
+      <!--Grafik-->
       <div class="row mt-4">
         <!-- Grafik Suhu -->
         <div class="col-lg-12 mb-4">

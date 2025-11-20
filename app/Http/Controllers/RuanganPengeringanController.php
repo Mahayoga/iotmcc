@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\GudangModel;
 use App\Models\NilaiSensorModel;
 use App\Models\SensorModel;
 use App\Models\ModeBlowerModel;
 use App\Models\LogModeBlowerModel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class RuanganPengeringanController extends Controller
 {
+  public $LIMIT = 50;
+
   public function getDataSensor(string $id)
   {
     $dataSensor = [];
@@ -19,30 +22,77 @@ class RuanganPengeringanController extends Controller
     $dataRuangan = $dataGudang->getDataRuangan;
     $nilaiSensorTemp = [];
     $waktuSensorTemp = [];
+    $stddevTemp = [];
+    $currentSuhu = null;
+    $currentKelembaban = null;
+
+    $selectRawQuery = "
+            DATE(created_at) as tgl,
+            HOUR(created_at) as jam,
+            FLOOR(MINUTE(created_at)/15) as menit_group,
+            AVG(nilai_sensor) as avg_nilai,
+            MIN(created_at) as waktu_asli,
+            STDDEV_SAMP(nilai_sensor) as stddev,
+            MIN(nilai_sensor) as min_nilai,
+            MAX(nilai_sensor) as max_nilai
+        ";
 
     foreach ($dataRuangan as $value) {
       if ($value->tipe_ruangan == 3) {
         $statusRuangan = $value->status_ruangan;
         foreach ($value->getDataSensor as $value2) {
-          if (!str_contains($value2->flag_sensor, "blower")) {
-            foreach ($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(11)->get() as $value3) {
-              $nilaiSensorTemp[] = $value3->nilai_sensor;
-              $waktuSensorTemp[] = date('G:i:s', $value3->created_at->timestamp);
-            }
-            array_push($dataSensor, [
-              'type' => 'sensor',
-              'flag_sensor' => $value2->flag_sensor,
-              'value' => $nilaiSensorTemp,
-              'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
-            ]);
-            array_push($dataWaktuSensor, [
-              'type' => 'waktu',
-              'flag_sensor' => $value2->flag_sensor,
-              'value' => $waktuSensorTemp
-            ]);
-            $nilaiSensorTemp = [];
-            $waktuSensorTemp = [];
+          if (str_contains($value2->flag_sensor, 'blower')) {
+            continue;
           }
+          $dateNow = '%' . date("Y-m-d") . '%';
+          if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
+            $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->limit(1)->get();
+            if (!$temp->isEmpty()) {
+              $dateNow = '%' . date('Y-m-d', Carbon::parse($temp[0]->created_at)->timestamp) . '%';
+            }
+          }
+
+          foreach ($value2->getDataNilaiSensor()
+            ->selectRaw($selectRawQuery)
+            ->where('created_at', 'LIKE', $dateNow)
+            ->groupBy('tgl', 'jam', 'menit_group')
+            ->orderBy('waktu_asli', 'DESC')
+            ->limit($this->LIMIT)
+            ->get() as $value3) {
+            $nilaiSensorTemp[] = number_format($value3->avg_nilai, 2);
+            $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
+            $stddevTemp[] = [Carbon::parse($value3->waktu_asli)->valueOf(), number_format($value3->stddev, 2)];
+          }
+
+          foreach ($value2->getDataNilaiSensor()
+            ->where('created_at', 'LIKE', $dateNow)
+            ->orderBy('created_at', 'DESC')
+            ->limit(1)
+            ->get() as $value3) {
+            if (str_contains($value2->flag_sensor, 'suhu')) {
+              $currentSuhu += (int) $value3->nilai_sensor;
+            } else if (str_contains($value2->flag_sensor, 'kelembaban')) {
+              $currentKelembaban += (int) $value3->nilai_sensor;
+            }
+          }
+
+          array_push($dataSensor, [
+            'type' => 'sensor',
+            'flag_sensor' => $value2->flag_sensor,
+            'value' => $nilaiSensorTemp,
+            'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
+            'stddev' => $stddevTemp,
+          ]);
+
+          array_push($dataWaktuSensor, [
+            'type' => 'waktu',
+            'flag_sensor' => $value2->flag_sensor,
+            'value' => $waktuSensorTemp
+          ]);
+
+          $nilaiSensorTemp = [];
+          $waktuSensorTemp = [];
+          $stddevTemp = [];
         }
       }
     }
@@ -51,8 +101,9 @@ class RuanganPengeringanController extends Controller
       'status' => true,
       'dataSensor' => $dataSensor,
       'dataWaktuSensor' => $dataWaktuSensor,
+      'currentSuhu' => number_format($currentSuhu / 2, 2),
+      'currentKelembaban' => number_format($currentKelembaban / 2, 2)
     ]);
-
   }
 
 
@@ -71,10 +122,10 @@ class RuanganPengeringanController extends Controller
       return response()->json([
         'status' => true,
         'data' => [
-          'id_sensor' => $sensor->id_sensor,
-          'nilai_sensor' => $sensor->getDataNilaiBlower->nilai_sensor,
-          'is_active' => $sensor->getDataNilaiBlower->nilai_sensor == '1'
-        ]
+            'id_sensor' => $sensor->id_sensor,
+            'nilai_sensor' => $sensor->getDataNilaiBlower->nilai_sensor,
+            'is_active' => $sensor->getDataNilaiBlower->nilai_sensor == '1'
+          ]
       ]);
 
     } catch (\Exception $e) {
@@ -86,37 +137,23 @@ class RuanganPengeringanController extends Controller
     }
   }
 
-  // public function showBlower()
-  // {
-  //   return view('ruang.blower', [
-  //     'blowerSensors' => [
-  //       1 => '4519cc50-56ae-4e94-90b0-b17f2c5b4c15',
-  //       2 => '4519cc50-56ae-4e94-90b0-b17f2c5b4c16'
-  //     ]
-  //   ]);
-  // }
-
   /**
    * Display a listing of the resource.
    */
   public function index()
   {
-    // Ambil semua blower dari tabel mode_blower beserta sensor terkait
     $blower = ModeBlowerModel::with('getDataSensor')->get()
       ->keyBy(function ($item) {
-        // Ambil nomor blower dari flag_sensor (misal: "blower-1")
         preg_match('/\d+/', $item->getDataSensor->flag_sensor ?? '', $matches);
         return $matches[0] ?? null;
       });
 
-    // Membuat mapping: nomor blower => id_sensor (UUID)
     $blowerSensors = [];
     foreach ($blower as $index => $item) {
       if ($index !== null) {
         $blowerSensors[(int) $index] = $item->id_sensor;
       }
     }
-
     return view('admin.pengeringan.index', compact('blower', 'blowerSensors'));
   }
 
