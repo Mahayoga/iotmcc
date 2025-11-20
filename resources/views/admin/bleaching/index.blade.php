@@ -61,6 +61,9 @@
             <div class="card-body text-center">
               <h1 id="timer-display" class="fw-bold display-3 text-danger mb-0">00:00</h1>
               <small class="text-muted d-block mt-2">Waktu tersisa</small>
+              <button id="start-stop-timer-btn" class="btn btn-success btn-sm mt-3">
+                <i class="bi bi-play-fill"></i> <span id="start-stop-text-btn">Mulai Timer</span>
+              </button>
             </div>
           </div>
         </div>
@@ -125,6 +128,7 @@
     
     // Inisialisasi grafik
     let apexSuhu = null;
+    let timerStatus = null;
 
     function initializeCharts() {
       let optionsSuhu = {
@@ -231,52 +235,24 @@
 
     function getDataTimer() {
       $.get('{{ route('alat-bleaching.getDataTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function (res) {
-        if (res.status && res.dataTimer.length > 0) {
-          let timer = res.dataTimer[0];
-          const nilai = parseInt(timer.nilai_timer);
-          const limit = parseInt(timer.limit_timer);
-          const sisa = Math.max(limit - nilai, 0);
-
-          updateDisplay(sisa);
-
-          if (limit > 0) {
-            if (sisa <= 0) {
-              $('#status-proses')
-                .text('Selesai ✅')
-                .removeClass()
-                .addClass('badge bg-success');
-            } else {
-              $('#status-proses')
-                .text('Berlangsung ⏳')
-                .removeClass()
-                .addClass('badge bg-warning text-dark');
-            }
-
-            if (timer.updated_at) {
-              const waktuMulai = new Date(timer.updated_at);
-              const waktuSelesai = new Date(waktuMulai.getTime() + limit * 1000);
-              $('#waktu-mulai').text(waktuMulai.toLocaleTimeString('id-ID'));
-              $('#waktu-selesai').text(waktuSelesai.toLocaleTimeString('id-ID'));
-            }
-          } else {
-            $('#status-proses')
-              .text('Menunggu')
-              .removeClass()
-              .addClass('badge bg-secondary');
+        // console.log(res);
+        if(res.status) {
+          let data = res.dataTimer[0];
+          updateDisplay(parseInt(data.sisa_timer));
+          if(data.flag_timer == 'start') {
+            let startTime = new Date(parseInt(data.nilai_timer));
+            let stopTime = new Date(parseInt(data.nilai_timer) + (parseInt(data.limit_timer) * 1000));
+            $('#waktu-mulai').text(startTime.toLocaleTimeString('id-ID'));
+            $('#waktu-selesai').text(stopTime.toLocaleTimeString('id-ID'));
+            $('#status-proses').text('Masih Berlangsung!').removeClass().addClass('badge bg-warning text-dark');
+            $('#start-stop-text-btn').text('Stop Timer');
+          } else if(data.flag_timer == 'stop') {
             $('#waktu-mulai').text('-');
             $('#waktu-selesai').text('-');
+            $('#status-proses').text('Selesai!').removeClass().addClass('badge bg-success');
+            $('#start-stop-text-btn').text('Mulai Timer');
           }
-        } else {
-          updateDisplay(0);
-          $('#waktu-mulai').text('-');
-          $('#waktu-selesai').text('-');
-          $('#status-proses')
-            .text('Menunggu')
-            .removeClass()
-            .addClass('badge bg-secondary');
         }
-      }).fail(function (xhr, status, error) {
-        console.error('Gagal mengambil data timer:', error);
       });
     }
 
@@ -286,41 +262,20 @@
       $('#timer-display').text(`${m}:${s}`);
     }
 
-    $('#set-timer-btn').on('click', function () {
-      const durasiMenit = parseInt($('#durasi-input').val());
+    $('#start-stop-timer-btn').on('click', function() {
+      $.post('{{ route('alat-bleaching.startStopLimitTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}',
+      {
+        _token: '{{ csrf_token() }}'
+      },function(data) {
+        console.log()
+        if() {
 
-      if (isNaN(durasiMenit) || durasiMenit <= 0) {
-        alert('Masukkan durasi yang valid (lebih dari 0 menit)');
-        return;
-      }
-
-      $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
-
-      $.ajax({
-        url: '{{ route('alat-bleaching.setLimitTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}',
-        method: 'POST',
-        data: {
-          limit_timer: durasiMenit,
-          flag_sensor: 'timer_1',
-          _token: '{{ csrf_token() }}'
-        },
-        success: function (response) {
-          if (response.status) {
-            alert('Timer berhasil diset! Timer akan berjalan otomatis.');
-            $('#durasi-input').val('');
-            getDataTimer();
-          } else {
-            alert('Gagal set timer: ' + response.message);
-          }
-        },
-        error: function (xhr, status, error) {
-          console.error('Error:', error);
-          alert('Terjadi kesalahan saat set timer');
-        },
-        complete: function () {
-          $('#set-timer-btn').prop('disabled', false).html('<i class="bi bi-clock-fill"></i> Set Timer');
         }
       });
+    });
+    
+    $('#set-timer-btn').on('click', function () {
+      
     });
 
     initializeCharts();

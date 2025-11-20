@@ -26,6 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/data/sensor/sensor/{id}', [AlatBleachingController::class, 'getDataSensor'])->name('alat-bleaching.getDataSensor');
         Route::get('/data/timer/timer/{id}', [AlatBleachingController::class, 'getDataTimer'])->name('alat-bleaching.getDataTimer');
         Route::post('alat-bleaching/{id}/set-timer', [AlatBleachingController::class, 'setLimitTimer'])->name('alat-bleaching.setLimitTimer');
+        Route::post('alat-bleaching/{id}/start-stop-timer', [AlatBleachingController::class, 'startStopTimer'])->name('alat-bleaching.startStopLimitTimer');
     });
     Route::resource('ruang-fermentasi', RuanganFermentasiController::class);
     Route::prefix('ruang-fermentasi')->group(function () {
@@ -55,5 +56,5 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 Route::get('/test/debug', function () {
-    dd('hehe');
+    dd(5 * 1000);
 })->name('test.debug');
