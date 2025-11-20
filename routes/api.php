@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlatBleachingController;
 use App\Http\Controllers\Api\RiwayatDataController;
 use App\Http\Controllers\NilaiBlowerAPIController;
 use App\Http\Controllers\NilaiSensorAPIController;
@@ -69,4 +70,5 @@ use App\Http\Controllers\Api\GudangController;
 
     Route::prefix('check/')->group(function() {
         Route::get('/nilai/blower/{id}', [NilaiBlowerAPIController::class, 'show']);
+        Route::get('/nilai/timer/{id}', [AlatBleachingController::class, 'getDataTimer']);
     });
