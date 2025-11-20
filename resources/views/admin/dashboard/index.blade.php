@@ -108,7 +108,7 @@
         </div>
       </div>
 
-      {{-- bagian grafik real-time --}}
+      {{-- grafik menampilkan data terbaru --}}
       <div class="row mt-4">
 
         {{-- grafik bleaching --}}
@@ -154,7 +154,7 @@
       {{-- grafik trend 14 hari --}}
       <div class="row mt-4">
         <div class="col-12 mb-3">
-          <h4 class="mb-0">Trend 14Hari Terakhir</h4>
+          <h4 class="mb-0">Trend 14 Hari Terakhir</h4>
           <p class="text-muted small mb-0">Rata-rata harian suhu dan kelembapan per ruangan</p>
         </div>
 
