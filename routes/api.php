@@ -70,9 +70,5 @@ use App\Http\Controllers\Api\GudangController;
 
     Route::prefix('check/')->group(function() {
         Route::get('/nilai/blower/{id}', [NilaiBlowerAPIController::class, 'show']);
-        Route::get('/nilai/timer/{id}', [AlatBleachingController::class, 'getDataTimer'])->name('alat-bleaching-api.getDataTimer');
-    });
-
-    Route::prefix('alat-bleaching')->group(function () {
-        
+        Route::get('/nilai/timer/{id}', [AlatBleachingController::class, 'getDataTimer']);
     });
