@@ -116,27 +116,6 @@
         </div>
       </div>
 
-      <!-- Grafik Std Dev Suhu -->
-      <div class="row mt-4">
-        <div class="col-md-12">
-          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
-            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
-              <div>
-                <h5 class="card-title mb-1 mt-2">Kestabilan Suhu dalam Alat Bleaching</h5>
-                <small class="text-muted">Seberapa stabil suhu di Alat Bleaching</small>
-              </div>
-            </div>
-            <div class="card-body">
-              <div id="chartStddevSuhu"></div>
-              <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span
-                    id="total-stddev-suhu">-</span> data terakhir</small>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </main>
 @endsection
@@ -146,7 +125,6 @@
     
     // Inisialisasi grafik
     let apexSuhu = null;
-    let apexStddevSuhu = null;
 
     function initializeCharts() {
       let optionsSuhu = {
@@ -191,78 +169,9 @@
         }
       };
 
-      // Grafik Stddev Suhu (datetime)
-      let optionsStddev = {
-        chart: {
-          type: 'line',
-          height: '350px',
-        },
-        series: [],
-        xaxis: {
-          type: 'datetime',
-          categories: []
-        },
-        stroke: {
-          curve: 'smooth',
-          width: 3
-        },
-        markers: {
-          size: 5
-        },
-        dataLabels: {
-          enabled: false
-        },
-        colors: ['#00E396', '#008FFB'],
-        legend: {
-          position: 'bottom',
-          horizontalAlign: 'center',
-          offsetY: 0,
-          fontSize: '14px',
-          fontWeight: 500,
-          markers: {
-            width: 12,
-            height: 12,
-            radius: 12,
-          },
-          itemMargin: {
-            horizontal: 15,
-            vertical: 5
-          }
-        },
-        yaxis: {
-          title: {
-            text: 'Std Dev Suhu'
-          }
-        },
-        annotations: {
-          yaxis: [
-            {
-              y: 1.0,
-              borderColor: '#d40624',
-              label: {
-                text: 'batas kestabilan suhu',
-                style: {
-                  color: '#fff',
-                  background: '#d40624'
-                }
-              }
-            },
-          ],
-        },
-        tooltip: {
-          shared: true,
-          intersect: false,
-        }
-      };
-
       apexSuhu = new ApexCharts($('#chartSuhu')[0], optionsSuhu);
-      apexStddevSuhu = new ApexCharts($('#chartStddevSuhu')[0], optionsStddev);
-
       apexSuhu.render();
-      apexStddevSuhu.render();
-
       apexSuhu.updateSeries([]);
-      apexStddevSuhu.updateSeries([]);
     }
 
     function getDataSensor() {
@@ -271,9 +180,10 @@
         if (data.status == true) {
           let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
           apexSuhu.updateSeries([]);
-          apexStddevSuhu.updateSeries([]);
-          $('#suhu-rata-rata').text(data.currentSuhu);
-          let rataRataSuhu = parseFloat(data.currentSuhu);
+          
+          $('#suhu-rata-rata').text(data.rataRataSuhu);
+          let rataRataSuhu = parseFloat(data.rataRataSuhu);
+          
           if (rataRataSuhu > 20 && rataRataSuhu < 30) {
             $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
             classListSuhu.remove('text-success', 'text-warning', 'text-danger');
@@ -302,31 +212,16 @@
 
           data.dataSensor.forEach(element => {
             $('#total-suhu').text(element.value.length);
-            $('#total-stddev-suhu').text(element.value.length);
 
             if (element.flag_sensor == 'suhu_1') {
-              // Grafik Suhu
               apexSuhu.appendSeries({
                 name: 'Suhu 1 (°C)',
                 data: element.value.map(v => parseFloat(v))
               });
-
-              // Grafik Stddev Suhu
-              apexStddevSuhu.appendSeries({
-                name: "Suhu 1 (stddev)",
-                data: element.stddev
-              });
             } else if (element.flag_sensor == 'suhu_2') {
-              // Grafik Suhu
               apexSuhu.appendSeries({
                 name: 'Suhu 2 (°C)',
                 data: element.value.map(v => parseFloat(v))
-              });
-
-              // Grafik Stddev Suhu
-              apexStddevSuhu.appendSeries({
-                name: "Suhu 2 (stddev)",
-                data: element.stddev
               });
             }
           });
@@ -413,7 +308,6 @@
           if (response.status) {
             alert('Timer berhasil diset! Timer akan berjalan otomatis.');
             $('#durasi-input').val('');
-
             getDataTimer();
           } else {
             alert('Gagal set timer: ' + response.message);
