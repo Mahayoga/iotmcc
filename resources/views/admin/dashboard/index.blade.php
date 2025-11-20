@@ -77,7 +77,7 @@
                     </div>
                   </div>
                 </div>
-                
+
                 {{-- card pengeringan --}}
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-3">
@@ -108,7 +108,7 @@
         </div>
       </div>
 
-      {{-- bagian grafik --}}
+      {{-- bagian grafik real-time --}}
       <div class="row mt-4">
 
         {{-- grafik bleaching --}}
@@ -150,16 +150,107 @@
           </div>
         </div>
       </div>
+
+      {{-- grafik trend 14 hari --}}
+      <div class="row mt-4">
+        <div class="col-12 mb-3">
+          <h4 class="mb-0">Trend 14Hari Terakhir</h4>
+          <p class="text-muted small mb-0">Rata-rata harian suhu dan kelembapan per ruangan</p>
+        </div>
+
+        {{-- Bleaching --}}
+        <div class="col-12 mb-4">
+          <div class="card border-0 shadow-sm" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">
+                <i class="bi bi-fire text-danger me-2"></i>
+                Trend Suhu {{ $trendBleaching['nama_ruangan'] ?? 'Bleaching' }}
+              </h5>
+              <small class="text-muted">Rata-rata suhu harian (07:00 - 10:00 WIB)</small>
+            </div>
+            <div class="card-body" style="min-height: 360px;">
+              <div id="trendBleaching"></div>
+            </div>
+          </div>
+        </div>
+
+        {{-- Fermentasi --}}
+        <div class="col-lg-6 mb-4">
+          <div class="card border-0 shadow-sm" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">
+                <i class="bi bi-thermometer-half text-warning me-2"></i>
+                Trend Suhu {{ $trendFermentasiSuhu['nama_ruangan'] ?? 'Fermentasi' }}
+              </h5>
+              <small class="text-muted">Rata-rata suhu harian</small>
+            </div>
+            <div class="card-body" style="min-height: 320px;">
+              <div id="trendFermentasiSuhu"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+          <div class="card border-0 shadow-sm" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">
+                <i class="bi bi-droplet-half text-primary me-2"></i>
+                Trend Kelembapan {{ $trendFermentasiKelembapan['nama_ruangan'] ?? 'Fermentasi' }}
+              </h5>
+              <small class="text-muted">Rata-rata kelembapan harian</small>
+            </div>
+            <div class="card-body" style="min-height: 320px;">
+              <div id="trendFermentasiKelembapan"></div>
+            </div>
+          </div>
+        </div>
+
+        {{-- Pengeringan --}}
+        <div class="col-lg-6 mb-4">
+          <div class="card border-0 shadow-sm" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">
+                <i class="bi bi-thermometer-half text-warning me-2"></i>
+                Trend Suhu {{ $trendPengeringanSuhu['nama_ruangan'] ?? 'Pengeringan' }}
+              </h5>
+              <small class="text-muted">Rata-rata suhu harian</small>
+            </div>
+            <div class="card-body" style="min-height: 320px;">
+              <div id="trendPengeringanSuhu"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+          <div class="card border-0 shadow-sm" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">
+                <i class="bi bi-droplet-half text-primary me-2"></i>
+                Trend Kelembapan {{ $trendPengeringanKelembapan['nama_ruangan'] ?? 'Pengeringan' }}
+              </h5>
+              <small class="text-muted">Rata-rata kelembapan harian</small>
+            </div>
+            <div class="card-body" style="min-height: 320px;">
+              <div id="trendPengeringanKelembapan"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
-  {{-- apexcharts --}}
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const grafikSuhu = @json($grafikSuhu ?? []);
       const grafikKelembapan = @json($grafikKelembapan ?? []);
       const grafikBleaching = @json($grafikBleaching ?? []);
+      const trendBleaching = @json($trendBleaching ?? []);
+      const trendFermentasiSuhu = @json($trendFermentasiSuhu ?? []);
+      const trendFermentasiKelembapan = @json($trendFermentasiKelembapan ?? []);
+      const trendPengeringanSuhu = @json($trendPengeringanSuhu ?? []);
+      const trendPengeringanKelembapan = @json($trendPengeringanKelembapan ?? []);
 
       // grafik bleaching
       if (Object.keys(grafikBleaching).length > 0) {
@@ -217,6 +308,204 @@
           legend: { position: 'top' }
         }).render();
       }
+
+      // bart chart bleaching
+      function renderTrendLineChart(elementId, dataObj, yAxisTitle, unit = '°C', color = '#3B82F6', minY = null, maxY = null) {
+        const container = document.querySelector(elementId);
+
+        if (!dataObj || !dataObj.data || dataObj.data.length === 0) {
+          container.innerHTML = '<div class="text-center text-muted py-5"><i class="bi bi-info-circle me-2"></i>Belum ada data</div>';
+          return;
+        }
+
+        const categories = dataObj.data.map(d => d.tanggal);
+        const values = dataObj.data.map(d => d.nilai);
+
+        let calculatedMin = minY;
+        let calculatedMax = maxY;
+
+        if (!minY || !maxY) {
+          const dataMin = Math.min(...values);
+          const dataMax = Math.max(...values);
+          const range = dataMax - dataMin;
+          const padding = range * 0.2; // 20% padding untuk line chart
+
+          calculatedMin = Math.floor(dataMin - padding);
+          calculatedMax = Math.ceil(dataMax + padding);
+        }
+
+        const options = {
+          chart: {
+            type: 'line',
+            height: elementId === '#trendBleaching' ? 340 : 300,
+            toolbar: {
+              show: true,
+              tools: {
+                download: true,
+                selection: true,
+                zoom: true,
+                zoomin: true,
+                zoomout: true,
+                pan: true,
+                reset: true
+              }
+            },
+            animations: {
+              enabled: true,
+              easing: 'easeinout',
+              speed: 800
+            },
+            zoom: {
+              enabled: true,
+              type: 'x',
+              autoScaleYaxis: true
+            }
+          },
+          series: [{
+            name: yAxisTitle,
+            data: values
+          }],
+          stroke: {
+            curve: 'MonotoneCubic',
+            width: 3,
+            colors: [color]
+          },
+          markers: {
+            size: 5,
+            strokeWidth: 2,
+            strokeColors: '#fff',
+            fillColors: color,
+            hover: {
+              size: 7
+            }
+          },
+          colors: [color],
+          dataLabels: {
+            enabled: true,
+            formatter: function (val) {
+              return val.toFixed(1) + unit;
+            },
+            offsetY: -5,
+            background: {
+              enabled: false,
+            },
+            style: {
+              fontSize: '11px',
+              fontWeight: 'bold',
+              colors: [color]
+            }
+          },
+          xaxis: {
+            categories: categories,
+            labels: {
+              style: {
+                fontSize: '11px',
+                fontWeight: 500
+              },
+              rotate: -45,
+              rotateAlways: categories.length > 7
+            },
+            axisBorder: {
+              show: true
+            },
+            axisTicks: {
+              show: true
+            },
+            tooltip: {
+              enabled: false
+            }
+          },
+          yaxis: {
+            title: {
+              text: yAxisTitle,
+              style: {
+                fontSize: '12px',
+                fontWeight: 600
+              }
+            },
+            min: calculatedMin,
+            max: calculatedMax,
+            labels: {
+              formatter: function (val) {
+                return val ? val.toFixed(1) + unit : '';
+              }
+            }
+          },
+          grid: {
+            borderColor: '#e7e7e7',
+            strokeDashArray: 4,
+            padding: {
+              top: 20,
+              right: 10,
+              bottom: 10,
+              left: 10
+            },
+            xaxis: {
+              lines: {
+                show: true
+              }
+            },
+            yaxis: {
+              lines: {
+                show: true
+              }
+            }
+          },
+        };
+
+        new ApexCharts(container, options).render();
+      }
+
+      renderTrendLineChart(
+        '#trendBleaching',
+        trendBleaching,
+        'Suhu',
+        '°C',
+        '#EF4444',
+        null,
+        null
+      );
+
+
+      renderTrendLineChart(
+        '#trendFermentasiSuhu',
+        trendFermentasiSuhu,
+        'Suhu',
+        '°C',
+        '#F59E0B',
+        null,
+        null
+      );
+
+      renderTrendLineChart(
+        '#trendFermentasiKelembapan',
+        trendFermentasiKelembapan,
+        'Kelembapan',
+        '%',
+        '#3B82F6',
+        0,
+        100
+      );
+
+      renderTrendLineChart(
+        '#trendPengeringanSuhu',
+        trendPengeringanSuhu,
+        'Suhu',
+        '°C',
+        '#F59E0B',
+        null,
+        null
+      );
+
+      renderTrendLineChart(
+        '#trendPengeringanKelembapan',
+        trendPengeringanKelembapan,
+        'Kelembapan',
+        '%',
+        '#3B82F6',
+        0,
+        100
+      );
     });
   </script>
 @endsection
