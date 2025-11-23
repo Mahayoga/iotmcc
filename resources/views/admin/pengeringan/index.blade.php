@@ -96,7 +96,8 @@
             <div class="card-body">
               <div id="chartSuhu"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span
+                    id="total-suhu">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -115,7 +116,8 @@
             <div class="card-body">
               <div id="chartKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-kelembaban">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span
+                    id="total-kelembaban">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -135,7 +137,8 @@
             <div class="card-body">
               <div id="chartSuhuDanKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu-dan-kelembaban">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span
+                    id="total-suhu-dan-kelembaban">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -156,7 +159,8 @@
             <div class="card-body">
               <div id="chartStddevSuhu"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-suhu">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span
+                    id="total-stddev-suhu">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -177,7 +181,8 @@
             <div class="card-body">
               <div id="chartStddevKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-kelembaban">-</span> data
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span
+                    id="total-stddev-kelembaban">-</span> data
                   terakhir</small>
               </div>
             </div>
@@ -196,12 +201,12 @@
               </div>
               <div class="position-absolute bottom-0 end-0 mb-2 me-3"
                 style="border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.25rem 0.5rem; background-color: #f8f9fa;">
-                <div class="form-check form-switch d-flex align-items-center m-0">
+                {{-- <div class="form-check form-switch d-flex align-items-center m-0">
                   <input class="form-check-input" type="checkbox" id="switch-all" style="margin:0;">
                   <label class="form-check-label small text-muted fw-semibold ms-2 mb-0" for="switch-all">
                     Switch all
                   </label>
-                </div>
+                </div> --}}
               </div>
             </div>
 
@@ -227,7 +232,7 @@
                         @if($i <= 2)
                           <div class="d-flex flex-column align-items-center">
                             <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
-                              data-id="{{ $i }}" data-sensor-id="{{ $blowerSensors[$i] }}" style="margin:0;">
+                              data-id="{{ $i }}" data-sensor-id="" style="margin:0;">
 
                             <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
                               for="switch-{{ $i }}">
@@ -358,8 +363,66 @@
 @section('script')
   <script>
 
-    // Fungsi untuk update status blower via AJAX
-    function updateBlowerStatus(blowerId, status, sensorId) {
+    // Fungsi untuk load semua status blower dari database
+    function loadAllBlowerStatus() {
+      $.get('{{ route("ruang-pengeringan.getAllBlowersStatus", ["11dc76a4-3c99-4563-9bbe-e1916a4a4ff2"]) }}',
+        function (response) {
+          console.log('All Blowers Status:', response);
+
+          if (response.status && response.data) {
+            response.data.forEach(blower => {
+              const blowerId = blower.blower_number;
+              const isActive = blower.is_active;
+              const switchEl = document.getElementById(`switch-${blowerId}`);
+              if (switchEl) {
+                switchEl.checked = isActive;
+                switchEl.dataset.sensorId = blower.id_sensor;
+
+                updateBlowerUI(blowerId, isActive);
+
+                console.log(`✓ Blower ${blowerId} loaded: ${isActive ? 'ON' : 'OFF'}`);
+              }
+            });
+          }
+        }
+      ).fail(function (xhr) {
+        console.error('Failed to load blowers status:', xhr.responseText);
+        showNotification('error', 'Gagal memuat status blower');
+      });
+    }
+
+    // Fungsi untuk load status blower individual (backup method)
+    function loadBlowerStatus(blowerId, sensorId) {
+      if (!sensorId || sensorId === 'undefined') {
+        console.error(`Invalid sensor ID for Blower ${blowerId}`);
+        return;
+      }
+
+      $.get(`/ruang-pengeringan/data/blower/${sensorId}`,
+        function (response) {
+          console.log(`Blower ${blowerId} Response:`, response);
+
+          if (response.status && response.data) {
+            const switchEl = document.getElementById(`switch-${blowerId}`);
+            if (switchEl) {
+              switchEl.checked = response.data.is_active;
+              updateBlowerUI(blowerId, response.data.is_active);
+              console.log(`✓ Blower ${blowerId}: ${response.data.is_active ? 'ON' : 'OFF'}`);
+            }
+          }
+        }
+      ).fail(function (xhr) {
+        console.error(`Failed to load Blower ${blowerId}:`, xhr.responseText);
+        const switchEl = document.getElementById(`switch-${blowerId}`);
+        if (switchEl) {
+          switchEl.checked = false;
+          updateBlowerUI(blowerId, false);
+        }
+      });
+    }
+
+    // Fungsi untuk update status blower ke database
+    function updateBlowerStatus(blowerId, newStatus, sensorId) {
       const switchEl = document.getElementById(`switch-${blowerId}`);
       const parentDiv = switchEl.closest('.d-flex');
 
@@ -367,56 +430,38 @@
       switchEl.disabled = true;
 
       $.ajax({
-        url: '/api/send/nilai/blower',
+        url: `/ruang-pengeringan/blower/${sensorId}/update`,
         method: 'POST',
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        data: JSON.stringify({
-          id_sensor: sensorId,
-          nilai_sensor: status ? '1' : '0'
-        }),
-        contentType: 'application/json',
-        success: function (data) {
+        data: {
+          nilai_sensor: newStatus ? '1' : '0'
+        },
+        success: function (response) {
           parentDiv.classList.remove('blower-loading');
           switchEl.disabled = false;
 
-          if (data.status) {
-            console.log('Status blower berhasil diupdate:', data.msg);
-            showNotification('success', data.msg);
+          if (response.status) {
+            console.log('✓ Blower updated:', response.msg);
+            showNotification('success', response.msg);
+            updateBlowerUI(blowerId, response.data.is_active);
           } else {
-            console.error('Gagal update status:', data.msg);
-            showNotification('error', data.msg)
-            switchEl.checked = !status;
-            updateBlowerUI(blowerId, !status);
+            console.error('✗ Update failed:', response.msg);
+            showNotification('error', response.msg);
+            switchEl.checked = !newStatus;
+            updateBlowerUI(blowerId, !newStatus);
           }
         },
-        error: function (xhr, status, error) {
+        error: function (xhr) {
           parentDiv.classList.remove('blower-loading');
           switchEl.disabled = false;
 
-          console.error('Error:', error);
-          showNotification('error', 'Terjadi kesalahan saat mengupdate status blower');
-          switchEl.checked = !status;
-          updateBlowerUI(blowerId, !status);
-        }
-      });
-    }
+          console.error('✗ Error updating blower:', xhr.responseText);
+          showNotification('error', 'Gagal mengupdate status blower');
 
-    // Fungsi load status blower dari database
-    function loadBlowerStatus(blowerId, sensorId) {
-      $.ajax({
-        url: `/data/sensor/blower/${sensorId}`,
-        method: 'GET',
-        success: function (data) {
-          if (data.status) {
-            const switchEl = document.getElementById(`switch-${blowerId}`);
-            switchEl.checked = data.data.is_active;
-            updateBlowerUI(blowerId, data.data.is_active);
-          }
-        },
-        error: function (xhr, status, error) {
-          console.error('Error loading blower status:', error);
+          switchEl.checked = !newStatus;
+          updateBlowerUI(blowerId, !newStatus);
         }
       });
     }
@@ -424,8 +469,10 @@
     // Fungsi untuk update UI blower
     function updateBlowerUI(blowerId, isActive) {
       const switchEl = document.getElementById(`switch-${blowerId}`);
-      const label = switchEl.nextElementSibling;
+      const label = switchEl?.nextElementSibling;
       const blowerIcon = document.getElementById(`blower-${blowerId}`);
+
+      if (!switchEl || !label || !blowerIcon) return;
 
       if (isActive) {
         label.textContent = 'Hidup';
@@ -442,73 +489,125 @@
 
     // Fungsi notifikasi
     function showNotification(type, message) {
-      const bgColor = type === 'success' ? '#28a745' : '#dc3545';
-      const icon = type === 'success' ? '✓' : '✗';
+      const colors = {
+        'success': '#28a745',
+        'error': '#dc3545',
+        'warning': '#ffc107'
+      };
+
+      const icons = {
+        'success': '✓',
+        'error': '✗',
+        'warning': '⚠'
+      };
+
+      const bgColor = colors[type] || '#6c757d';
+      const icon = icons[type] || 'ℹ';
+      const textColor = type === 'warning' ? '#000' : '#fff';
 
       const notification = $(`
-          <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: ${bgColor}; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); animation: slideIn 0.3s ease-out;">
-            <strong>${icon}</strong> ${message}
-          </div>
-        `);
+        <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; 
+                    background: ${bgColor}; color: ${textColor}; 
+                    padding: 15px 20px; border-radius: 8px; 
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+                    animation: slideIn 0.3s ease-out; max-width: 400px;">
+          <strong>${icon}</strong> ${message}
+        </div>
+      `);
 
       $('body').append(notification);
 
-      setTimeout(function () {
+      setTimeout(() => {
         notification.css('animation', 'slideOut 0.3s ease-out');
-        setTimeout(function () {
-          notification.remove();
-        }, 300);
+        setTimeout(() => notification.remove(), 300);
       }, 3000);
     }
 
-    // Event blower dengan AJAX
-    document.querySelectorAll('.blower-switch').forEach((switchEl) => {
-      switchEl.addEventListener('change', function () {
-        const blowerId = this.dataset.id;
-        const sensorId = this.dataset.sensorId;
-        const isChecked = this.checked;
+    // Event handler untuk setiap switch blower
+    $(document).on('change', '.blower-switch', function () {
+      const blowerId = $(this).data('id');
+      const sensorId = $(this).data('sensor-id');
+      const isChecked = $(this).is(':checked');
 
-        updateBlowerUI(blowerId, isChecked);
-        updateBlowerStatus(blowerId, isChecked, sensorId);
-      });
+      console.log(`Blower ${blowerId} switched to: ${isChecked ? 'ON' : 'OFF'}`);
+
+      // Update ke database
+      updateBlowerStatus(blowerId, isChecked, sensorId);
     });
 
-    // Event tombol switch all
-    const switchAll = document.getElementById('switch-all');
-    switchAll.addEventListener('change', function () {
-      const allSwitches = document.querySelectorAll('.blower-switch');
-      const turnOn = this.checked;
+    // // Event handler untuk switch all
+    // $(document).on('change', '#switch-all', function () {
+    //   const isChecked = $(this).is(':checked');
+    //   const label = $(this).next('label');
 
-      allSwitches.forEach((switchEl) => {
-        if (switchEl.checked !== turnOn) {
-          switchEl.click();
-        }
-      });
+    //   // Update label
+    //   label.text(isChecked ? 'Switch Off' : 'Switch All');
 
-      this.nextElementSibling.textContent = turnOn ? 'switch off' : 'switch all';
-    });
+    //   // Toggle semua blower yang aktif (bukan disabled)
+    //   $('.blower-switch:not(:disabled)').each(function () {
+    //     if ($(this).is(':checked') !== isChecked) {
+    //       $(this).prop('checked', isChecked).trigger('change');
+    //     }
+    //   });
+    // });
 
-    // Animasi kipas
+    //styling
     const styleBlower = document.createElement('style');
     styleBlower.innerHTML = `
-        .bi-fan-spin {
-          animation: fanSpin 1s linear infinite;
-        }
-        @keyframes fanSpin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes slideIn {
-          from { transform: translateX(100%); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOut {
-          from { transform: translateX(0); opacity: 1; }
-          to { transform: translateX(100%); opacity: 0; }
-        }
-      `;
+      .bi-fan-spin {
+        animation: fanSpin 1s linear infinite;
+      }
+      @keyframes fanSpin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+      .blower-loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.6;
+      }
+      .blower-loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #6EA017;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+    `;
     document.head.appendChild(styleBlower);
 
+
+    $(document).ready(function () {
+      console.log('=== Initializing Blowers ===');
+
+      loadAllBlowerStatus();
+      setInterval(loadAllBlowerStatus, 30000);
+
+      initializeCharts();
+      setInterval(getDataSensor, 60000);
+      getDataSensor();
+
+      console.log('=== Initialization Complete ===');
+    });
+    
     //inisialisasi grafik
     let apexSuhu = null;
     let apexKelembaban = null;
@@ -608,7 +707,7 @@
             yaxis: { title: { text: 'Std Dev Suhu' } },
             annotations: {
               yaxis: [
-                { y: 1.0, borderColor: '#d40624', label: { text: 'batas kestabilan suhu' }},
+                { y: 1.0, borderColor: '#d40624', label: { text: 'batas kestabilan suhu' } },
               ],
             }
           });
@@ -616,7 +715,7 @@
             yaxis: { title: { text: 'Std Dev Kelembaban' } },
             annotations: {
               yaxis: [
-                { y: 5.0, borderColor: '#d40624', label: { text: 'batas kestabilan kelembaban' }},
+                { y: 5.0, borderColor: '#d40624', label: { text: 'batas kestabilan kelembaban' } },
               ],
             }
           });
@@ -631,7 +730,7 @@
             $('#total-suhu-dan-kelembaban').text(element.value.length);
             $('#total-stddev-suhu').text(element.value.length);
             $('#total-stddev-kelembaban').text(element.value.length);
-            if(element.flag_sensor == 'suhu_1') {
+            if (element.flag_sensor == 'suhu_1') {
               apexSuhu.appendSeries({
                 name: 'Suhu 1 (°C)',
                 data: element.value
@@ -644,7 +743,7 @@
                 name: "Suhu 1 (stddev)",
                 data: element.stddev
               });
-            } else if(element.flag_sensor == 'kelembaban_1') {
+            } else if (element.flag_sensor == 'kelembaban_1') {
               apexKelembaban.appendSeries({
                 name: 'Kelembaban 1 (%)',
                 data: element.value
@@ -657,7 +756,7 @@
                 name: "Kelembaban 1 (stddev)",
                 data: element.stddev
               });
-            } else if(element.flag_sensor == 'suhu_2') {
+            } else if (element.flag_sensor == 'suhu_2') {
               apexSuhu.appendSeries({
                 name: 'Suhu 2 (°C)',
                 data: element.value
@@ -670,7 +769,7 @@
                 name: "Suhu 2 (stddev)",
                 data: element.stddev
               });
-            } else if(element.flag_sensor == 'kelembaban_2') {
+            } else if (element.flag_sensor == 'kelembaban_2') {
               apexKelembaban.appendSeries({
                 name: 'Kelembaban 2 (%)',
                 data: element.value
@@ -727,20 +826,20 @@
         }
       });
     }
-    
-    $(document).ready(function () { 
 
-      // Initialize charts
-      initializeCharts();
-      setInterval(getDataSensor, 60000);
-      getDataSensor();
+    // $(document).ready(function () {
 
-      document.querySelectorAll('.blower-switch').forEach((switchEl) => {
-        const blowerId = switchEl.dataset.id;
-        const sensorId = switchEl.dataset.sensorId;
-        loadBlowerStatus(blowerId, sensorId);
-      });
-    });
-     
+    //   // Initialize charts
+    //   initializeCharts();
+    //   setInterval(getDataSensor, 60000);
+    //   getDataSensor();
+
+    //   document.querySelectorAll('.blower-switch').forEach((switchEl) => {
+    //     const blowerId = switchEl.dataset.id;
+    //     const sensorId = switchEl.dataset.sensorId;
+    //     loadBlowerStatus(blowerId, sensorId);
+    //   });
+    // });
+
   </script>
 @endsection
