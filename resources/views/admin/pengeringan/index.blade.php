@@ -599,7 +599,7 @@
       console.log('=== Initializing Blowers ===');
 
       loadAllBlowerStatus();
-      setInterval(loadAllBlowerStatus, 30000);
+      setInterval(loadAllBlowerStatus, 1000);
 
       initializeCharts();
       setInterval(getDataSensor, 60000);
