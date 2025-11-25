@@ -296,21 +296,21 @@
           apexStddevSuhu.updateSeries([]);
           apexStddevKelembaban.updateSeries([]);
 
-          apexSuhu.updateOptions({
-            xaxis: {
-              categories: data.dataWaktuSensor[0].value
-            }
-          });
-          apexKelembaban.updateOptions({
-            xaxis: {
-              categories: data.dataWaktuSensor[0].value
-            }
-          });
-          apexSuhuDanKelembaban.updateOptions({
-            xaxis: {
-              categories: data.dataWaktuSensor[0].value
-            }
-          });
+          // apexSuhu.updateOptions({
+          //   xaxis: {
+          //     categories: data.dataWaktuSensor[0].value
+          //   }
+          // });
+          // apexKelembaban.updateOptions({
+          //   xaxis: {
+          //     categories: data.dataWaktuSensor[0].value
+          //   }
+          // });
+          // apexSuhuDanKelembaban.updateOptions({
+          //   xaxis: {
+          //     categories: data.dataWaktuSensor[0].value
+          //   }
+          // });
           apexStddevSuhu.updateOptions({
             yaxis: { title: { text: 'Std Dev Suhu' } },
             annotations: {
@@ -332,59 +332,97 @@
           // $('#total-suhu-dan-kelembaban').text(dataResultSuhuTemp.length);
           // { y2: 5.0, borderColor: '#d40624', label: { text: 'batas kestabilan kelembaban' }}
 
+          data.dataWaktuSensor.forEach(element => {
+            console.log(element);
+          });
+          // let kelembabanTimestamps = data.dataWaktuSensor.find(element => element.flag_sensor == 'kelembaban_1').value;
+
           data.dataSensor.forEach(element => {
+            console.log(element);
             $('#total-suhu').text(element.value.length);
             $('#total-kelembaban').text(element.value.length);
             $('#total-suhu-dan-kelembaban').text(element.value.length);
             $('#total-stddev-suhu').text(element.value.length);
             $('#total-stddev-kelembaban').text(element.value.length);
             if(element.flag_sensor == 'suhu_1') {
+              let dataGrafik = [];
+              data.dataWaktuSensor.forEach(elementWaktu => {
+                if(elementWaktu.flag_sensor == 'suhu_1') {
+                  elementWaktu.value.forEach(waktu => {
+                    dataGrafik.push({x: waktu, y: element.value[dataGrafik.length]});
+                  });
+                }
+              });
               apexSuhu.appendSeries({
                 name: 'Suhu 1 (°C)',
-                data: element.value
+                data: dataGrafik
               });
               apexSuhuDanKelembaban.appendSeries({
                 name: 'Suhu 1 (°C)',
-                data: element.value
+                data: dataGrafik
               });
               apexStddevSuhu.appendSeries({
                 name: "Suhu 1 (stddev)",
                 data: element.stddev
               });
             } else if(element.flag_sensor == 'kelembaban_1') {
+              let dataGrafik = [];
+              data.dataWaktuSensor.forEach(elementWaktu => {
+                if(elementWaktu.flag_sensor == 'kelembaban_1') {
+                  elementWaktu.value.forEach(waktu => {
+                    dataGrafik.push({x: waktu, y: element.value[dataGrafik.length]});
+                  });
+                }
+              });
               apexKelembaban.appendSeries({
                 name: 'Kelembaban 1 (%)',
-                data: element.value
+                data: dataGrafik
               });
               apexSuhuDanKelembaban.appendSeries({
                 name: 'Kelembaban 1 (%)',
-                data: element.value
+                data: dataGrafik
               });
               apexStddevKelembaban.appendSeries({
                 name: "Kelembaban 1 (stddev)",
                 data: element.stddev
               });
             } else if(element.flag_sensor == 'suhu_2') {
+              let dataGrafik = [];
+              data.dataWaktuSensor.forEach(elementWaktu => {
+                if(elementWaktu.flag_sensor == 'suhu_2') {
+                  elementWaktu.value.forEach(waktu => {
+                    dataGrafik.push({x: waktu, y: element.value[dataGrafik.length]});
+                  });
+                }
+              });
               apexSuhu.appendSeries({
                 name: 'Suhu 2 (°C)',
-                data: element.value
+                data: dataGrafik
               });
               apexSuhuDanKelembaban.appendSeries({
                 name: 'Suhu 2 (°C)',
-                data: element.value
+                data: dataGrafik
               });
               apexStddevSuhu.appendSeries({
                 name: "Suhu 2 (stddev)",
                 data: element.stddev
               });
             } else if(element.flag_sensor == 'kelembaban_2') {
+              let dataGrafik = [];
+              data.dataWaktuSensor.forEach(elementWaktu => {
+                if(elementWaktu.flag_sensor == 'kelembaban_2') {
+                  elementWaktu.value.forEach(waktu => {
+                    dataGrafik.push({x: waktu, y: element.value[dataGrafik.length]});
+                  });
+                }
+              });
               apexKelembaban.appendSeries({
                 name: 'Kelembaban 2 (%)',
-                data: element.value
+                data: dataGrafik
               });
               apexSuhuDanKelembaban.appendSeries({
                 name: 'Kelembaban 2 (%)',
-                data: element.value
+                data: dataGrafik
               });
               apexStddevKelembaban.appendSeries({
                 name: "Kelembaban 2 (stddev)",
