@@ -85,6 +85,10 @@
 @section('script')
   <script>
     $(document).ready(function () {
+      let tglFlatpickr = flatpickr("#tanggal", {
+        dateFormat: "Y-m-d",
+        maxDate: "today",
+      });
       $('#gudang').change(function () {
         let gudangId = $(this).val();
         if (gudangId) {
@@ -128,6 +132,10 @@
               chartContainer.innerHTML = '';
               data.dataSensor.forEach(element => {
                 if(element.type == 'sensor') {
+                  let statusData = '';
+                  if(element.value.length <= 0) {
+                    statusData = ' (Data Tidak Tersedia)';
+                  }
                   let wrapper = document.createElement('div');
                   wrapper.classList.add('col-xl-8', 'col-lg-7');
                   wrapper.innerHTML += `
@@ -141,7 +149,7 @@
                         <div id="${element.type}-${element.flag_sensor}"></div>
                         <div class="mt-3 text-muted">
                           <hr class="dark-horizontal">
-                          <i class="bi bi-info-circle"> Data ini diambil dari tanggal yang dipilih (per hari)</i>
+                          <i class="bi bi-info-circle"> Data ini diambil dari tanggal yang dipilih (per hari)${statusData}</i>
                         </div>
                       </div>
                     </div>
@@ -181,6 +189,10 @@
                   let avgChunks = document.getElementById(`report-${element.type}-${element.flag_sensor}`);
                   let i = 0;
                   avgChunks.innerHTML = '';
+                  if(statusData != '') {
+                    avgChunks.innerHTML = '<div class="col-12"><i class="text-muted">Data tidak tersedia untuk menghitung rata-rata.</i></div>';
+
+                  }
                   arrDataLabelChunks.forEach(element2 => {
                     const tempInt = element2.map(Number);
                     avgChunks.innerHTML += `
