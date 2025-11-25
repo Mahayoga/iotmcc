@@ -237,6 +237,18 @@
                     markers: {
                       size: 2
                     },
+                    noData: {
+                      text: 'Tidak ada data yang masuk untuk ditampilkan hari ini',
+                      align: 'center',
+                      verticalAlign: 'middle',
+                      offsetX: 0,
+                      offsetY: 0,
+                      style: {
+                        color: '#888',
+                        fontSize: '16px',
+                        fontFamily: 'Helvetica'
+                      }
+                    }
                   }
                   let idChart = "#" + element.type + "-" + element.flag_sensor;
                   let tempApex = new ApexCharts($(idChart)[0], options);

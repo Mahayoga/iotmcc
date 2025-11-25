@@ -65,7 +65,7 @@ class RiwayatDataController extends Controller
         if($statusData) {
             return response()->json([
                 'status' => false,
-                'msg' => 'Data pada tanggal ini tidak ditemukan!',
+                'msg' => 'Data pada ruangan dan tanggal ini tidak ditemukan!',
                 'tgl' => $tgl,
                 'countSensor' => count($dataSensor),
                 'statusCount' => $statusCount
