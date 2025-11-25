@@ -110,36 +110,180 @@ class RuanganPengeringanController extends Controller
   public function getDataStatusBlower(string $id)
   {
     try {
-      $sensor = SensorModel::with('getDataNilaiBlower')->findOrFail($id);
+      \Log::info("Getting blower status for sensor ID: " . $id);
 
-      if (!$sensor->getDataNilaiBlower) {
+      $sensor = SensorModel::with('getDataNilaiBlower')->find($id);
+
+      if (!$sensor) {
         return response()->json([
           'status' => false,
-          'msg' => 'Data blower tidak ditemukan'
+          'msg' => 'Sensor tidak ditemukan'
         ], 404);
+      }
+
+      if (!str_contains($sensor->flag_sensor, 'blower')) {
+        return response()->json([
+          'status' => false,
+          'msg' => 'Sensor bukan tipe blower'
+        ], 400);
+      }
+
+      if (!$sensor->getDataNilaiBlower) {
+        \Log::warning("No mode_blower data, creating default for sensor: " . $id);
+
+        ModeBlowerModel::create([
+          'id_sensor' => $sensor->id_sensor,
+          'nilai_sensor' => '0',
+        ]);
+
+        $sensor->load('getDataNilaiBlower');
       }
 
       return response()->json([
         'status' => true,
         'data' => [
-            'id_sensor' => $sensor->id_sensor,
-            'nilai_sensor' => $sensor->getDataNilaiBlower->nilai_sensor,
-            'is_active' => $sensor->getDataNilaiBlower->nilai_sensor == '1'
-          ]
+          'id_sensor' => $sensor->id_sensor,
+          'flag_sensor' => $sensor->flag_sensor,
+          'nilai_sensor' => $sensor->getDataNilaiBlower->nilai_sensor,
+          'is_active' => $sensor->getDataNilaiBlower->nilai_sensor == '1',
+          'updated_at' => $sensor->getDataNilaiBlower->updated_at->format('Y-m-d H:i:s')
+        ]
       ]);
 
     } catch (\Exception $e) {
+      \Log::error("Error in getDataStatusBlower: " . $e->getMessage());
+
       return response()->json([
         'status' => false,
-        'msg' => 'Terjadi kesalahan saat mengambil data',
-        'error' => $e->getMessage()
+        'msg' => 'Terjadi kesalahan: ' . $e->getMessage()
       ], 500);
     }
   }
 
-  /**
-   * Display a listing of the resource.
-   */
+  
+  public function updateBlowerStatus(Request $request, string $id)
+  {
+    try {
+      $validated = $request->validate([
+        'nilai_sensor' => 'required|in:0,1'
+      ]);
+
+      \Log::info("Updating blower {$id} to: " . $validated['nilai_sensor']);
+
+
+      $sensor = SensorModel::find($id);
+
+      if (!$sensor) {
+        return response()->json([
+          'status' => false,
+          'msg' => 'Sensor tidak ditemukan'
+        ], 404);
+      }
+
+      if (!str_contains($sensor->flag_sensor, 'blower')) {
+        return response()->json([
+          'status' => false,
+          'msg' => 'Sensor bukan tipe blower'
+        ], 400);
+      }
+
+      $modeBlower = ModeBlowerModel::updateOrCreate(
+        ['id_sensor' => $sensor->id_sensor],
+        ['nilai_sensor' => $validated['nilai_sensor']]
+      );
+
+      try {
+        LogModeBlowerModel::create([
+          'id_mode_blower' => $modeBlower->id_mode_blower,
+          'nilai_sensor' => $validated['nilai_sensor'],
+        ]);
+      } catch (\Exception $e) {
+        \Log::warning("Failed to log blower change: " . $e->getMessage());
+      }
+
+      $statusText = $validated['nilai_sensor'] == '1' ? 'dihidupkan' : 'dimatikan';
+
+      return response()->json([
+        'status' => true,
+        'msg' => "Blower berhasil {$statusText}",
+        'data' => [
+          'id_sensor' => $modeBlower->id_sensor,
+          'nilai_sensor' => $modeBlower->nilai_sensor,
+          'is_active' => $modeBlower->nilai_sensor == '1'
+        ]
+      ]);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+      return response()->json([
+        'status' => false,
+        'msg' => 'Data tidak valid',
+        'errors' => $e->errors()
+      ], 422);
+    } catch (\Exception $e) {
+      \Log::error("Error updating blower: " . $e->getMessage());
+
+      return response()->json([
+        'status' => false,
+        'msg' => 'Gagal mengupdate blower: ' . $e->getMessage()
+      ], 500);
+    }
+  }
+
+
+  public function getAllBlowersStatus(string $gudangId)
+  {
+    try {
+      $dataGudang = GudangModel::findOrFail($gudangId);
+      $dataRuangan = $dataGudang->getDataRuangan;
+      $blowersData = [];
+
+      foreach ($dataRuangan as $ruangan) {
+        if ($ruangan->tipe_ruangan == 3) { 
+          foreach ($ruangan->getDataSensor as $sensor) {
+            if (str_contains($sensor->flag_sensor, 'blower')) {
+        
+              $sensor->load('getDataNilaiBlower');
+
+              preg_match('/\d+/', $sensor->flag_sensor, $matches);
+              $blowerNumber = $matches[0] ?? null;
+
+              if (!$sensor->getDataNilaiBlower) {
+                ModeBlowerModel::create([
+                  'id_sensor' => $sensor->id_sensor,
+                  'nilai_sensor' => '0',
+                ]);
+                $sensor->load('getDataNilaiBlower');
+              }
+
+              $blowersData[] = [
+                'blower_number' => $blowerNumber,
+                'id_sensor' => $sensor->id_sensor,
+                'flag_sensor' => $sensor->flag_sensor,
+                'nilai_sensor' => $sensor->getDataNilaiBlower->nilai_sensor,
+                'is_active' => $sensor->getDataNilaiBlower->nilai_sensor == '1',
+                'updated_at' => $sensor->getDataNilaiBlower->updated_at->format('Y-m-d H:i:s')
+              ];
+            }
+          }
+        }
+      }
+
+      return response()->json([
+        'status' => true,
+        'data' => $blowersData
+      ]);
+
+    } catch (\Exception $e) {
+      \Log::error("Error getting all blowers: " . $e->getMessage());
+
+      return response()->json([
+        'status' => false,
+        'msg' => 'Gagal mengambil data blower'
+      ], 500);
+    }
+  }
+
+
   public function index()
   {
     $blower = ModeBlowerModel::with('getDataSensor')->get()
