@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\NilaiSensorModel;
+use App\Models\RiwayatNotifikasi;
 use App\Models\SensorModel;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -66,7 +67,6 @@ class NilaiSensorAPIController extends Controller
 
             try {
                 $notif = ['kirim' => false, 'title' => '', 'body' => ''];
-
                 $isSuhu = str_contains($flagSensor, 'suhu');
                 $isLembab = str_contains($flagSensor, 'kelembaban');
 
@@ -98,9 +98,7 @@ class NilaiSensorAPIController extends Controller
                             ];
                         }
                     }
-                }
-
-                elseif (str_contains($namaRuangan, 'fermentasi')) {
+                } elseif (str_contains($namaRuangan, 'fermentasi')) {
                     if ($isSuhu) {
                         if ($nilai >= 60) {
                             $notif = [
@@ -130,9 +128,7 @@ class NilaiSensorAPIController extends Controller
                             ];
                         }
                     }
-                }
-
-                elseif (str_contains($namaRuangan, 'pengeringan')) {
+                } elseif (str_contains($namaRuangan, 'pengeringan')) {
                     if ($isSuhu) {
                         if ($nilai >= 70) {
                             $notif = [
@@ -165,15 +161,31 @@ class NilaiSensorAPIController extends Controller
                 }
 
                 if ($notif['kirim']) {
+                    $durasiCache = 300;
                     $cacheKey = 'alert_sent_'.$request->id_sensor.'_'.md5($notif['title']);
 
                     if (! Cache::has($cacheKey)) {
+
                         $this->kirimNotifFCM($notif['title'], $notif['body']);
 
-                        Cache::put($cacheKey, true, 10);
-                        \Log::info('Notif FCM Dikirim: '.$notif['title']);
-                    } else {
-                        // \Log::info('Notif di-skip (Anti-Spam Active)');
+                        $kategori = 'info';
+                        $judulLower = Str::lower($notif['title']);
+                        if (str_contains($judulLower, 'bahaya') || str_contains($judulLower, 'kritis')) {
+                            $kategori = 'danger';
+                        } elseif (str_contains($judulLower, 'peringatan') || str_contains($judulLower, 'warning')) {
+                            $kategori = 'warning';
+                        }
+
+                        RiwayatNotifikasi::create([
+                            'id_sensor' => $request->id_sensor,
+                            'title' => $notif['title'],
+                            'body' => $notif['body'],
+                            'kategori' => $kategori,
+                        ]);
+
+                        Cache::put($cacheKey, true, $durasiCache);
+
+                        \Log::info("Notif Dikirim: {$notif['title']} | Next alert in: {$durasiCache}s");
                     }
                 }
 
@@ -184,7 +196,6 @@ class NilaiSensorAPIController extends Controller
             return response()->json([
                 'status' => true,
                 'msg' => 'Data berhasil ditambahkan!',
-                'debug_ruangan' => $namaRuangan,
                 'request_data' => $request->all(),
             ]);
 
@@ -197,6 +208,9 @@ class NilaiSensorAPIController extends Controller
         }
     }
 
+    /**
+     * Kirim notifikasi FCM
+     */
     private function kirimNotifFCM($title, $body)
     {
         $tokens = User::whereNotNull('fcm_token')->pluck('fcm_token')->toArray();
@@ -219,6 +233,21 @@ class NilaiSensorAPIController extends Controller
         } catch (\Exception $e) {
             \Log::error('Gagal kirim multicast: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Display riwayat notifikasi.
+     */
+    public function getRiwayatNotifikasi()
+    {
+        $data = RiwayatNotifikasi::orderBy('created_at', 'desc')
+            ->limit(50)
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
     }
 
     /**

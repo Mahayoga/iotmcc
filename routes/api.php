@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\DataBlanchingAPIController;
 use App\Http\Controllers\Api\DataFermentasiAPIController;
 use App\Http\Controllers\Api\DataPengeringanAPIController;
 use App\Http\Controllers\Api\GudangController;
-use App\Http\Controllers\Api\RiwayatDataController;
+use App\Http\Controllers\Api\DataRiwayatAPIController;
 use App\Http\Controllers\NilaiBlowerAPIController;
 use App\Http\Controllers\NilaiSensorAPIController;
 use App\Http\Controllers\NilaiTimerAPIController;
@@ -43,9 +43,10 @@ Route::prefix('gudang')->group(function () {
     Route::get('/{id}/with-ruangan', [GudangController::class, 'getWithRuangan']);
 });
 
-Route::prefix('api-riwayat-data')->group(function () {
-    Route::get('/gudang/{idGudang}/ruangan', [RiwayatDataController::class, 'getRuangan']);
-    Route::get('/ruangan/{id}/sensor/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
+Route::prefix('v1/riwayat')->group(function () {
+    Route::get('/gudang/{idGudang}/ruangan', [DataRiwayatAPIController::class, 'getRuangan']);
+    Route::get('/ruangan/{id}/sensor/{tgl}', [DataRiwayatAPIController::class, 'getDataSensor']);
+    Route::get('/notifikasi', [NilaiSensorAPIController::class, 'getRiwayatNotifikasi']);
 });
 
 Route::prefix('send/')->group(function () {

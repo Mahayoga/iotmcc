@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\SensorDataService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class DataBlanchingAPIController extends Controller
@@ -23,6 +24,11 @@ class DataBlanchingAPIController extends Controller
             return response()->json(array_merge([
                 'status' => true,
             ], $data));
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Gudang tidak ditemukan',
+            ], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
@@ -40,6 +46,11 @@ class DataBlanchingAPIController extends Controller
                 'status' => true,
                 'data' => $data,
             ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Gudang/Sensor tidak ditemukan',
+            ], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
@@ -57,6 +68,11 @@ class DataBlanchingAPIController extends Controller
                 'status' => true,
                 'dataTimer' => $data,
             ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Gudang tidak ditemukan',
+            ], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
@@ -78,7 +94,7 @@ class DataBlanchingAPIController extends Controller
             if ($result) {
                 return response()->json([
                     'status' => true,
-                    'message' => 'Timer berhasil diset',
+                    'message' => 'Timer berhasil diset menjadi ' . $request->limit_timer . ' menit.',
                 ]);
             }
 
@@ -87,6 +103,11 @@ class DataBlanchingAPIController extends Controller
                 'message' => 'Sensor tidak ditemukan',
             ], 404);
 
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Gudang tidak ditemukan',
+            ], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
