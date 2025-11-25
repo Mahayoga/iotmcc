@@ -201,12 +201,6 @@
               </div>
               <div class="position-absolute bottom-0 end-0 mb-2 me-3"
                 style="border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.25rem 0.5rem; background-color: #f8f9fa;">
-                {{-- <div class="form-check form-switch d-flex align-items-center m-0">
-                  <input class="form-check-input" type="checkbox" id="switch-all" style="margin:0;">
-                  <label class="form-check-label small text-muted fw-semibold ms-2 mb-0" for="switch-all">
-                    Switch all
-                  </label>
-                </div> --}}
               </div>
             </div>
 
@@ -531,25 +525,8 @@
 
       console.log(`Blower ${blowerId} switched to: ${isChecked ? 'ON' : 'OFF'}`);
 
-      // Update ke database
       updateBlowerStatus(blowerId, isChecked, sensorId);
     });
-
-    // // Event handler untuk switch all
-    // $(document).on('change', '#switch-all', function () {
-    //   const isChecked = $(this).is(':checked');
-    //   const label = $(this).next('label');
-
-    //   // Update label
-    //   label.text(isChecked ? 'Switch Off' : 'Switch All');
-
-    //   // Toggle semua blower yang aktif (bukan disabled)
-    //   $('.blower-switch:not(:disabled)').each(function () {
-    //     if ($(this).is(':checked') !== isChecked) {
-    //       $(this).prop('checked', isChecked).trigger('change');
-    //     }
-    //   });
-    // });
 
     //styling
     const styleBlower = document.createElement('style');
@@ -719,11 +696,7 @@
               ],
             }
           });
-          // $('#total-suhu').text(dataResultSuhuTemp.length);
-          // $('#total-kelembaban').text(dataResultKelTemp.length);
-          // $('#total-suhu-dan-kelembaban').text(dataResultSuhuTemp.length);
-          // { y2: 5.0, borderColor: '#d40624', label: { text: 'batas kestabilan kelembaban' }}
-
+          
           data.dataSensor.forEach(element => {
             $('#total-suhu').text(element.value.length);
             $('#total-kelembaban').text(element.value.length);
@@ -826,20 +799,6 @@
         }
       });
     }
-
-    // $(document).ready(function () {
-
-    //   // Initialize charts
-    //   initializeCharts();
-    //   setInterval(getDataSensor, 60000);
-    //   getDataSensor();
-
-    //   document.querySelectorAll('.blower-switch').forEach((switchEl) => {
-    //     const blowerId = switchEl.dataset.id;
-    //     const sensorId = switchEl.dataset.sensorId;
-    //     loadBlowerStatus(blowerId, sensorId);
-    //   });
-    // });
 
   </script>
 @endsection
