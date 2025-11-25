@@ -102,8 +102,7 @@
             <div class="card-body">
               <div id="chartSuhu"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu">-</span> data terakhir <span id="status-suhu"></span></small>
               </div>
             </div>
           </div>
@@ -121,8 +120,7 @@
             <div class="card-body">
               <div id="chartKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-kelembaban">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-kelembaban">-</span> data terakhir <span id="status-kelembaban"></span></small>
               </div>
             </div>
           </div>
@@ -141,8 +139,7 @@
             <div class="card-body">
               <div id="chartSuhuDanKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu-dan-kelembaban">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu-dan-kelembaban">-</span> data terakhir <span id="status-suhu-dan-kelembaban"></span></small>
               </div>
             </div>
           </div>
@@ -162,8 +159,7 @@
             <div class="card-body">
               <div id="chartStddevSuhu"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-suhu">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-suhu">-</span> data terakhir <span id="status-stddev-suhu"></span></small>
               </div>
             </div>
           </div>
@@ -183,8 +179,7 @@
             <div class="card-body">
               <div id="chartStddevKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-kelembaban">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-kelembaban">-</span> data terakhir <span id="status-stddev-kelembaban"></span></small>
               </div>
             </div>
           </div>
@@ -224,6 +219,18 @@
         markers: {
           size: 5
         },
+        noData: {
+          text: 'Tidak ada data yang masuk untuk ditampilkan hari ini (periksa riwayat data untuk lebih lanjut)',
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#888',
+            fontSize: '16px',
+            fontFamily: 'Helvetica'
+          }
+        }
       }
       let options2 = {
         chart: {
@@ -244,6 +251,18 @@
         markers: {
           size: 5
         },
+        noData: {
+          text: 'Tidak ada data yang masuk untuk ditampilkan hari ini (periksa riwayat data untuk lebih lanjut)',
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#888',
+            fontSize: '16px',
+            fontFamily: 'Helvetica'
+          }
+        }
       }
       apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
       apexKelembaban = new ApexCharts($('#chartKelembaban')[0], options);
@@ -403,7 +422,7 @@
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Peringatan';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-warning');
-          } else if (parseFloat(data.currentKelembaban) > 0) {
+          } else if (parseFloat(data.currentKelembaban) >= 0) {
             $('#status-kelembaban-ruangan')[0].innerHTML = 'Bahaya';
             classListKelembaban.remove('text-success', 'text-warning', 'text-danger');
             classListKelembaban.add('text-danger');
