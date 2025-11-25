@@ -1,74 +1,61 @@
 <?php
 
 use App\Http\Controllers\AlatBleachingController;
-use App\Http\Controllers\Api\RiwayatDataController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DataBlanchingAPIController;
+use App\Http\Controllers\Api\DataFermentasiAPIController;
+use App\Http\Controllers\Api\DataPengeringanAPIController;
+use App\Http\Controllers\Api\GudangController;
+use App\Http\Controllers\Api\DataRiwayatAPIController;
 use App\Http\Controllers\NilaiBlowerAPIController;
 use App\Http\Controllers\NilaiSensorAPIController;
 use App\Http\Controllers\NilaiTimerAPIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\RuanganBlanchingController;
-use App\Http\Controllers\Api\RuanganFermentasiController;
-use App\Http\Controllers\Api\RuanganPengeringanController;
-use App\Http\Controllers\Api\GudangController;
 
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/user', function (Request $request) {
-            return $request->user();
-        });
-        Route::post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
     });
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
+});
 
-    Route::prefix('api-ruangan-perebusan')->group(function () {
-        Route::get('data/sensor/sensor/{id}', [RuanganBlanchingController::class, 'getDataSensor']);
-    });
+Route::prefix('v1')->group(function () {
+    Route::get('/data-blanching/{id}/data-sensor', [DataBlanchingAPIController::class, 'getDataSensorAPI']);
+    Route::get('/data-blanching/{id}/timer', [DataBlanchingAPIController::class, 'getDataTimerAPI']);
+    Route::post('/data-blanching/{id}/toggle-timer', [DataBlanchingAPIController::class, 'toggleTimerAPI']);
+    Route::post('/data-blanching/{id}/limit-timer', [DataBlanchingAPIController::class, 'setLimitTimerAPI']);
+    Route::get('/data-fermentasi/{id}/data-sensor', [DataFermentasiAPIController::class, 'getDataSensorAPI']);
+    Route::get('/data-pengeringan/{id}/data-sensor', [DataPengeringanAPIController::class, 'getDataSensorAPI']);
+    Route::get('/data-pengeringan/{sensorId}/data-blower', [DataPengeringanAPIController::class, 'getDataStatusBlower']);
+    Route::post('/data-pengeringan/{sensorId}/toggle-blower', [DataPengeringanAPIController::class, 'toggleBlower']);
+});
 
-    Route::prefix('api-ruangan-fermentasi')->group(function () {
-        Route::get('data/sensor/sensor/{id}', [RuanganFermentasiController::class, 'getDataSensor']);
-    });
+Route::prefix('gudang')->group(function () {
+    Route::get('/', [GudangController::class, 'index']);
+    Route::get('/active', [GudangController::class, 'getActiveGudang']);
+    Route::get('/{id}', [GudangController::class, 'show']);
+    Route::get('/{id}/with-ruangan', [GudangController::class, 'getWithRuangan']);
+});
 
-    Route::resource('api-ruangan-pengeringan', RuanganPengeringanController::class);
-        Route::prefix('api-ruangan-pengeringan')->group(function() {
-            Route::get('data/sensor/sensor/{id}', [RuanganPengeringanController::class, 'getDataSensor']);
-            // Route::get('/data/sensor/blower/{id}', [RuanganPengeringanController::class, 'getDataBlower']);
-            // Route::post('/ruang-pengeringan/toggle-blower/{id}', [RuanganPengeringanController::class, 'toggleBlower']);
-        });
+Route::prefix('v1/riwayat')->group(function () {
+    Route::get('/gudang/{idGudang}/ruangan', [DataRiwayatAPIController::class, 'getRuangan']);
+    Route::get('/ruangan/{id}/sensor/{tgl}', [DataRiwayatAPIController::class, 'getDataSensor']);
+    Route::get('/notifikasi', [NilaiSensorAPIController::class, 'getRiwayatNotifikasi']);
+});
 
-    // Route::resource('api-riwayat-data', RiwayatDataController::class);
-    //     Route::prefix('api-riwayat-data')->group(function() {
-    //         Route::get('blanching/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
-    //         Route::get('fermentasi/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
-    //         Route::get('pengeringan/data/sensor/{id}/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
-    //          Route::get('get-ruangan/{id}', [RiwayatDataController::class, 'getRuangan']);
-    //     });
+Route::prefix('send/')->group(function () {
+    Route::post('/nilai/sensor', [NilaiSensorAPIController::class, 'store']);
+    Route::post('/nilai/timer', [NilaiTimerAPIController::class, 'store']);
+    Route::post('/nilai/blower', [NilaiBlowerAPIController::class, 'store']);
+});
 
-    Route::prefix('gudang')->group(function () {
-        Route::get('/', [GudangController::class, 'index']);
-        Route::get('/active', [GudangController::class, 'getActiveGudang']);
-        Route::get('/{id}', [GudangController::class, 'show']);
-        Route::get('/{id}/with-ruangan', [GudangController::class, 'getWithRuangan']);
-        Route::post('/', [GudangController::class, 'store']);
-        Route::put('/{id}', [GudangController::class, 'update']);
-        Route::delete('/{id}', [GudangController::class, 'destroy']);
-    });
-
-    Route::prefix('api-riwayat-data')->group(function () {
-        Route::get('/gudang/{idGudang}/ruangan', [RiwayatDataController::class, 'getRuangan']);
-        Route::get('/ruangan/{id}/sensor/{tgl}', [RiwayatDataController::class, 'getDataSensor']);
-    });
-
-    Route::prefix('send/')->group(function() {
-        Route::post('/nilai/sensor', [NilaiSensorAPIController::class, 'store']);
-        Route::post('/nilai/timer', [NilaiTimerAPIController::class, 'store']);
-        Route::post('/nilai/blower', [NilaiBlowerAPIController::class, 'store']);
-    });
-
-    Route::prefix('check/')->group(function() {
-        Route::get('/nilai/blower/{id}', [NilaiBlowerAPIController::class, 'show']);
-        Route::get('/nilai/timer/{id}', [AlatBleachingController::class, 'getDataTimer']);
-    });
+Route::prefix('check/')->group(function () {
+    Route::get('/nilai/blower/{id}', [NilaiBlowerAPIController::class, 'show']);
+    Route::get('/nilai/timer/{id}', [AlatBleachingController::class, 'getDataTimer']);
+});

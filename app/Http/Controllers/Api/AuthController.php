@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Auth\Events\PasswordReset;
 
 class AuthController extends Controller
 {
@@ -25,11 +25,11 @@ class AuthController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Validasi gagal',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 401);
         }
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        if (! Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'status' => false,
                 'message' => 'Email atau Password tidak cocok.',
@@ -45,7 +45,7 @@ class AuthController extends Controller
             'message' => 'Login Berhasil!',
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -58,14 +58,37 @@ class AuthController extends Controller
         if ($status == Password::RESET_LINK_SENT) {
             return response()->json([
                 'status' => true,
-                'message' => __($status)
+                'message' => __($status),
             ]);
         }
 
         return response()->json([
             'status' => false,
-            'message' => __($status)
+            'message' => __($status),
         ], 422);
+    }
+
+    public function updateFcmToken(Request $request)
+    {
+        try {
+            $request->validate([
+                'fcm_token' => 'required|string',
+            ]);
+
+            $request->user()->update([
+                'fcm_token' => $request->fcm_token,
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'FCM Token updated successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal update token: '.$e->getMessage(),
+            ], 500);
+        }
     }
 
     public function resetPassword(Request $request)
@@ -95,13 +118,13 @@ class AuthController extends Controller
         if ($status == Password::PASSWORD_RESET) {
             return response()->json([
                 'status' => true,
-                'message' => __($status)
+                'message' => __($status),
             ]);
         }
 
         return response()->json([
             'status' => false,
-            'message' => __($status)
+            'message' => __($status),
         ], 422);
     }
 
@@ -111,7 +134,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Logout Berhasil!'
+            'message' => 'Logout Berhasil!',
         ]);
     }
 }
