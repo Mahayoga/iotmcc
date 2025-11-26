@@ -29,12 +29,12 @@ class AlatBleachingController extends Controller
             FLOOR(MINUTE(created_at)/15) as menit_group,
             AVG(nilai_sensor) as avg_nilai,
             MIN(created_at) as waktu_asli,
+            STDDEV_SAMP(nilai_sensor) as stddev,
             MIN(nilai_sensor) as min_nilai,
             MAX(nilai_sensor) as max_nilai
         ";
 
-        $suhuTotal = 0;
-        $totalDataSuhu = 0;
+        $currentSuhu = null;
 
         foreach ($dataRuangan as $value) {
             if ($value->tipe_ruangan == 1) {
@@ -43,45 +43,60 @@ class AlatBleachingController extends Controller
                     if (str_contains($value2->flag_sensor, 'timer')) {
                         continue;
                     }
-
                     $dateNow = '%' . date("Y-m-d") . '%';
+                    $isEmpty = false;
                     if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
-                        $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->limit(1)->get();
-                        if (!$temp->isEmpty()) {
-                            $dateNow = '%' . date('Y-m-d', Carbon::parse($temp[0]->created_at)->timestamp) . '%';
-                        }
+                        array_push($dataSensor, [
+                            'type' => 'sensor',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => [],
+                            'avg' => 0,
+                        ]);
+                        array_push($dataWaktuSensor, [
+                            'type' => 'waktu',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => []
+                        ]);
+                        $isEmpty = true;
                     }
 
-                    foreach ($value2->getDataNilaiSensor()
-                        ->selectRaw($selectRawQuery)
-                        ->where('created_at', 'LIKE', $dateNow)
-                        ->groupBy('tgl', 'jam', 'menit_group')
-                        ->orderBy('waktu_asli', 'DESC')
-                        ->limit($this->LIMIT)
-                        ->get() as $value3) {
-
-                        $avgNilai = number_format($value3->avg_nilai, 2);
-                        $nilaiSensorTemp[] = $avgNilai;
-                        $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
-
-                        if (str_contains($value2->flag_sensor, 'suhu')) {
-                            $suhuTotal += floatval($avgNilai);
-                            $totalDataSuhu++;
+                    if (!$isEmpty) {
+                        foreach ($value2->getDataNilaiSensor()
+                            ->selectRaw($selectRawQuery)
+                            ->where('created_at', 'LIKE', $dateNow)
+                            ->groupBy('tgl', 'jam', 'menit_group')
+                            ->orderBy('waktu_asli', 'DESC')
+                            ->limit($this->LIMIT)
+                            ->get() as $value3) {
+                            
+                            $nilaiSensorTemp[] = (int) number_format($value3->avg_nilai, 2);
+                            $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
                         }
+
+                        foreach ($value2->getDataNilaiSensor()
+                            ->where('created_at', 'LIKE', $dateNow)
+                            ->orderBy('created_at', 'DESC')
+                            ->limit(1)
+                            ->get() as $value3) {
+                            
+                            if (str_contains($value2->flag_sensor, 'suhu')) {
+                                $currentSuhu += (int) $value3->nilai_sensor;
+                            }
+                        }
+
+                        array_push($dataSensor, [
+                            'type' => 'sensor',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => $nilaiSensorTemp,
+                            'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
+                        ]);
+
+                        array_push($dataWaktuSensor, [
+                            'type' => 'waktu',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => $waktuSensorTemp
+                        ]);
                     }
-
-                    array_push($dataSensor, [
-                        'type' => 'sensor',
-                        'flag_sensor' => $value2->flag_sensor,
-                        'value' => $nilaiSensorTemp,
-                        'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
-                    ]);
-
-                    array_push($dataWaktuSensor, [
-                        'type' => 'waktu',
-                        'flag_sensor' => $value2->flag_sensor,
-                        'value' => $waktuSensorTemp
-                    ]);
 
                     $nilaiSensorTemp = [];
                     $waktuSensorTemp = [];
@@ -89,13 +104,11 @@ class AlatBleachingController extends Controller
             }
         }
 
-        $rataRataSuhu = $totalDataSuhu > 0 ? number_format($suhuTotal / $totalDataSuhu, 2) : 0;
-
         return response()->json([
             'status' => true,
             'dataSensor' => $dataSensor,
             'dataWaktuSensor' => $dataWaktuSensor,
-            'rataRataSuhu' => $rataRataSuhu,
+            'currentSuhu' => $currentSuhu !== null ? number_format($currentSuhu / 2, 2) : 0,
         ]);
     }
 
@@ -231,21 +244,6 @@ class AlatBleachingController extends Controller
                                 ['limit_timer' => $request->limit_timer * 60]
                             );
 
-                            $statusTimer = NilaiTimerModel::where('id_sensor', $sensor->id_sensor)->orderBy('created_at','desc')->limit(1)->get();
-                            if($statusTimer[0]->flag_timer == 'stop') {
-                                $statusTimer = 'start';
-                            } else {
-                                $statusTimer = 'stop';
-                            }
-
-                            // NilaiTimerModel::create([
-                            //     'flag_timer' => $statusTimer,
-                            //     'nilai_timer' => microtime(true),
-                            //     'id_sensor' => $sensor->id_sensor,
-                            //     'rssi' => 0,
-                            //     'snr' => 0,
-                            // ]);
-
                             return response()->json([
                                 'status' => true,
                                 'message' => 'Timer berhasil diset'
@@ -268,57 +266,36 @@ class AlatBleachingController extends Controller
         }
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view("admin.bleaching.index");
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

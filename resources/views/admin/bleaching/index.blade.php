@@ -112,31 +112,32 @@
               <div id="chartSuhu"></div>
               <div class="p-4">
                 <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span
-                    id="total-suhu">-</span> data terakhir</small>
+                    id="total-suhu">-</span> data terakhir <span id="status-suhu"></span></small>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </main>
 @endsection
 
 @section('script')
   <script>
-    
-    // Inisialisasi grafik
+
+    // inisialisasi grafik
     let apexSuhu = null;
-    let timerStatus = null;
 
     function initializeCharts() {
-      let optionsSuhu = {
+      let options = {
         chart: {
           type: 'line',
           height: '350px',
         },
-        series: [],
+        series: [{
+          name: 'Suhu',
+          data: []
+        }],
         xaxis: {
           categories: []
         },
@@ -150,8 +151,8 @@
         dataLabels: {
           enabled: false
         },
-        colors: ['#00E396', '#008FFB'],
-        legend: { 
+        colors: ['#00E396'],
+        legend: {
           position: 'bottom',
           horizontalAlign: 'center',
           offsetY: 0,
@@ -170,76 +171,102 @@
         tooltip: {
           shared: true,
           intersect: false,
+        },
+        noData: {
+          text: 'Tidak ada data yang masuk untuk ditampilkan hari ini (periksa riwayat data untuk lebih lanjut)',
+          align: 'center',
+          verticalAlign: 'middle',
+          style: {
+            color: '#888',
+            fontSize: '16px'
+          }
         }
       };
 
-      apexSuhu = new ApexCharts($('#chartSuhu')[0], optionsSuhu);
+      apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
       apexSuhu.render();
       apexSuhu.updateSeries([]);
     }
 
     function getDataSensor() {
-      $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
-      }, function (data, status) {
-        if (data.status == true) {
-          let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
-          apexSuhu.updateSeries([]);
-          
-          $('#suhu-rata-rata').text(data.rataRataSuhu);
-          let rataRataSuhu = parseFloat(data.rataRataSuhu);
-          
-          if (rataRataSuhu > 20 && rataRataSuhu < 30) {
-            $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
-            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-            classListSuhu.add('text-success');
-          } else if (rataRataSuhu > 30 && rataRataSuhu < 50) {
-            $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-            classListSuhu.add('text-warning');
-          } else if (rataRataSuhu > 50 && rataRataSuhu < 100) {
-            $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
-            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-            classListSuhu.add('text-danger');
-          } else {
-            $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-            classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-            classListSuhu.add('text-warning');
-          }
+      $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {},
+        function (data) {
+          if (data.status == true) {
+            let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
+            apexSuhu.updateSeries([]);
+            $('#suhu-rata-rata').text(data.currentSuhu);
+            let rataRataSuhu = parseFloat(data.currentSuhu);
+            if (rataRataSuhu > 20 && rataRataSuhu < 30) {
+              $('#status-suhu-ruangan').text('Normal');
+              classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+              classListSuhu.add('text-success');
+            } else if (rataRataSuhu > 30 && rataRataSuhu < 50) {
+              $('#status-suhu-ruangan').text('Peringatan');
+              classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+              classListSuhu.add('text-warning');
+            } else if (rataRataSuhu > 50) {
+              $('#status-suhu-ruangan').text('Bahaya');
+              classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+              classListSuhu.add('text-danger');
+            } else {
+              $('#status-suhu-ruangan').text('Peringatan');
+              classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+              classListSuhu.add('text-warning');
+            }
 
-          if (data.dataWaktuSensor.length > 0) {
-            apexSuhu.updateOptions({
-              xaxis: {
-                categories: data.dataWaktuSensor[0].value
+            data.dataSensor.forEach(element => {
+              $('#total-suhu').text(element.value.length);
+              if (element.flag_sensor == 'suhu_1') {
+                let dataGrafik = [];
+                data.dataWaktuSensor.forEach(w => {
+                  if (w.flag_sensor == 'suhu_1') {
+                    w.value.forEach(waktu => {
+                      dataGrafik.push({
+                        x: waktu,
+                        y: element.value[dataGrafik.length]
+                      });
+                    });
+                  }
+                });
+
+                apexSuhu.appendSeries({
+                  name: 'Suhu 1 (°C)',
+                  data: dataGrafik,
+                  color: '#00E396',
+                });
+
+              } else if (element.flag_sensor == 'suhu_2') {
+
+                let dataGrafik = [];
+                data.dataWaktuSensor.forEach(w => {
+                  if (w.flag_sensor == 'suhu_2') {
+                    w.value.forEach(waktu => {
+                      dataGrafik.push({
+                        x: waktu,
+                        y: element.value[dataGrafik.length]
+                      });
+                    });
+                  }
+                });
+
+                apexSuhu.appendSeries({
+                  name: 'Suhu 2 (°C)',
+                  data: dataGrafik,
+                  color: '#008FFB',
+                })
               }
             });
           }
-
-          data.dataSensor.forEach(element => {
-            $('#total-suhu').text(element.value.length);
-
-            if (element.flag_sensor == 'suhu_1') {
-              apexSuhu.appendSeries({
-                name: 'Suhu 1 (°C)',
-                data: element.value.map(v => parseFloat(v))
-              });
-            } else if (element.flag_sensor == 'suhu_2') {
-              apexSuhu.appendSeries({
-                name: 'Suhu 2 (°C)',
-                data: element.value.map(v => parseFloat(v))
-              });
-            }
-          });
-        }
-      });
+        });
     }
 
     function getDataTimer() {
       $.get('{{ route('alat-bleaching.getDataTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function (res) {
         // console.log(res);
-        if(res.status) {
+        if (res.status) {
           let data = res.dataTimer[0];
           updateDisplay(parseInt(data.limit_timer) - parseInt(data.sisa_timer));
-          if(data.flag_timer == 'start') {
+          if (data.flag_timer == 'start') {
             let startTime = new Date(parseInt(data.nilai_timer) * 1000);
             let stopTime = new Date((parseInt(data.nilai_timer) + parseInt(data.limit_timer)) * 1000);
             $('#waktu-mulai').text(startTime.toLocaleTimeString('id-ID'));
@@ -247,7 +274,7 @@
             $('#status-proses').text('Masih Berlangsung!').removeClass().addClass('badge bg-warning text-dark');
             $('#start-stop-text-btn').text('Stop Timer');
             $('#start-stop-timer-btn').removeClass().addClass('btn btn-danger btn-sm mt-3');
-          } else if(data.flag_timer == 'stop') {
+          } else if (data.flag_timer == 'stop') {
             $('#waktu-mulai').text('-');
             $('#waktu-selesai').text('-');
             $('#status-proses').text('Selesai!').removeClass().addClass('badge bg-success');
@@ -264,18 +291,18 @@
       $('#timer-display').text(`${m}:${s}`);
     }
 
-    $('#start-stop-timer-btn').on('click', function() {
+    $('#start-stop-timer-btn').on('click', function () {
       $.post('{{ route('alat-bleaching.startStopLimitTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}',
-      {
-        _token: '{{ csrf_token() }}'
-      },function(data) {
-        console.log(data);
-        // if() {
+        {
+          _token: '{{ csrf_token() }}'
+        }, function (data) {
+          console.log(data);
+          // if() {
 
-        // }
-      });
+          // }
+        });
     });
-    
+
     $('#set-timer-btn').on('click', function () {
       const durasiMenit = parseInt($('#durasi-input').val());
       if (isNaN(durasiMenit) || durasiMenit <= 0) {
@@ -290,8 +317,8 @@
           limit_timer: durasiMenit,
           flag_sensor: 'timer_1'
         },
-        function(data) {
-          if(data.status) {
+        function (data) {
+          if (data.status) {
             alert('Durasi timer berhasil diset!');
           } else {
             alert('Gagal menyet durasi timer!');
