@@ -17,28 +17,33 @@ class SensorDataService
      * Get sensor data for Blanching/Bleaching Room
      * Logic adapted from AlatBleachingController
      */
+
     public function getBlanchingData(string $gudangId)
     {
         $dataGudang = GudangModel::findOrFail($gudangId);
         $dataRuangan = $dataGudang->getDataRuangan;
-
         $dataSensor = [];
         $dataWaktuSensor = [];
         $nilaiSensorTemp = [];
         $waktuSensorTemp = [];
+        $stddevTemp = [];
+
         $statusRuangan = null;
-        $suhuTotal = 0;
-        $totalDataSuhu = 0;
+        $currentSuhuAccumulator = 0;
+        $countSuhuSensors = 0;
 
         $selectRawQuery = '
-        DATE(created_at) as tgl,
-        HOUR(created_at) as jam,
-        FLOOR(MINUTE(created_at)/15) as menit_group,
-        AVG(nilai_sensor) as avg_nilai,
-        MIN(created_at) as waktu_asli,
-        MIN(nilai_sensor) as min_nilai,
-        MAX(nilai_sensor) as max_nilai
-    ';
+            DATE(created_at) as tgl,
+            HOUR(created_at) as jam,
+            FLOOR(MINUTE(created_at)/15) as menit_group,
+            AVG(nilai_sensor) as avg_nilai,
+            MIN(created_at) as waktu_asli,
+            STDDEV_SAMP(nilai_sensor) as stddev, -- Tambahkan stddev agar konsisten
+            MIN(nilai_sensor) as min_nilai,
+            MAX(nilai_sensor) as max_nilai
+        ';
+
+        $dateNow = '%' . date('Y-m-d') . '%';
 
         foreach ($dataRuangan as $value) {
             if ($value->tipe_ruangan == 1) {
@@ -47,17 +52,6 @@ class SensorDataService
                 foreach ($value->getDataSensor as $value2) {
                     if (str_contains($value2->flag_sensor, 'timer')) {
                         continue;
-                    }
-
-                    $dateNow = '%'.date('Y-m-d').'%';
-                    $usedDate = date('Y-m-d');
-
-                    if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
-                        $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->first();
-                        if ($temp) {
-                            $usedDate = Carbon::parse($temp->created_at)->format('Y-m-d');
-                            $dateNow = '%'.$usedDate.'%';
-                        }
                     }
 
                     $groupedData = $value2->getDataNilaiSensor()
@@ -69,21 +63,33 @@ class SensorDataService
                         ->get();
 
                     foreach ($groupedData as $value3) {
-                        $avgNilai = number_format($value3->avg_nilai, 2);
-                        $nilaiSensorTemp[] = $avgNilai;
+                        $nilaiSensorTemp[] = number_format($value3->avg_nilai, 2);
                         $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
+                        $stddevTemp[] = [Carbon::parse($value3->waktu_asli)->valueOf(), number_format($value3->stddev, 2)];
+                    }
 
+                    $latestData = $value2->getDataNilaiSensor()
+                        ->where('created_at', 'LIKE', $dateNow)
+                        ->orderBy('created_at', 'DESC')
+                        ->first();
+
+                    if ($latestData) {
                         if (str_contains($value2->flag_sensor, 'suhu')) {
-                            $suhuTotal += floatval($avgNilai);
-                            $totalDataSuhu++;
+                            $currentSuhuAccumulator += $latestData->nilai_sensor;
+                            $countSuhuSensors++;
                         }
                     }
+
+                    $avgCalculation = count($nilaiSensorTemp) > 0
+                        ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1)
+                        : 0;
 
                     array_push($dataSensor, [
                         'type' => 'sensor',
                         'flag_sensor' => $value2->flag_sensor,
                         'value' => $nilaiSensorTemp,
-                        'avg' => count($nilaiSensorTemp) > 0 ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1) : 0,
+                        'avg' => $avgCalculation,
+                        'stddev' => $stddevTemp,
                     ]);
 
                     array_push($dataWaktuSensor, [
@@ -94,72 +100,119 @@ class SensorDataService
 
                     $nilaiSensorTemp = [];
                     $waktuSensorTemp = [];
+                    $stddevTemp = [];
                 }
                 break;
             }
         }
 
-        $rataRataSuhu = $totalDataSuhu > 0 ? number_format($suhuTotal / $totalDataSuhu, 2) : 0;
+        $rataRataSuhuFinal = $countSuhuSensors > 0
+            ? number_format($currentSuhuAccumulator / $countSuhuSensors, 2)
+            : 0;
 
         return [
             'statusRuangan' => $statusRuangan,
             'dataSensor' => $dataSensor,
             'dataWaktuSensor' => $dataWaktuSensor,
-            'rataRataSuhu' => $rataRataSuhu,
+            'rataRataSuhu' => $rataRataSuhuFinal,
         ];
     }
+
+    // public function getBlanchingData(string $gudangId)
+    // {
+    //     $dataGudang = GudangModel::findOrFail($gudangId);
+    //     $dataRuangan = $dataGudang->getDataRuangan;
+
+    //     $dataSensor = [];
+    //     $dataWaktuSensor = [];
+    //     $nilaiSensorTemp = [];
+    //     $waktuSensorTemp = [];
+    //     $statusRuangan = null;
+    //     $suhuTotal = 0;
+    //     $totalDataSuhu = 0;
+
+    //     $selectRawQuery = '
+    //     DATE(created_at) as tgl,
+    //     HOUR(created_at) as jam,
+    //     FLOOR(MINUTE(created_at)/15) as menit_group,
+    //     AVG(nilai_sensor) as avg_nilai,
+    //     MIN(created_at) as waktu_asli,
+    //     MIN(nilai_sensor) as min_nilai,
+    //     MAX(nilai_sensor) as max_nilai
+    // ';
+
+    //     foreach ($dataRuangan as $value) {
+    //         if ($value->tipe_ruangan == 1) {
+    //             $statusRuangan = $value->status_ruangan;
+
+    //             foreach ($value->getDataSensor as $value2) {
+    //                 if (str_contains($value2->flag_sensor, 'timer')) {
+    //                     continue;
+    //                 }
+
+    //                 $dateNow = '%' . date('Y-m-d') . '%';
+    //                 $usedDate = date('Y-m-d');
+
+    //                 if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
+    //                     $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->first();
+    //                     if ($temp) {
+    //                         $usedDate = Carbon::parse($temp->created_at)->format('Y-m-d');
+    //                         $dateNow = '%' . $usedDate . '%';
+    //                     }
+    //                 }
+
+    //                 $groupedData = $value2->getDataNilaiSensor()
+    //                     ->selectRaw($selectRawQuery)
+    //                     ->where('created_at', 'LIKE', $dateNow)
+    //                     ->groupBy('tgl', 'jam', 'menit_group')
+    //                     ->orderBy('waktu_asli', 'DESC')
+    //                     ->limit($this->LIMIT)
+    //                     ->get();
+
+    //                 foreach ($groupedData as $value3) {
+    //                     $avgNilai = number_format($value3->avg_nilai, 2);
+    //                     $nilaiSensorTemp[] = $avgNilai;
+    //                     $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
+
+    //                     if (str_contains($value2->flag_sensor, 'suhu')) {
+    //                         $suhuTotal += floatval($avgNilai);
+    //                         $totalDataSuhu++;
+    //                     }
+    //                 }
+
+    //                 array_push($dataSensor, [
+    //                     'type' => 'sensor',
+    //                     'flag_sensor' => $value2->flag_sensor,
+    //                     'value' => $nilaiSensorTemp,
+    //                     'avg' => count($nilaiSensorTemp) > 0 ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1) : 0,
+    //                 ]);
+
+    //                 array_push($dataWaktuSensor, [
+    //                     'type' => 'waktu',
+    //                     'flag_sensor' => $value2->flag_sensor,
+    //                     'value' => $waktuSensorTemp,
+    //                 ]);
+
+    //                 $nilaiSensorTemp = [];
+    //                 $waktuSensorTemp = [];
+    //             }
+    //             break;
+    //         }
+    //     }
+
+    //     $rataRataSuhu = $totalDataSuhu > 0 ? number_format($suhuTotal / $totalDataSuhu, 2) : 0;
+
+    //     return [
+    //         'statusRuangan' => $statusRuangan,
+    //         'dataSensor' => $dataSensor,
+    //         'dataWaktuSensor' => $dataWaktuSensor,
+    //         'rataRataSuhu' => $rataRataSuhu,
+    //     ];
+    // }
 
     /**
      * Start or Stop the Timer
      */
-    // public function toggleTimer(string $gudangId)
-    // {
-    //     $dataGudang = GudangModel::findOrFail($gudangId);
-    //     $dataRuangan = $dataGudang->getDataRuangan;
-    //     $dataTimer = [];
-
-    //     foreach ($dataRuangan as $ruangan) {
-    //         if ($ruangan->tipe_ruangan == 1) {
-    //             foreach ($ruangan->getDataSensor as $sensor) {
-    //                 if (in_array($sensor->flag_sensor, ['timer_1', 'timer_2'])) {
-    //                     $nilaiTimer = NilaiTimerModel::where('id_sensor', $sensor->id_sensor)
-    //                         ->orderBy('created_at', 'desc')->first();
-
-    //                     if ($nilaiTimer->flag_timer == 'start') {
-    //                         $dataTimer = [
-    //                             'status' => true,
-    //                             'status_timer' => 'stop',
-    //                             'sisa_timer' => number_format((float) $nilaiTimer->nilai_timer - microtime(true), 2),
-    //                         ];
-    //                         NilaiTimerModel::create([
-    //                             'flag_timer' => 'stop',
-    //                             'nilai_timer' => microtime(true),
-    //                             'id_sensor' => $sensor->id_sensor,
-    //                             'rssi' => 0,
-    //                             'snr' => 0,
-    //                         ]);
-    //                     } elseif ($nilaiTimer->flag_timer == 'stop') {
-    //                         NilaiTimerModel::create([
-    //                             'flag_timer' => 'start',
-    //                             'nilai_timer' => microtime(true),
-    //                             'id_sensor' => $sensor->id_sensor,
-    //                             'rssi' => 0,
-    //                             'snr' => 0,
-    //                         ]);
-    //                         $dataTimer = [
-    //                             'status' => true,
-    //                             'status_timer' => 'start',
-    //                             'sisa_timer' => number_format((float) $nilaiTimer->nilai_timer - microtime(true), 2),
-    //                         ];
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     return $dataTimer;
-    // }
-
     public function toggleTimer(string $gudangId)
     {
         $dataGudang = GudangModel::findOrFail($gudangId);
@@ -191,7 +244,6 @@ class SensorDataService
                                 'status_timer' => 'stop',
                                 'sisa_timer' => 0,
                             ];
-
                         } else {
                             NilaiTimerModel::create([
                                 'flag_timer' => 'start',
@@ -221,68 +273,6 @@ class SensorDataService
     /**
      * Get Timer Data and Check Limits
      */
-    // public function getTimerData(string $gudangId)
-    // {
-    //     $dataGudang = GudangModel::findOrFail($gudangId);
-    //     $dataRuangan = $dataGudang->getDataRuangan;
-    //     $dataTimer = [];
-
-    //     foreach ($dataRuangan as $ruangan) {
-    //         if ($ruangan->tipe_ruangan == 1) {
-    //             foreach ($ruangan->getDataSensor as $sensor) {
-    //                 if (in_array($sensor->flag_sensor, ['timer_1', 'timer_2'])) {
-    //                     $nilaiTimer = NilaiTimerModel::where('id_sensor', $sensor->id_sensor)
-    //                         ->orderBy('created_at', 'desc')->first();
-
-    //                     $modeTimer = ModeTimerModel::where('id_sensor', $sensor->id_sensor)->first();
-
-    //                     $sisaTimer = microtime(true) - (float) $nilaiTimer->nilai_timer;
-
-    //                     if ($nilaiTimer->flag_timer == 'stop') {
-    //                         $dataTimer[] = [
-    //                             'flag_sensor' => $sensor->flag_sensor,
-    //                             'flag_timer' => $nilaiTimer->flag_timer,
-    //                             'nilai_timer' => $nilaiTimer?->nilai_timer ?? 0,
-    //                             'limit_timer' => $modeTimer?->limit_timer ?? null,
-    //                             'sisa_timer' => 0,
-    //                             'updated_at' => $nilaiTimer?->created_at?->format('Y-m-d H:i:s'),
-    //                         ];
-
-    //                         continue;
-    //                     }
-
-    //                     if ((float) $sisaTimer > (float) $modeTimer->limit_timer) {
-    //                         $sisaTimer = 0;
-    //                         if ($nilaiTimer->flag_timer == 'start') {
-    //                             NilaiTimerModel::create([
-    //                                 'flag_timer' => 'stop',
-    //                                 'nilai_timer' => microtime(true),
-    //                                 'id_sensor' => $sensor->id_sensor,
-    //                                 'rssi' => 0,
-    //                                 'snr' => 0,
-    //                             ]);
-
-    //                             $nilaiTimer = NilaiTimerModel::where('id_sensor', $sensor->id_sensor)
-    //                                 ->orderBy('created_at', 'desc')->first();
-    //                         }
-    //                     }
-
-    //                     $dataTimer[] = [
-    //                         'flag_sensor' => $sensor->flag_sensor,
-    //                         'flag_timer' => $nilaiTimer->flag_timer,
-    //                         'nilai_timer' => $nilaiTimer?->nilai_timer ?? 0,
-    //                         'limit_timer' => $modeTimer?->limit_timer ?? 0,
-    //                         'sisa_timer' => $sisaTimer,
-    //                         'updated_at' => $nilaiTimer?->created_at?->format('Y-m-d H:i:s'),
-    //                     ];
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     return $dataTimer;
-    // }
-
     public function getTimerData(string $gudangId)
     {
         $dataGudang = GudangModel::findOrFail($gudangId);
@@ -372,8 +362,6 @@ class SensorDataService
                         );
 
                         $found = true;
-                        // Note: Original code had logic to check start/stop but didn't actually execute the create model.
-                        // It only updated the limit.
                     }
                 }
             }
@@ -382,8 +370,111 @@ class SensorDataService
         return $found;
     }
 
+    // /**
+    //  * Get sensor data for Fermentation Room with averaging logic
+    //  */
+    // public function getFermentasiData(string $gudangId)
+    // {
+    //     $dataSensor = [];
+    //     $dataWaktuSensor = [];
+    //     $dataGudang = GudangModel::findOrFail($gudangId);
+    //     $dataRuangan = $dataGudang->getDataRuangan;
+    //     $nilaiSensorTemp = [];
+    //     $waktuSensorTemp = [];
+    //     $stddevTemp = [];
+    //     $statusRuangan = [];
+    //     $currentSuhu = 0;
+    //     $currentKelembaban = 0;
+    //     $suhuSensors = 0;
+    //     $kelembabanSensors = 0;
+
+    //     $selectRawQuery = '
+    //     DATE(created_at) as tgl,
+    //     HOUR(created_at) as jam,
+    //     FLOOR(MINUTE(created_at)/15) as menit_group,
+    //     AVG(nilai_sensor) as avg_nilai,
+    //     MIN(created_at) as waktu_asli,
+    //     STDDEV_SAMP(nilai_sensor) as stddev,
+    //     MIN(nilai_sensor) as min_nilai,
+    //     MAX(nilai_sensor) as max_nilai
+    // ';
+
+    //     foreach ($dataRuangan as $value) {
+    //         if ($value->tipe_ruangan == 2) {
+    //             $statusRuangan = $value->status_ruangan;
+    //             foreach ($value->getDataSensor as $value2) {
+    //                 $dateNow = '%'.date('Y-m-d').'%';
+    //                 $usedDate = date('Y-m-d');
+
+    //                 if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
+    //                     $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->first();
+    //                     if ($temp) {
+    //                         $usedDate = Carbon::parse($temp->created_at)->format('Y-m-d');
+    //                         $dateNow = '%'.$usedDate.'%';
+    //                     }
+    //                 }
+
+    //                 $groupedData = $value2->getDataNilaiSensor()
+    //                     ->selectRaw($selectRawQuery)
+    //                     ->where('created_at', 'LIKE', $dateNow)
+    //                     ->groupBy('tgl', 'jam', 'menit_group')
+    //                     ->orderBy('waktu_asli', 'DESC')
+    //                     ->limit($this->LIMIT)
+    //                     ->get();
+
+    //                 foreach ($groupedData as $value3) {
+    //                     $nilaiSensorTemp[] = number_format($value3->avg_nilai, 2);
+    //                     $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
+    //                     $stddevTemp[] = [Carbon::parse($value3->waktu_asli)->valueOf(), number_format($value3->stddev, 2)];
+    //                 }
+
+    //                 $latestData = $value2->getDataNilaiSensor()
+    //                     ->where('created_at', 'LIKE', $dateNow)
+    //                     ->orderBy('created_at', 'DESC')
+    //                     ->first();
+
+    //                 if ($latestData) {
+    //                     if (str_contains($value2->flag_sensor, 'suhu')) {
+    //                         $currentSuhu += (int) $latestData->nilai_sensor;
+    //                         $suhuSensors++;
+    //                     } elseif (str_contains($value2->flag_sensor, 'kelembaban')) {
+    //                         $currentKelembaban += (int) $latestData->nilai_sensor;
+    //                         $kelembabanSensors++;
+    //                     }
+    //                 }
+
+    //                 array_push($dataSensor, [
+    //                     'type' => 'sensor',
+    //                     'flag_sensor' => $value2->flag_sensor,
+    //                     'value' => $nilaiSensorTemp,
+    //                     'avg' => count($nilaiSensorTemp) > 0 ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1) : 0,
+    //                     'stddev' => $stddevTemp,
+    //                 ]);
+
+    //                 array_push($dataWaktuSensor, [
+    //                     'type' => 'waktu',
+    //                     'flag_sensor' => $value2->flag_sensor,
+    //                     'value' => $waktuSensorTemp,
+    //                 ]);
+
+    //                 $nilaiSensorTemp = [];
+    //                 $waktuSensorTemp = [];
+    //                 $stddevTemp = [];
+    //             }
+    //         }
+    //     }
+
+    //     return [
+    //         'statusRuangan' => $statusRuangan,
+    //         'dataSensor' => $dataSensor,
+    //         'dataWaktuSensor' => $dataWaktuSensor,
+    //         'currentSuhu' => $suhuSensors > 0 ? number_format($currentSuhu / $suhuSensors, 2) : 0,
+    //         'currentKelembaban' => $kelembabanSensors > 0 ? number_format($currentKelembaban / $kelembabanSensors, 2) : 0,
+    //     ];
+    // }
+
     /**
-     * Get sensor data for Fermentation Room with averaging logic
+     * Get sensor data for Fermentation Room (STRICT TODAY ONLY)
      */
     public function getFermentasiData(string $gudangId)
     {
@@ -395,36 +486,31 @@ class SensorDataService
         $waktuSensorTemp = [];
         $stddevTemp = [];
         $statusRuangan = [];
+
         $currentSuhu = 0;
         $currentKelembaban = 0;
         $suhuSensors = 0;
         $kelembabanSensors = 0;
 
         $selectRawQuery = '
-        DATE(created_at) as tgl,
-        HOUR(created_at) as jam,
-        FLOOR(MINUTE(created_at)/15) as menit_group,
-        AVG(nilai_sensor) as avg_nilai,
-        MIN(created_at) as waktu_asli,
-        STDDEV_SAMP(nilai_sensor) as stddev,
-        MIN(nilai_sensor) as min_nilai,
-        MAX(nilai_sensor) as max_nilai
-    ';
+            DATE(created_at) as tgl,
+            HOUR(created_at) as jam,
+            FLOOR(MINUTE(created_at)/15) as menit_group,
+            AVG(nilai_sensor) as avg_nilai,
+            MIN(created_at) as waktu_asli,
+            STDDEV_SAMP(nilai_sensor) as stddev,
+            MIN(nilai_sensor) as min_nilai,
+            MAX(nilai_sensor) as max_nilai
+        ';
+
+        $dateNow = '%' . date('Y-m-d') . '%';
 
         foreach ($dataRuangan as $value) {
             if ($value->tipe_ruangan == 2) {
                 $statusRuangan = $value->status_ruangan;
-                foreach ($value->getDataSensor as $value2) {
-                    $dateNow = '%'.date('Y-m-d').'%';
-                    $usedDate = date('Y-m-d');
 
-                    if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
-                        $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->first();
-                        if ($temp) {
-                            $usedDate = Carbon::parse($temp->created_at)->format('Y-m-d');
-                            $dateNow = '%'.$usedDate.'%';
-                        }
-                    }
+                foreach ($value->getDataSensor as $value2) {
+
 
                     $groupedData = $value2->getDataNilaiSensor()
                         ->selectRaw($selectRawQuery)
@@ -447,19 +533,23 @@ class SensorDataService
 
                     if ($latestData) {
                         if (str_contains($value2->flag_sensor, 'suhu')) {
-                            $currentSuhu += (int) $latestData->nilai_sensor;
+                            $currentSuhu += $latestData->nilai_sensor;
                             $suhuSensors++;
                         } elseif (str_contains($value2->flag_sensor, 'kelembaban')) {
-                            $currentKelembaban += (int) $latestData->nilai_sensor;
+                            $currentKelembaban += $latestData->nilai_sensor;
                             $kelembabanSensors++;
                         }
                     }
+
+                    $avgCalculation = count($nilaiSensorTemp) > 0
+                        ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1)
+                        : 0;
 
                     array_push($dataSensor, [
                         'type' => 'sensor',
                         'flag_sensor' => $value2->flag_sensor,
                         'value' => $nilaiSensorTemp,
-                        'avg' => count($nilaiSensorTemp) > 0 ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1) : 0,
+                        'avg' => $avgCalculation,
                         'stddev' => $stddevTemp,
                     ]);
 
@@ -488,55 +578,50 @@ class SensorDataService
     /**
      * Get sensor data for Drying Room (non-blower sensors)
      */
+
     public function getPengeringanData(string $gudangId)
     {
         $dataSensor = [];
         $dataWaktuSensor = [];
         $dataGudang = GudangModel::findOrFail($gudangId);
         $dataRuangan = $dataGudang->getDataRuangan;
+
         $nilaiSensorTemp = [];
         $waktuSensorTemp = [];
         $stddevTemp = [];
+
         $statusRuangan = [];
+        $listBlower = [];
+
         $currentSuhu = 0;
         $currentKelembaban = 0;
         $suhuSensors = 0;
         $kelembabanSensors = 0;
-        $listBlower = [];
 
         $selectRawQuery = '
-        DATE(created_at) as tgl,
-        HOUR(created_at) as jam,
-        FLOOR(MINUTE(created_at)/15) as menit_group,
-        AVG(nilai_sensor) as avg_nilai,
-        MIN(created_at) as waktu_asli,
-        STDDEV_SAMP(nilai_sensor) as stddev,
-        MIN(nilai_sensor) as min_nilai,
-        MAX(nilai_sensor) as max_nilai
-    ';
+            DATE(created_at) as tgl,
+            HOUR(created_at) as jam,
+            FLOOR(MINUTE(created_at)/15) as menit_group,
+            AVG(nilai_sensor) as avg_nilai,
+            MIN(created_at) as waktu_asli,
+            STDDEV_SAMP(nilai_sensor) as stddev,
+            MIN(nilai_sensor) as min_nilai,
+            MAX(nilai_sensor) as max_nilai
+        ';
+
+        $dateNow = '%' . date('Y-m-d') . '%';
 
         foreach ($dataRuangan as $value) {
             if ($value->tipe_ruangan == 3) {
                 $statusRuangan = $value->status_ruangan;
+
                 foreach ($value->getDataSensor as $value2) {
                     if (str_contains($value2->flag_sensor, 'blower')) {
                         $listBlower[] = [
                             'id_sensor' => $value2->id_sensor,
                             'flag_sensor' => $value2->flag_sensor,
                         ];
-
                         continue;
-                    }
-
-                    $dateNow = '%'.date('Y-m-d').'%';
-                    $usedDate = date('Y-m-d');
-
-                    if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
-                        $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->first();
-                        if ($temp) {
-                            $usedDate = Carbon::parse($temp->created_at)->format('Y-m-d');
-                            $dateNow = '%'.$usedDate.'%';
-                        }
                     }
 
                     $groupedData = $value2->getDataNilaiSensor()
@@ -560,19 +645,23 @@ class SensorDataService
 
                     if ($latestData) {
                         if (str_contains($value2->flag_sensor, 'suhu')) {
-                            $currentSuhu += (int) $latestData->nilai_sensor;
+                            $currentSuhu += $latestData->nilai_sensor;
                             $suhuSensors++;
                         } elseif (str_contains($value2->flag_sensor, 'kelembaban')) {
-                            $currentKelembaban += (int) $latestData->nilai_sensor;
+                            $currentKelembaban += $latestData->nilai_sensor;
                             $kelembabanSensors++;
                         }
                     }
+
+                    $avgCalculation = count($nilaiSensorTemp) > 0
+                        ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1)
+                        : 0;
 
                     array_push($dataSensor, [
                         'type' => 'sensor',
                         'flag_sensor' => $value2->flag_sensor,
                         'value' => $nilaiSensorTemp,
-                        'avg' => count($nilaiSensorTemp) > 0 ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1) : 0,
+                        'avg' => $avgCalculation,
                         'stddev' => $stddevTemp,
                     ]);
 
@@ -599,6 +688,213 @@ class SensorDataService
             'currentKelembaban' => $kelembabanSensors > 0 ? number_format($currentKelembaban / $kelembabanSensors, 2) : 0,
         ];
     }
+    // public function getPengeringanData(string $gudangId)
+    // {
+    //         $dataSensor = [];
+    //         $dataWaktuSensor = [];
+    //         $dataGudang = GudangModel::findOrFail($gudangId);
+    //         $dataRuangan = $dataGudang->getDataRuangan;
+    //         $nilaiSensorTemp = [];
+    //         $waktuSensorTemp = [];
+    //         $stddevTemp = [];
+    //         $statusRuangan = [];
+    //         $currentSuhu = 0;
+    //         $currentKelembaban = 0;
+    //         $suhuSensors = 0;
+    //         $kelembabanSensors = 0;
+    //         $listBlower = [];
+
+    //         $selectRawQuery = '
+    //         DATE(created_at) as tgl,
+    //         HOUR(created_at) as jam,
+    //         FLOOR(MINUTE(created_at)/15) as menit_group,
+    //         AVG(nilai_sensor) as avg_nilai,
+    //         MIN(created_at) as waktu_asli,
+    //         STDDEV_SAMP(nilai_sensor) as stddev,
+    //         MIN(nilai_sensor) as min_nilai,
+    //         MAX(nilai_sensor) as max_nilai
+    //     ';
+
+    //         foreach ($dataRuangan as $value) {
+    //             if ($value->tipe_ruangan == 3) {
+    //                 $statusRuangan = $value->status_ruangan;
+    //                 foreach ($value->getDataSensor as $value2) {
+    //                     if (str_contains($value2->flag_sensor, 'blower')) {
+    //                         $listBlower[] = [
+    //                             'id_sensor' => $value2->id_sensor,
+    //                             'flag_sensor' => $value2->flag_sensor,
+    //                         ];
+
+    //                         continue;
+    //                     }
+
+    //                     $dateNow = '%'.date('Y-m-d').'%';
+    //                     $usedDate = date('Y-m-d');
+
+    //                     if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
+    //                         $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->first();
+    //                         if ($temp) {
+    //                             $usedDate = Carbon::parse($temp->created_at)->format('Y-m-d');
+    //                             $dateNow = '%'.$usedDate.'%';
+    //                         }
+    //                     }
+
+    //                     $groupedData = $value2->getDataNilaiSensor()
+    //                         ->selectRaw($selectRawQuery)
+    //                         ->where('created_at', 'LIKE', $dateNow)
+    //                         ->groupBy('tgl', 'jam', 'menit_group')
+    //                         ->orderBy('waktu_asli', 'DESC')
+    //                         ->limit($this->LIMIT)
+    //                         ->get();
+
+    //                     foreach ($groupedData as $value3) {
+    //                         $nilaiSensorTemp[] = number_format($value3->avg_nilai, 2);
+    //                         $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
+    //                         $stddevTemp[] = [Carbon::parse($value3->waktu_asli)->valueOf(), number_format($value3->stddev, 2)];
+    //                     }
+
+    //                     $latestData = $value2->getDataNilaiSensor()
+    //                         ->where('created_at', 'LIKE', $dateNow)
+    //                         ->orderBy('created_at', 'DESC')
+    //                         ->first();
+
+    //                     if ($latestData) {
+    //                         if (str_contains($value2->flag_sensor, 'suhu')) {
+    //                             $currentSuhu += (int) $latestData->nilai_sensor;
+    //                             $suhuSensors++;
+    //                         } elseif (str_contains($value2->flag_sensor, 'kelembaban')) {
+    //                             $currentKelembaban += (int) $latestData->nilai_sensor;
+    //                             $kelembabanSensors++;
+    //                         }
+    //                     }
+
+    //                     array_push($dataSensor, [
+    //                         'type' => 'sensor',
+    //                         'flag_sensor' => $value2->flag_sensor,
+    //                         'value' => $nilaiSensorTemp,
+    //                         'avg' => count($nilaiSensorTemp) > 0 ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1) : 0,
+    //                         'stddev' => $stddevTemp,
+    //                     ]);
+
+    //                     array_push($dataWaktuSensor, [
+    //                         'type' => 'waktu',
+    //                         'flag_sensor' => $value2->flag_sensor,
+    //                         'value' => $waktuSensorTemp,
+    //                     ]);
+
+    //                     $nilaiSensorTemp = [];
+    //                     $waktuSensorTemp = [];
+    //                     $stddevTemp = [];
+    //                 }
+    //             }
+    //         }
+
+    //         return [
+    //             'status' => true,
+    //             'statusRuangan' => $statusRuangan,
+    //             'listBlower' => $listBlower,
+    //             'dataSensor' => $dataSensor,
+    //             'dataWaktuSensor' => $dataWaktuSensor,
+    //             'currentSuhu' => $suhuSensors > 0 ? number_format($currentSuhu / $suhuSensors, 2) : 0,
+    //             'currentKelembaban' => $kelembabanSensors > 0 ? number_format($currentKelembaban / $kelembabanSensors, 2) : 0,
+    //         ];
+    // }
+    //     $dataSensor = [];
+    //     $dataWaktuSensor = [];
+    //     $dataGudang = GudangModel::findOrFail($gudangId);
+    //     $dataRuangan = $dataGudang->getDataRuangan;
+    //     $nilaiSensorTemp = [];
+    //     $waktuSensorTemp = [];
+    //     $stddevTemp = [];
+    //     $statusRuangan = [];
+
+    //     $currentSuhu = 0;
+    //     $currentKelembaban = 0;
+    //     $suhuSensors = 0;
+    //     $kelembabanSensors = 0;
+
+    //     $selectRawQuery = '
+    //         DATE(created_at) as tgl,
+    //         HOUR(created_at) as jam,
+    //         FLOOR(MINUTE(created_at)/15) as menit_group,
+    //         AVG(nilai_sensor) as avg_nilai,
+    //         MIN(created_at) as waktu_asli,
+    //         STDDEV_SAMP(nilai_sensor) as stddev,
+    //         MIN(nilai_sensor) as min_nilai,
+    //         MAX(nilai_sensor) as max_nilai
+    //     ';
+
+    //     $dateNow = '%' . date('Y-m-d') . '%';
+
+    //     foreach ($dataRuangan as $value) {
+    //         if ($value->tipe_ruangan == 3) {
+    //             $statusRuangan = $value->status_ruangan;
+
+    //             foreach ($value->getDataSensor as $value2) {
+
+
+    //                 $groupedData = $value2->getDataNilaiSensor()
+    //                     ->selectRaw($selectRawQuery)
+    //                     ->where('created_at', 'LIKE', $dateNow)
+    //                     ->groupBy('tgl', 'jam', 'menit_group')
+    //                     ->orderBy('waktu_asli', 'DESC')
+    //                     ->limit($this->LIMIT)
+    //                     ->get();
+
+    //                 foreach ($groupedData as $value3) {
+    //                     $nilaiSensorTemp[] = number_format($value3->avg_nilai, 2);
+    //                     $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
+    //                     $stddevTemp[] = [Carbon::parse($value3->waktu_asli)->valueOf(), number_format($value3->stddev, 2)];
+    //                 }
+
+    //                 $latestData = $value2->getDataNilaiSensor()
+    //                     ->where('created_at', 'LIKE', $dateNow)
+    //                     ->orderBy('created_at', 'DESC')
+    //                     ->first();
+
+    //                 if ($latestData) {
+    //                     if (str_contains($value2->flag_sensor, 'suhu')) {
+    //                         $currentSuhu += $latestData->nilai_sensor;
+    //                         $suhuSensors++;
+    //                     } elseif (str_contains($value2->flag_sensor, 'kelembaban')) {
+    //                         $currentKelembaban += $latestData->nilai_sensor;
+    //                         $kelembabanSensors++;
+    //                     }
+    //                 }
+
+    //                 $avgCalculation = count($nilaiSensorTemp) > 0
+    //                     ? number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1)
+    //                     : 0;
+
+    //                 array_push($dataSensor, [
+    //                     'type' => 'sensor',
+    //                     'flag_sensor' => $value2->flag_sensor,
+    //                     'value' => $nilaiSensorTemp,
+    //                     'avg' => $avgCalculation,
+    //                     'stddev' => $stddevTemp,
+    //                 ]);
+
+    //                 array_push($dataWaktuSensor, [
+    //                     'type' => 'waktu',
+    //                     'flag_sensor' => $value2->flag_sensor,
+    //                     'value' => $waktuSensorTemp,
+    //                 ]);
+
+    //                 $nilaiSensorTemp = [];
+    //                 $waktuSensorTemp = [];
+    //                 $stddevTemp = [];
+    //             }
+    //         }
+    //     }
+
+    //     return [
+    //         'statusRuangan' => $statusRuangan,
+    //         'dataSensor' => $dataSensor,
+    //         'dataWaktuSensor' => $dataWaktuSensor,
+    //         'currentSuhu' => $suhuSensors > 0 ? number_format($currentSuhu / $suhuSensors, 2) : 0,
+    //         'currentKelembaban' => $kelembabanSensors > 0 ? number_format($currentKelembaban / $kelembabanSensors, 2) : 0,
+    //     ];
+    // }
 
     /**
      * Get blower data for Drying Room
@@ -607,7 +903,7 @@ class SensorDataService
     {
         $sensor = SensorModel::with('getDataNilaiBlower')->findOrFail($sensorId);
 
-        if (! $sensor->getDataNilaiBlower) {
+        if (!$sensor->getDataNilaiBlower) {
             return [
                 'status' => false,
                 'msg' => 'Data blower tidak ditemukan',
