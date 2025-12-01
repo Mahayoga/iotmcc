@@ -366,7 +366,7 @@
             data: values
           }],
           stroke: {
-            curve: 'MonotoneCubic',
+            curve: 'monotoneCubic',
             width: 3,
             colors: [color]
           },
