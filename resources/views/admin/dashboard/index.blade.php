@@ -328,7 +328,7 @@
           const dataMin = Math.min(...values);
           const dataMax = Math.max(...values);
           const range = dataMax - dataMin;
-          const padding = range * 0.2; // 20% padding untuk line chart
+          const padding = range * 0.2;
 
           calculatedMin = Math.floor(dataMin - padding);
           calculatedMax = Math.ceil(dataMax + padding);
