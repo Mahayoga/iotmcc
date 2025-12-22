@@ -12,6 +12,13 @@
 <body>
   <div class="container-fluid manual-container-fluid">
     <div class="row justify-content-center align-items-center h-75">
+      <div class="col-md-12">
+        <div class="row justify-content-center mt-4 mb-4">
+          <div class="bg-white rounded-pill p-3" style="max-width: 30%">
+            <img src="{{ asset('assets/user/images/logo_kementrian.png') }}" alt="" style="max-width: 100%">
+          </div>
+        </div>
+      </div>
       <div class="col-md-3 bg-white rounded manual-box-login">
         <div class="row p-4">
           <div class="col-md-12 text-center fs-4 fw-bold">
