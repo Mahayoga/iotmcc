@@ -27,6 +27,12 @@ class DashboardController extends Controller
     $trendFermentasiKelembapan = [];
     $trendPengeringanSuhu = [];
     $trendPengeringanKelembapan = [];
+    $latestDates = [
+      'bleaching' => null,
+      'fermentasi' => null,
+      'pengeringan' => null,
+      'overall' => null
+    ];
 
     // Data card ruangan
     foreach ($ruangan as $r) {
@@ -40,16 +46,26 @@ class DashboardController extends Controller
       $avgSuhu = null;
       $avgKelembapan = null;
       $suhuBleaching = null;
+      $latestDateForRoom = null;
 
       if (!$isBleaching) {
         $nilaiSuhu = [];
+        $latestSensorDate = null;
+        
         foreach ($sensorSuhuList as $sensor) {
           $recentData = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
             ->orderBy('created_at', 'desc')
             ->take(11)
-            ->pluck('nilai_sensor')
-            ->toArray();
-          $nilaiSuhu = array_merge($nilaiSuhu, $recentData);
+            ->get(['nilai_sensor', 'created_at']);
+          
+          if ($recentData->isNotEmpty()) {
+            $nilaiSuhu = array_merge($nilaiSuhu, $recentData->pluck('nilai_sensor')->toArray());
+            
+            $sensorLatestDate = $recentData->first()->created_at;
+            if (!$latestSensorDate || $sensorLatestDate > $latestSensorDate) {
+              $latestSensorDate = $sensorLatestDate;
+            }
+          }
         }
         $avgSuhu = count($nilaiSuhu) ? array_sum($nilaiSuhu) / count($nilaiSuhu) : null;
 
@@ -63,7 +79,10 @@ class DashboardController extends Controller
           $nilaiKelembapan = array_merge($nilaiKelembapan, $recentData);
         }
         $avgKelembapan = count($nilaiKelembapan) ? array_sum($nilaiKelembapan) / count($nilaiKelembapan) : null;
+        
+        $latestDateForRoom = $latestSensorDate;
       } else {
+        $bleachingLatestDate = null;
         foreach ($sensorSuhuList as $sensor) {
           $suhuTerakhir = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
             ->whereTime('created_at', '>=', '07:00:00')
@@ -73,10 +92,12 @@ class DashboardController extends Controller
 
           if ($suhuTerakhir) {
             $suhuBleaching = $suhuTerakhir->nilai_sensor;
+            $bleachingLatestDate = $suhuTerakhir->created_at;
             break;
           }
         }
         $avgSuhu = $suhuBleaching;
+        $latestDateForRoom = $bleachingLatestDate;
       }
 
       $nilaiBlower = $sensorBlower
@@ -84,6 +105,10 @@ class DashboardController extends Controller
         : null;
 
       $statusInfo = $this->getStatusInfo($tipeRuangan, $avgSuhu, $avgKelembapan);
+
+      $formattedDate = $latestDateForRoom 
+        ? Carbon::parse($latestDateForRoom)->format('d M Y')
+        : 'Belum ada data';
 
       $dataRuangan[$tipeRuangan] = [
         'id_ruangan' => $r->id_ruangan,
@@ -97,7 +122,29 @@ class DashboardController extends Controller
         'status_color' => $statusInfo['color'],
         'status_icon' => $statusInfo['icon'],
         'is_bleaching' => $isBleaching,
+        'latest_date' => $formattedDate,
+        'latest_datetime' => $latestDateForRoom ? Carbon::parse($latestDateForRoom)->format('d M Y H:i') : null,
       ];
+
+      if ($latestDateForRoom) {
+        if ($tipeRuangan == 1) {
+          if (!$latestDates['bleaching'] || $latestDateForRoom > $latestDates['bleaching']) {
+            $latestDates['bleaching'] = $latestDateForRoom;
+          }
+        } elseif ($tipeRuangan == 2) {
+          if (!$latestDates['fermentasi'] || $latestDateForRoom > $latestDates['fermentasi']) {
+            $latestDates['fermentasi'] = $latestDateForRoom;
+          }
+        } elseif ($tipeRuangan == 3) {
+          if (!$latestDates['pengeringan'] || $latestDateForRoom > $latestDates['pengeringan']) {
+            $latestDates['pengeringan'] = $latestDateForRoom;
+          }
+        }
+        
+        if (!$latestDates['overall'] || $latestDateForRoom > $latestDates['overall']) {
+          $latestDates['overall'] = $latestDateForRoom;
+        }
+      }
 
       // Data untuk grafik
       if (!$isBleaching) {
@@ -160,7 +207,7 @@ class DashboardController extends Controller
       }
     }
 
-    // grafik terend 14 hari
+    // grafik trend 14 hari
     $getDailyAverages = function ($sensorCollection, $timeStart = null, $timeEnd = null) {
       if ($sensorCollection->isEmpty()) {
         return [];
@@ -221,30 +268,43 @@ class DashboardController extends Controller
       if ($r->tipe_ruangan == 1) {
         $trendBleaching = [
           'nama_ruangan' => $r->nama_ruangan,
-          'data' => $getDailyAverages($sensorSuhuList, '07:00:00', '10:00:00')
+          'data' => $getDailyAverages($sensorSuhuList, '07:00:00', '10:00:00'),
+          'latest_date' => $latestDates['bleaching'] ? Carbon::parse($latestDates['bleaching'])->format('d M Y') : null
         ];
       } elseif ($r->tipe_ruangan == 2) {
         $trendFermentasiSuhu = [
           'nama_ruangan' => $r->nama_ruangan,
-          'data' => $getDailyAverages($sensorSuhuList)
+          'data' => $getDailyAverages($sensorSuhuList),
+          'latest_date' => $latestDates['fermentasi'] ? Carbon::parse($latestDates['fermentasi'])->format('d M Y') : null
         ];
 
         $trendFermentasiKelembapan = [
           'nama_ruangan' => $r->nama_ruangan,
-          'data' => $getDailyAverages($sensorKelembapanList)
+          'data' => $getDailyAverages($sensorKelembapanList),
+          'latest_date' => $latestDates['fermentasi'] ? Carbon::parse($latestDates['fermentasi'])->format('d M Y') : null
         ];
       } elseif ($r->tipe_ruangan == 3) {
         $trendPengeringanSuhu = [
           'nama_ruangan' => $r->nama_ruangan,
-          'data' => $getDailyAverages($sensorSuhuList)
+          'data' => $getDailyAverages($sensorSuhuList),
+          'latest_date' => $latestDates['pengeringan'] ? Carbon::parse($latestDates['pengeringan'])->format('d M Y') : null
         ];
 
         $trendPengeringanKelembapan = [
           'nama_ruangan' => $r->nama_ruangan,
-          'data' => $getDailyAverages($sensorKelembapanList)
+          'data' => $getDailyAverages($sensorKelembapanList),
+          'latest_date' => $latestDates['pengeringan'] ? Carbon::parse($latestDates['pengeringan'])->format('d M Y') : null
         ];
       }
     }
+
+    $formattedLatestDates = [
+      'bleaching' => $latestDates['bleaching'] ? Carbon::parse($latestDates['bleaching'])->format('d M Y') : 'Belum ada data',
+      'fermentasi' => $latestDates['fermentasi'] ? Carbon::parse($latestDates['fermentasi'])->format('d M Y') : 'Belum ada data',
+      'pengeringan' => $latestDates['pengeringan'] ? Carbon::parse($latestDates['pengeringan'])->format('d M Y') : 'Belum ada data',
+      'overall' => $latestDates['overall'] ? Carbon::parse($latestDates['overall'])->format('d M Y') : 'Belum ada data',
+      'overall_with_time' => $latestDates['overall'] ? Carbon::parse($latestDates['overall'])->format('d M Y H:i') : 'Belum ada data',
+    ];
 
     // Return data to view
     return view('admin.dashboard.index', [
@@ -258,6 +318,7 @@ class DashboardController extends Controller
       'trendFermentasiKelembapan' => $trendFermentasiKelembapan,
       'trendPengeringanSuhu' => $trendPengeringanSuhu,
       'trendPengeringanKelembapan' => $trendPengeringanKelembapan,
+      'latestDates' => $formattedLatestDates,
     ]);
   }
 
