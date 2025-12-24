@@ -217,14 +217,6 @@
                 </h5>
                 <small class="text-muted">Rata-rata suhu harian (07:00 - 10:00 WIB)</small>
               </div>
-              <div>
-                @if($trendBleaching['latest_date'] ?? false)
-                  <small class="text-muted">
-                    <i class="bi bi-calendar me-1"></i>
-                    Data hingga {{ $trendBleaching['latest_date'] }}
-                  </small>
-                @endif
-              </div>
             </div>
             <div class="card-body" style="min-height: 360px;">
               <div id="trendBleaching"></div>
@@ -244,13 +236,6 @@
                 <small class="text-muted">Rata-rata suhu harian</small>
               </div>
               <div>
-                @if($trendFermentasiSuhu['latest_date'] ?? false)
-                  <small class="text-muted">
-                    <i class="bi bi-calendar me-1"></i>
-                    Data hingga {{ $trendFermentasiSuhu['latest_date'] }}
-                  </small>
-                @endif
-              </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendFermentasiSuhu"></div>
@@ -269,13 +254,6 @@
                 <small class="text-muted">Rata-rata kelembapan harian</small>
               </div>
               <div>
-                @if($trendFermentasiKelembapan['latest_date'] ?? false)
-                  <small class="text-muted">
-                    <i class="bi bi-calendar me-1"></i>
-                    Data hingga {{ $trendFermentasiKelembapan['latest_date'] }}
-                  </small>
-                @endif
-              </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendFermentasiKelembapan"></div>
@@ -295,13 +273,6 @@
                 <small class="text-muted">Rata-rata suhu harian</small>
               </div>
               <div>
-                @if($trendPengeringanSuhu['latest_date'] ?? false)
-                  <small class="text-muted">
-                    <i class="bi bi-calendar me-1"></i>
-                    Data hingga {{ $trendPengeringanSuhu['latest_date'] }}
-                  </small>
-                @endif
-              </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendPengeringanSuhu"></div>
@@ -318,14 +289,6 @@
                   Trend Kelembapan {{ $trendPengeringanKelembapan['nama_ruangan'] ?? 'Pengeringan' }}
                 </h5>
                 <small class="text-muted">Rata-rata kelembapan harian</small>
-              </div>
-              <div>
-                @if($trendPengeringanKelembapan['latest_date'] ?? false)
-                  <small class="text-muted">
-                    <i class="bi bi-calendar me-1"></i>
-                    Data hingga {{ $trendPengeringanKelembapan['latest_date'] }}
-                  </small>
-                @endif
               </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
