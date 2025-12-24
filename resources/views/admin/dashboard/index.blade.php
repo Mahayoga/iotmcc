@@ -17,9 +17,11 @@
       <div class="row g-4 mb-4">
         <div class="col-12">
           <div class="card border-0 shadow-sm" style="border-radius: 18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Rekap Ruang Gudang</h5>
-              <small class="text-muted">Pantauan Kondisi di Setiap Ruang Gudang Vanili</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Rekap Ruang Gudang</h5>
+                <small class="text-muted">Pantauan Kondisi di Setiap Ruang Gudang Vanili</small>
+              </div>
             </div>
 
             {{-- card bleaching --}}
@@ -34,6 +36,10 @@
                         </div>
                         <div class="ms-2">
                           <h6 class="mb-0 fw-bold">{{ $dataRuangan[1]['nama_ruangan'] }}</h6>
+                          <small class="text-muted">
+                            <i class="bi bi-calendar me-1"></i>
+                            {{ $dataRuangan[1]['latest_date'] ?? 'Belum ada data' }}
+                          </small>
                         </div>
                       </div>
                       <span class="badge px-3 py-2 bg-white border text-{{ $dataRuangan[1]['status_color'] }}">
@@ -63,6 +69,10 @@
                         </div>
                         <div class="ms-2">
                           <h6 class="mb-0 fw-bold">{{ $dataRuangan[2]['nama_ruangan'] }}</h6>
+                          <small class="text-muted">
+                            <i class="bi bi-calendar me-1"></i>
+                            {{ $dataRuangan[2]['latest_date'] ?? 'Belum ada data' }}
+                          </small>
                         </div>
                       </div>
                       <span class="badge px-3 py-2 bg-white border text-{{ $dataRuangan[2]['status_color'] }}">
@@ -88,6 +98,10 @@
                         </div>
                         <div class="ms-2">
                           <h6 class="mb-0 fw-bold">{{ $dataRuangan[3]['nama_ruangan'] }}</h6>
+                          <small class="text-muted">
+                            <i class="bi bi-calendar me-1"></i>
+                            {{ $dataRuangan[3]['latest_date'] ?? 'Belum ada data' }}
+                          </small>
                         </div>
                       </div>
                       <span class="badge px-3 py-2 bg-white border text-{{ $dataRuangan[3]['status_color'] }}">
@@ -114,9 +128,17 @@
         {{-- grafik bleaching --}}
         <div class="col-12 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
-              <small class="text-muted">Perubahan Suhu Alat (Jam 7-10 Pagi dengan Interval 5 Menit)</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
+                <small class="text-muted">Perubahan Suhu Alat (Jam 7-10 Pagi dengan Interval 5 Menit)</small>
+              </div>
+              <div>
+                <small class="text-muted">
+                  <i class="bi bi-calendar me-1"></i>
+                  Data: {{ $trendBleaching['latest_date'] ?? $latestDates['bleaching'] ?? 'Belum ada data' }}
+                </small>
+              </div>
             </div>
             <div class="card-body">
               <div id="chartBleaching"></div>
@@ -127,9 +149,17 @@
         {{-- grafik suhu --}}
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruangan</h5>
-              <small class="text-muted">Fermentasi & Pengeringan</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruangan</h5>
+                <small class="text-muted">Fermentasi & Pengeringan</small>
+              </div>
+              <div>
+                <small class="text-muted">
+                  <i class="bi bi-calendar me-1"></i>
+                  Data: {{ $latestDates['overall'] ?? 'Belum ada data' }}
+                </small>
+              </div>
             </div>
             <div class="card-body">
               <div id="chartSuhu"></div>
@@ -140,9 +170,17 @@
         {{-- grafik kelembaban --}}
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">Grafik Kelembapan</h5>
-              <small class="text-muted">Fermentasi & Pengeringan</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Grafik Kelembapan</h5>
+                <small class="text-muted">Fermentasi & Pengeringan</small>
+              </div>
+              <div>
+                <small class="text-muted">
+                  <i class="bi bi-calendar me-1"></i>
+                  Data: {{ $latestDates['overall'] ?? 'Belum ada data' }}
+                </small>
+              </div>
             </div>
             <div class="card-body">
               <div id="chartKelembapan"></div>
@@ -154,19 +192,39 @@
       {{-- grafik trend 14 hari --}}
       <div class="row mt-4">
         <div class="col-12 mb-3">
-          <h4 class="mb-0">Trend 14 Hari Terakhir</h4>
-          <p class="text-muted small mb-0">Rata-rata harian suhu dan kelembapan per ruangan</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="mb-0">Trend 14 Hari Terakhir</h4>
+              <p class="text-muted small mb-0">Rata-rata harian suhu dan kelembapan per ruangan</p>
+            </div>
+            <div>
+              <small class="text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                Berdasarkan data terbaru hingga {{ $latestDates['overall'] ?? 'sekarang' }}
+              </small>
+            </div>
+          </div>
         </div>
 
         {{-- Bleaching --}}
         <div class="col-12 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">
-                <i class="bi bi-fire text-danger me-2"></i>
-                Trend Suhu {{ $trendBleaching['nama_ruangan'] ?? 'Bleaching' }}
-              </h5>
-              <small class="text-muted">Rata-rata suhu harian (07:00 - 10:00 WIB)</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2">
+                  <i class="bi bi-fire text-danger me-2"></i>
+                  Trend Suhu {{ $trendBleaching['nama_ruangan'] ?? 'Bleaching' }}
+                </h5>
+                <small class="text-muted">Rata-rata suhu harian (07:00 - 10:00 WIB)</small>
+              </div>
+              <div>
+                @if($trendBleaching['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendBleaching['latest_date'] }}
+                  </small>
+                @endif
+              </div>
             </div>
             <div class="card-body" style="min-height: 360px;">
               <div id="trendBleaching"></div>
@@ -177,12 +235,22 @@
         {{-- Fermentasi --}}
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">
-                <i class="bi bi-thermometer-half text-warning me-2"></i>
-                Trend Suhu {{ $trendFermentasiSuhu['nama_ruangan'] ?? 'Fermentasi' }}
-              </h5>
-              <small class="text-muted">Rata-rata suhu harian</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2">
+                  <i class="bi bi-thermometer-half text-warning me-2"></i>
+                  Trend Suhu {{ $trendFermentasiSuhu['nama_ruangan'] ?? 'Fermentasi' }}
+                </h5>
+                <small class="text-muted">Rata-rata suhu harian</small>
+              </div>
+              <div>
+                @if($trendFermentasiSuhu['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendFermentasiSuhu['latest_date'] }}
+                  </small>
+                @endif
+              </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendFermentasiSuhu"></div>
@@ -192,12 +260,22 @@
 
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">
-                <i class="bi bi-droplet-half text-primary me-2"></i>
-                Trend Kelembapan {{ $trendFermentasiKelembapan['nama_ruangan'] ?? 'Fermentasi' }}
-              </h5>
-              <small class="text-muted">Rata-rata kelembapan harian</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2">
+                  <i class="bi bi-droplet-half text-primary me-2"></i>
+                  Trend Kelembapan {{ $trendFermentasiKelembapan['nama_ruangan'] ?? 'Fermentasi' }}
+                </h5>
+                <small class="text-muted">Rata-rata kelembapan harian</small>
+              </div>
+              <div>
+                @if($trendFermentasiKelembapan['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendFermentasiKelembapan['latest_date'] }}
+                  </small>
+                @endif
+              </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendFermentasiKelembapan"></div>
@@ -208,12 +286,22 @@
         {{-- Pengeringan --}}
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">
-                <i class="bi bi-thermometer-half text-warning me-2"></i>
-                Trend Suhu {{ $trendPengeringanSuhu['nama_ruangan'] ?? 'Pengeringan' }}
-              </h5>
-              <small class="text-muted">Rata-rata suhu harian</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2">
+                  <i class="bi bi-thermometer-half text-warning me-2"></i>
+                  Trend Suhu {{ $trendPengeringanSuhu['nama_ruangan'] ?? 'Pengeringan' }}
+                </h5>
+                <small class="text-muted">Rata-rata suhu harian</small>
+              </div>
+              <div>
+                @if($trendPengeringanSuhu['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendPengeringanSuhu['latest_date'] }}
+                  </small>
+                @endif
+              </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendPengeringanSuhu"></div>
@@ -223,12 +311,22 @@
 
         <div class="col-lg-6 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px;">
-            <div class="card-header bg-transparent border-0">
-              <h5 class="card-title mb-1 mt-2">
-                <i class="bi bi-droplet-half text-primary me-2"></i>
-                Trend Kelembapan {{ $trendPengeringanKelembapan['nama_ruangan'] ?? 'Pengeringan' }}
-              </h5>
-              <small class="text-muted">Rata-rata kelembapan harian</small>
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2">
+                  <i class="bi bi-droplet-half text-primary me-2"></i>
+                  Trend Kelembapan {{ $trendPengeringanKelembapan['nama_ruangan'] ?? 'Pengeringan' }}
+                </h5>
+                <small class="text-muted">Rata-rata kelembapan harian</small>
+              </div>
+              <div>
+                @if($trendPengeringanKelembapan['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendPengeringanKelembapan['latest_date'] }}
+                  </small>
+                @endif
+              </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendPengeringanKelembapan"></div>
