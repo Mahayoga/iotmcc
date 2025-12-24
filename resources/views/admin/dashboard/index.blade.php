@@ -197,12 +197,6 @@
               <h4 class="mb-0">Trend 14 Hari Terakhir</h4>
               <p class="text-muted small mb-0">Rata-rata harian suhu dan kelembapan per ruangan</p>
             </div>
-            <div>
-              <small class="text-muted">
-                <i class="bi bi-info-circle me-1"></i>
-                Berdasarkan data terbaru hingga {{ $latestDates['overall'] ?? 'sekarang' }}
-              </small>
-            </div>
           </div>
         </div>
 
@@ -235,7 +229,6 @@
                 </h5>
                 <small class="text-muted">Rata-rata suhu harian</small>
               </div>
-              <div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendFermentasiSuhu"></div>
@@ -253,7 +246,6 @@
                 </h5>
                 <small class="text-muted">Rata-rata kelembapan harian</small>
               </div>
-              <div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendFermentasiKelembapan"></div>
@@ -272,7 +264,6 @@
                 </h5>
                 <small class="text-muted">Rata-rata suhu harian</small>
               </div>
-              <div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendPengeringanSuhu"></div>
