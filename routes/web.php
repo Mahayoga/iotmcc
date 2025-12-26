@@ -34,10 +34,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::resource('ruang-pengeringan', RuanganPengeringanController::class);
     Route::prefix('ruang-pengeringan')->group(function () {
-    Route::get('/data/sensor/sensor/{id}', [RuanganPengeringanController::class, 'getDataSensor'])->name('ruang-pengeringan.getDataSensor');
-    Route::get('/data/blower/{id}', [RuanganPengeringanController::class, 'getDataStatusBlower'])->name('ruang-pengeringan.getDataStatusBlower');
-    Route::get('/data/blowers/all/{gudangId}', [RuanganPengeringanController::class, 'getAllBlowersStatus'])->name('ruang-pengeringan.getAllBlowersStatus');
-    Route::post('/blower/{id}/update', [RuanganPengeringanController::class, 'updateBlowerStatus'])->name('ruang-pengeringan.updateBlowerStatus');
+        Route::get('/data/sensor/sensor/{id}', [RuanganPengeringanController::class, 'getDataSensor'])->name('ruang-pengeringan.getDataSensor');
+        Route::get('/data/blower/{id}', [RuanganPengeringanController::class, 'getDataStatusBlower'])->name('ruang-pengeringan.getDataStatusBlower');
+        Route::get('/data/blowers/all/{gudangId}', [RuanganPengeringanController::class, 'getAllBlowersStatus'])->name('ruang-pengeringan.getAllBlowersStatus');
+        Route::post('/blower/{id}/update', [RuanganPengeringanController::class, 'updateBlowerStatus'])->name('ruang-pengeringan.updateBlowerStatus');
+        Route::post('/threshold/{id}/update', [RuanganPengeringanController::class, 'updateThreshold'])->name('ruang-pengeringan.updateThreshold');
+        Route::get('/threshold/{id}/get', [RuanganPengeringanController::class, 'getThreshold'])->name('ruang-pengeringan.getThreshold');
+        Route::post('/threshold/{id}/toggle', [RuanganPengeringanController::class, 'toggleThreshold'])->name('ruang-pengeringan.toggleThreshold');
     });
     Route::resource('riwayat-data', RiwayatDataController::class);
     Route::prefix('riwayat-data')->group(function () {

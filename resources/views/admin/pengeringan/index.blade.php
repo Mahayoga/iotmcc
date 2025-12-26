@@ -74,6 +74,158 @@
       </div>
 
       <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0 position-relative text-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2 fw-semibold">Daftar Blower</h5>
+                <small class="text-muted">Indikator Operasional Blower (Total 2 Unit Aktif)</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="container">
+                <div class="row mb-3 justify-content-center">
+                  @for ($i = 1; $i <= 2; $i++)
+                    <div class="col-md-4 mb-2">
+                      <div class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
+                        style="background:#f8f9fa;">
+                        <div class="d-flex flex-column align-items-center mb-3">
+                          <i id="blower-{{ $i }}" class="bi bi-fan mb-2"
+                            style="font-size: 2rem; color: gray;"></i>
+                          <h6 class="mb-0 fw-semibold text-muted">
+                            Blower {{ $i }}
+                          </h6>
+                        </div>
+                        <div class="d-flex flex-column align-items-center">
+                          <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
+                            data-id="{{ $i }}" data-sensor-id="" style="margin:0;">
+                          <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
+                            for="switch-{{ $i }}">
+                            Mati
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  @endfor
+                </div>
+              </div>
+              <div class="mt-4 text-start">
+                <h6 class="fw-bold">Deskripsi</h6>
+                <p class="mb-1">
+                  <span class="badge bg-success"
+                    style="width:15px; height:15px; background-image: linear-gradient(to right, #A9DA2E, #6EA017); border-color: #A9DA2E;">&nbsp;</span>
+                  Blower Menyala
+                </p>
+                <p class="mb-1">
+                  <span class="badge bg-secondary me-2" style="width:15px; height:15px;">&nbsp;</span>
+                  Blower Mati
+                </p>
+                <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
+            <div class="card-header bg-transparent border-0 position-relative text-center">
+              <div>
+                <h5 class="card-title mb-1 mt-2 fw-semibold">Atur parameter threshold</h5>
+                <small class="text-muted">Atur suhu dan kelembaban</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="container">
+                <div class="row mb-3 justify-content-center">
+                  <div class="col-md-3 mb-2">
+                    <div class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
+                      style="background:#f8f9fa;">
+                      <div class="d-flex flex-column align-items-center mb-3">
+                        <i id="suhu-min" class="bi bi-fan mb-2"
+                          style="font-size: 2rem; color: gray;"></i>
+                        <h6 class="mb-0 fw-semibold text-muted">
+                          Suhu Minimal
+                        </h6>
+                      </div>
+                      <div class="d-flex flex-column align-items-center">
+                        <input class="form-control mb-2" type="number" id="suhu-min-input" disabled style="margin:0;">
+                        <label class="form-label fw-semibold text-muted blower-label small mb-0" for="suhu-min-input">
+                          Input suhu min
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 mb-2">
+                    <div class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
+                      style="background:#f8f9fa;">
+                      <div class="d-flex flex-column align-items-center mb-3">
+                        <i id="suhu-min" class="bi bi-fan mb-2"
+                          style="font-size: 2rem; color: gray;"></i>
+                        <h6 class="mb-0 fw-semibold text-muted">
+                          Suhu Maksimal
+                        </h6>
+                      </div>
+                      <div class="d-flex flex-column align-items-center">
+                        <input class="form-control mb-2" type="number" id="suhu-max-input" disabled style="margin:0;">
+                        <label class="form-label fw-semibold text-muted blower-label small mb-0" for="suhu-max-input">
+                          Input suhu max
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 mb-2">
+                    <div class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
+                      style="background:#f8f9fa;">
+                      <div class="d-flex flex-column align-items-center mb-3">
+                        <i id="suhu-min" class="bi bi-fan mb-2"
+                          style="font-size: 2rem; color: gray;"></i>
+                        <h6 class="mb-0 fw-semibold text-muted">
+                          Kelembaban Minimal
+                        </h6>
+                      </div>
+                      <div class="d-flex flex-column align-items-center">
+                        <input class="form-control mb-2" type="number" id="kelembaban-min-input" disabled style="margin:0;">
+                        <label class="form-label fw-semibold text-muted blower-label small mb-0" for="kelembaban-min-input">
+                          Input kelembaban min
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 mb-2">
+                    <div class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
+                      style="background:#f8f9fa;">
+                      <div class="d-flex flex-column align-items-center mb-3">
+                        <i id="suhu-min" class="bi bi-fan mb-2"
+                          style="font-size: 2rem; color: gray;"></i>
+                        <h6 class="mb-0 fw-semibold text-muted">
+                          Kelembaban Maksimal
+                        </h6>
+                      </div>
+                      <div class="d-flex flex-column align-items-center">
+                        <input class="form-control mb-2" type="number" id="kelembaban-max-input" disabled style="margin:0;">
+                        <label class="form-label fw-semibold text-muted blower-label small mb-0" for="kelembaban-max-input">
+                          Input kelembaban max
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4">
+                <button class="btn btn-sm btn-warning" style="color: white !important" onclick="editThreshold()" id="save-threshold-btn">Edit Pengaturan</button>
+                <button class="btn btn-sm btn-success" id="toggle-active-threshold-btn" onclick="toggleThreshold()">Status: Aktif</button>
+              </div>
+              <div class="mt-4 text-start">
+                <h6 class="fw-bold">Deskripsi</h6>
+                <small class="text-muted">*Atur suhu dan kelembaban untuk menghidupkan blower secara otomatis jika kondisi terpenuhi</small>
+                <div></div>
+                <small class="text-muted">*Ketika status aktif, blower akan hidup atau mati secara otomatis sesuai threshold yang sudah ditentukan</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
         <div class="col-lg-12 mb-4">
           <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
@@ -172,59 +324,6 @@
         </div>
       </div>
 
-    <div class="row mt-4">
-  <div class="col-12">
-    <div class="card border-0 shadow-sm h-100" style="border-radius:18px;">
-      <div class="card-header bg-transparent border-0 position-relative text-center">
-        <div>
-          <h5 class="card-title mb-1 mt-2 fw-semibold">Daftar Blower</h5>
-          <small class="text-muted">Indikator Operasional Blower (Total 2 Unit Aktif)</small>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="container">
-          <div class="row mb-3 justify-content-center">
-            @for ($i = 1; $i <= 2; $i++)
-              <div class="col-md-4 mb-2">
-                <div class="d-flex flex-column justify-content-between align-items-center py-3 px-2 border rounded-3 shadow-sm h-100"
-                  style="background:#f8f9fa;">
-                  <div class="d-flex flex-column align-items-center mb-3">
-                    <i id="blower-{{ $i }}" class="bi bi-fan mb-2"
-                      style="font-size: 2rem; color: gray;"></i>
-                    <h6 class="mb-0 fw-semibold text-muted">
-                      Blower {{ $i }}
-                    </h6>
-                  </div>
-                  <div class="d-flex flex-column align-items-center">
-                    <input class="form-check-input blower-switch mb-2" type="checkbox" id="switch-{{ $i }}"
-                      data-id="{{ $i }}" data-sensor-id="" style="margin:0;">
-                    <label class="form-check-label fw-semibold text-muted blower-label small mb-0"
-                      for="switch-{{ $i }}">
-                      Mati
-                    </label>
-                  </div>
-                </div>
-              </div>
-            @endfor
-          </div>
-        </div>
-        <div class="mt-4 text-start">
-          <h6 class="fw-bold">Deskripsi</h6>
-          <p class="mb-1">
-            <span class="badge bg-success"
-              style="width:15px; height:15px; background-image: linear-gradient(to right, #A9DA2E, #6EA017); border-color: #A9DA2E;">&nbsp;</span>
-            Blower Menyala
-          </p>
-          <p class="mb-1">
-            <span class="badge bg-secondary me-2" style="width:15px; height:15px;">&nbsp;</span>
-            Blower Mati
-          </p>
-          <small class="text-muted">*Gunakan tombol untuk menyalakan atau mematikan blower</small>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
       <style>
         .form-check-input {
           width: 3rem;
@@ -285,11 +384,119 @@
           }
         }
       </style>
+    </div>
   </main>
 @endsection
 
 @section('script')
   <script>
+
+    function getThreshold() {
+      $.get('{{ route('ruang-pengeringan.getThreshold', ['93b4a0ae-90bd-4c77-89d5-5544eaefa0c7']) }}',
+        function(response) {
+          console.log('Threshold Response:', response);
+          if (response.status && response.data) {
+            document.getElementById('suhu-min-input').value = response.data.min_suhu;
+            document.getElementById('suhu-max-input').value = response.data.max_suhu;
+            document.getElementById('kelembaban-min-input').value = response.data.min_kelembaban;
+            document.getElementById('kelembaban-max-input').value = response.data.max_kelembaban;
+            if (response.data.mode_pengeringan == 1) {
+              document.getElementById('toggle-active-threshold-btn').textContent = 'Status: Aktif';
+              document.getElementById('toggle-active-threshold-btn').classList.remove('btn-danger');
+              document.getElementById('toggle-active-threshold-btn').classList.add('btn-success');
+            } else {
+              document.getElementById('toggle-active-threshold-btn').textContent = 'Status: Nonaktif';
+              document.getElementById('toggle-active-threshold-btn').classList.remove('btn-success');
+              document.getElementById('toggle-active-threshold-btn').classList.add('btn-danger');
+            }
+            console.log('✓ Threshold loaded');
+          }
+        }
+      ).fail(function(xhr) {
+        console.error('Failed to load threshold:', xhr.responseText);
+        showNotification('error', 'Gagal memuat pengaturan threshold');
+      });
+    }
+
+    function toggleThreshold() {
+      const toggleButton = document.getElementById('toggle-active-threshold-btn');
+      const isActive = toggleButton.textContent.includes('Aktif') ? 1 : 0;
+      const newStatus = isActive ? 0 : 1;
+      $.ajax({
+        url: '{{ route('ruang-pengeringan.toggleThreshold', ['93b4a0ae-90bd-4c77-89d5-5544eaefa0c7']) }}',
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+          mode_pengeringan: newStatus
+        },
+        success: function(response) {
+          if (response.status) {
+            showNotification('success', 'Status threshold berhasil diubah');
+            getThreshold();
+          } else {
+            showNotification('error', 'Gagal mengubah status threshold');
+          }
+        },
+        error: function(xhr) {
+          console.error('✗ Error updating threshold status:', xhr.responseText);
+          showNotification('error', 'Gagal mengubah status threshold');
+        }
+      });
+    }
+    
+    function editThreshold() {
+      const suhuMinInput = document.getElementById('suhu-min-input');
+      const suhuMaxInput = document.getElementById('suhu-max-input');
+      const kelembabanMinInput = document.getElementById('kelembaban-min-input');
+      const kelembabanMaxInput = document.getElementById('kelembaban-max-input');
+      const saveButton = document.getElementById('save-threshold-btn');
+
+      const isDisabled = suhuMinInput.disabled;
+
+      suhuMinInput.disabled = !isDisabled;
+      suhuMaxInput.disabled = !isDisabled;
+      kelembabanMinInput.disabled = !isDisabled;
+      kelembabanMaxInput.disabled = !isDisabled;
+
+      if (isDisabled) {
+        saveButton.textContent = 'Simpan Pengaturan';
+        saveButton.classList.remove('btn-warning');
+        saveButton.classList.add('btn-primary');
+      } else {
+        let formData = new FormData();
+        formData.append('min_suhu', suhuMinInput.value);
+        formData.append('max_suhu', suhuMaxInput.value);
+        formData.append('min_kelembaban', kelembabanMinInput.value);
+        formData.append('max_kelembaban', kelembabanMaxInput.value);
+        $.ajax({
+          url: '{{ route('ruang-pengeringan.updateThreshold', ['93b4a0ae-90bd-4c77-89d5-5544eaefa0c7']) }}',
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            if (response.status) {
+              showNotification('success', 'Pengaturan threshold berhasil disimpan');
+            } else {
+              showNotification('error', 'Gagal menyimpan pengaturan threshold');
+            }
+            getThreshold();
+          },
+          error: function(xhr) {
+            console.error('✗ Error updating threshold:', xhr.responseText);
+            showNotification('error', 'Gagal menyimpan pengaturan threshold');
+          }
+        });
+        saveButton.textContent = 'Edit Pengaturan';
+        saveButton.classList.remove('btn-primary');
+        saveButton.classList.add('btn-warning');
+      }
+    }
     
     // Fungsi untuk load semua status blower dari database
     function loadAllBlowerStatus() {
@@ -777,6 +984,7 @@
       initializeCharts();
       setInterval(getDataSensor, 60000);
       getDataSensor();
+      getThreshold();
       console.log('=== Initialization Complete ===');
     });
   </script>

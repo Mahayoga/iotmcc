@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GudangModel;
+use App\Models\ModePengeringanModel;
 use App\Models\NilaiSensorModel;
 use App\Models\SensorModel;
 use App\Models\ModeBlowerModel;
@@ -13,6 +14,69 @@ use Illuminate\Support\Carbon;
 class RuanganPengeringanController extends Controller
 {
   public $LIMIT = 50;
+
+  public function getThreshold(string $id)
+  {
+    $modePengeringan = ModePengeringanModel::where('id_ruangan', $id)->first();
+    if (!$modePengeringan) {
+      return response()->json([
+        'status' => false,
+        'msg' => 'Mode pengeringan tidak ditemukan untuk ruangan ini'
+      ], 404);
+    }
+
+    return response()->json([
+      'status' => true,
+      'data' => $modePengeringan
+    ]);
+  }
+
+  public function updateThreshold(Request $request, string $id)
+  {
+    $validated = $request->validate([
+      'min_suhu' => 'required|numeric',
+      'max_suhu' => 'required|numeric',
+      'min_kelembaban' => 'required|numeric',
+      'max_kelembaban' => 'required|numeric',
+    ]);
+
+    $modePengeringan = ModePengeringanModel::where('id_ruangan', $id)->first();
+    if (!$modePengeringan) {
+      return response()->json([
+        'status' => false,
+        'msg' => 'Mode pengeringan tidak ditemukan untuk ruangan ini'
+      ], 404);
+    }
+
+    $modePengeringan->update($validated);
+
+    return response()->json([
+      'status' => true,
+      'msg' => 'Threshold pengeringan berhasil diperbarui',
+      'data' => $modePengeringan
+    ]);
+  }
+
+  public function toggleThreshold(Request $request, string $id)
+  {
+    $modePengeringan = ModePengeringanModel::where('id_ruangan', $id)->first();
+    if (!$modePengeringan) {
+      return response()->json([
+        'status' => false,
+        'msg' => 'Mode pengeringan tidak ditemukan untuk ruangan ini'
+      ], 404);
+    }
+
+    $modePengeringan->update([
+      'mode_pengeringan' => $request->mode_pengeringan
+    ]);
+
+    return response()->json([
+      'status' => true,
+      'msg' => 'Status threshold pengeringan berhasil diubah',
+      'data' => $modePengeringan
+    ]);
+  }
 
   public function getDataSensor(string $id)
   {
