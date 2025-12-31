@@ -59,7 +59,8 @@ class NilaiSensorAPIController extends Controller
             $nilai = (float) $request->nilai_sensor;
 
             if($nilai < 0 || $nilai > 100){
-                $nilai = 0;
+                $dataSebelumnya = NilaiSensorModel::where('id_sensor', $request->id_sensor)->orderBy('created_at', 'desc');
+                $nilai = $dataSebelumnya->first()->nilai_sensor ?? 0;
             }
 
             NilaiSensorModel::create([
