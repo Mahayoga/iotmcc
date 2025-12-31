@@ -58,13 +58,9 @@ class NilaiSensorAPIController extends Controller
             $flagSensor = Str::lower($dataSensor->flag_sensor ?? '');
             $nilai = (float) $request->nilai_sensor;
 
-            if($nilai < 0 || $nilai > 100){
-                $nilai = 0;
-            }
-
             NilaiSensorModel::create([
                 'id_sensor' => $request->id_sensor,
-                'nilai_sensor' => $nilai,
+                'nilai_sensor' => $request->nilai_sensor,
                 'rssi' => $request->rssi,
                 'snr' => $request->snr,
             ]);
