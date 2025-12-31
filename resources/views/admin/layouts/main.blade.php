@@ -8,6 +8,8 @@
     <meta name="description" content="Modern Bootstrap 5 Admin Template - Clean, responsive dashboard">
     <meta name="keywords" content="bootstrap, admin, dashboard, template, modern, responsive">
     <meta name="author" content="Bootstrap Admin Template">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Modern Bootstrap Admin Template">
@@ -34,11 +36,14 @@
     <!-- css -->
     <link rel="stylesheet" href="{{ asset('assets/admin/css/main-2.css') }}">
 
-
     <!-- PWA Manifest -->
     <link rel="manifest" href="{{ asset('assets/admin/manifest-DTaoG9pG.json') }}">
     <script type="module" crossorigin src="{{ asset('assets/admin/main-f0Mg-34g.js') }}"></script>
     <link rel="stylesheet" crossorigin href="{{ asset('assets/admin/main-DLfE7m78.css') }}">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 
 <body data-page="dashboard" class="admin-layout">

@@ -8,9 +8,12 @@ use App\Models\NilaiTimerModel;
 use App\Models\ModeTimerModel;
 use App\Models\SensorModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class AlatBleachingController extends Controller
 {
+    public $LIMIT = 50;
+
     public function getDataSensor(string $id)
     {
         $dataSensor = [];
@@ -20,28 +23,81 @@ class AlatBleachingController extends Controller
         $nilaiSensorTemp = [];
         $waktuSensorTemp = [];
 
+        $selectRawQuery = "
+            DATE(created_at) as tgl,
+            HOUR(created_at) as jam,
+            FLOOR(MINUTE(created_at)/15) as menit_group,
+            AVG(nilai_sensor) as avg_nilai,
+            MIN(created_at) as waktu_asli,
+            STDDEV_SAMP(nilai_sensor) as stddev,
+            MIN(nilai_sensor) as min_nilai,
+            MAX(nilai_sensor) as max_nilai
+        ";
+
+        $currentSuhu = null;
+
         foreach ($dataRuangan as $value) {
             if ($value->tipe_ruangan == 1) {
                 $statusRuangan = $value->status_ruangan;
                 foreach ($value->getDataSensor as $value2) {
-                    if ($value2->flag_sensor == "timer_1") {
-                        break;
+                    if (str_contains($value2->flag_sensor, 'timer')) {
+                        continue;
                     }
-                    foreach ($value2->getDataNilaiSensor()->orderBy('created_at', 'desc')->limit(11)->get() as $value3) {
-                        $nilaiSensorTemp[] = $value3->nilai_sensor;
-                        $waktuSensorTemp[] = date('G:i:s', $value3->created_at->timestamp);
+                    $dateNow = '%' . date("Y-m-d") . '%';
+                    $isEmpty = false;
+                    if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
+                        array_push($dataSensor, [
+                            'type' => 'sensor',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => [],
+                            'avg' => 0,
+                        ]);
+                        array_push($dataWaktuSensor, [
+                            'type' => 'waktu',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => []
+                        ]);
+                        $isEmpty = true;
                     }
-                    array_push($dataSensor, [
-                        'type' => 'sensor',
-                        'flag_sensor' => $value2->flag_sensor,
-                        'value' => $nilaiSensorTemp,
-                        'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
-                    ]);
-                    array_push($dataWaktuSensor, [
-                        'type' => 'waktu',
-                        'flag_sensor' => $value2->flag_sensor,
-                        'value' => $waktuSensorTemp
-                    ]);
+
+                    if (!$isEmpty) {
+                        foreach ($value2->getDataNilaiSensor()
+                            ->selectRaw($selectRawQuery)
+                            ->where('created_at', 'LIKE', $dateNow)
+                            ->groupBy('tgl', 'jam', 'menit_group')
+                            ->orderBy('waktu_asli', 'DESC')
+                            ->limit($this->LIMIT)
+                            ->get() as $value3) {
+                            
+                            $nilaiSensorTemp[] = (int) number_format($value3->avg_nilai, 2);
+                            $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
+                        }
+
+                        foreach ($value2->getDataNilaiSensor()
+                            ->where('created_at', 'LIKE', $dateNow)
+                            ->orderBy('created_at', 'DESC')
+                            ->limit(1)
+                            ->get() as $value3) {
+                            
+                            if (str_contains($value2->flag_sensor, 'suhu')) {
+                                $currentSuhu += (int) $value3->nilai_sensor;
+                            }
+                        }
+
+                        array_push($dataSensor, [
+                            'type' => 'sensor',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => $nilaiSensorTemp,
+                            'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
+                        ]);
+
+                        array_push($dataWaktuSensor, [
+                            'type' => 'waktu',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => $waktuSensorTemp
+                        ]);
+                    }
+
                     $nilaiSensorTemp = [];
                     $waktuSensorTemp = [];
                 }
@@ -52,8 +108,60 @@ class AlatBleachingController extends Controller
             'status' => true,
             'dataSensor' => $dataSensor,
             'dataWaktuSensor' => $dataWaktuSensor,
+            'currentSuhu' => $currentSuhu !== null ? number_format($currentSuhu / 2, 2) : 0,
         ]);
+    }
 
+    public function startStopTimer(string $id) {
+        $dataGudang = GudangModel::findOrFail($id);
+        $dataRuangan = $dataGudang->getDataRuangan;
+        $dataTimer = [];
+
+        foreach ($dataRuangan as $ruangan) {
+            if ($ruangan->tipe_ruangan == 1) {
+                foreach ($ruangan->getDataSensor as $sensor) {
+                    if (in_array($sensor->flag_sensor, ['timer_1', 'timer_2'])) {
+                        $nilaiTimer = NilaiTimerModel::where('id_sensor', $sensor->id_sensor)
+                            ->orderBy('created_at', 'desc')->first();
+
+                        $modeTimer = ModeTimerModel::where('id_sensor', $sensor->id_sensor)->first();
+
+                        if($nilaiTimer->flag_timer == 'start') {
+                            $dataTimer = [
+                                'status' => true,
+                                'status_timer' => 'stop',
+                                'sisa_timer' => number_format((float) $nilaiTimer->nilai_timer - microtime(true), 2),
+                            ];
+                            NilaiTimerModel::create([
+                                'flag_timer' => 'stop',
+                                'nilai_timer' => microtime(true),
+                                'id_sensor' => $sensor->id_sensor,
+                                'rssi' => 0,
+                                'snr' => 0,
+                            ]);
+                        } else if($nilaiTimer->flag_timer == 'stop') {
+                            NilaiTimerModel::create([
+                                'flag_timer' => 'start',
+                                'nilai_timer' => microtime(true),
+                                'id_sensor' => $sensor->id_sensor,
+                                'rssi' => 0,
+                                'snr' => 0,
+                            ]);
+                            $dataTimer = [
+                                'status' => true,
+                                'status_timer' => 'start',
+                                'sisa_timer' => number_format((float) $nilaiTimer->nilai_timer - microtime(true), 2),
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $dataTimer,
+        ]);
     }
 
     public function getDataTimer(string $id)
@@ -71,10 +179,38 @@ class AlatBleachingController extends Controller
 
                         $modeTimer = ModeTimerModel::where('id_sensor', $sensor->id_sensor)->first();
 
+                        $sisaTimer = microtime(true) - (float) $nilaiTimer->nilai_timer;
+                        if($nilaiTimer->flag_timer == 'stop') {
+                            $dataTimer[] = [
+                                'flag_timer' => $nilaiTimer->flag_timer,
+                                'nilai_timer' => $nilaiTimer?->nilai_timer ?? 0,
+                                'limit_timer' => $modeTimer?->limit_timer ?? null,
+                                'sisa_timer' => 0,
+                                'updated_at' => $nilaiTimer?->created_at?->format('Y-m-d H:i:s'),
+                            ];
+                            return response()->json([
+                                'status' => true,
+                                'dataTimer' => $dataTimer,
+                            ]);
+                        }
+                        if((float) $sisaTimer > (float) $modeTimer->limit_timer) {
+                            $sisaTimer = 0;
+                            if($nilaiTimer->flag_timer == 'start') {
+                                NilaiTimerModel::create([
+                                    'flag_timer' => 'stop',
+                                    'nilai_timer' => microtime(true),
+                                    'id_sensor' => $sensor->id_sensor,
+                                    'rssi' => 0,
+                                    'snr' => 0,
+                                ]);
+                            }
+                        }
+
                         $dataTimer[] = [
-                            'flag_timer' => $sensor->flag_sensor,
+                            'flag_timer' => $nilaiTimer->flag_timer,
                             'nilai_timer' => $nilaiTimer?->nilai_timer ?? 0,
-                            'limit_timer' => $modeTimer?->limit_timer ?? null,
+                            'limit_timer' => $modeTimer?->limit_timer ?? 0,
+                            'sisa_timer' => $sisaTimer,
                             'updated_at' => $nilaiTimer?->created_at?->format('Y-m-d H:i:s'),
                         ];
                     }
@@ -105,16 +241,8 @@ class AlatBleachingController extends Controller
                         if ($sensor->flag_sensor === $request->flag_sensor) {
                             ModeTimerModel::updateOrCreate(
                                 ['id_sensor' => $sensor->id_sensor],
-                                ['limit_timer' => $request->limit_timer * 60] 
+                                ['limit_timer' => $request->limit_timer * 60]
                             );
-
-                            NilaiTimerModel::create([
-                                'flag_timer' => $request->flag_sensor,
-                                'nilai_timer' => 0,
-                                'id_sensor' => $sensor->id_sensor,
-                                'rssi' => 0,
-                                'snr' => 0,
-                            ]);
 
                             return response()->json([
                                 'status' => true,
@@ -138,57 +266,36 @@ class AlatBleachingController extends Controller
         }
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view("admin.bleaching.index");
     }
-   
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

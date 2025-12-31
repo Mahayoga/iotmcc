@@ -3,9 +3,9 @@
 @section('title', 'Dashboard')
 
 @section('content')
+
   <main class="admin-main">
     <div class="container-fluid p-4 p-lg-5">
-      <!-- Page Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 class="h3 mb-0">Ruangan Fermentasi</h1>
@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      {{-- Rekap Kondisi Ruang Di Gudang --}}
+      <!-- Rekap Suhu & Kelembaban -->
       <div class="row g-4 mb-4">
         <div class="col-12">
           <div class="card border-0 shadow-sm" style="border-radius: 18px;">
@@ -25,7 +25,7 @@
             <div class="card-body">
               <div class="row gy-4">
 
-                <!-- Card Ruang 1 -->
+                <!-- Card Suhu -->
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-1">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -54,7 +54,7 @@
                   </div>
                 </div>
 
-                <!-- Card Ruang 2 -->
+                <!-- Card Kelembaban -->
                 <div class="col-xl-4 col-md-6">
                   <div class="gudang-box gudang-1">
                     <div class="gudang-header d-flex justify-content-between align-items-center">
@@ -88,7 +88,7 @@
         </div>
       </div>
 
-      {{-- Grafik Monitoring Suhu dan Kelembapan --}}
+      <!--Grafik-->
       <div class="row mt-4">
         <!-- Grafik Suhu -->
         <div class="col-lg-12 mb-4">
@@ -102,8 +102,7 @@
             <div class="card-body">
               <div id="chartSuhu"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu">-</span> data terakhir <span id="status-suhu"></span></small>
               </div>
             </div>
           </div>
@@ -121,8 +120,7 @@
             <div class="card-body">
               <div id="chartKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-kelembaban">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-kelembaban">-</span> data terakhir <span id="status-kelembaban"></span></small>
               </div>
             </div>
           </div>
@@ -141,8 +139,7 @@
             <div class="card-body">
               <div id="chartSuhuDanKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu-dan-kelembaban">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-suhu-dan-kelembaban">-</span> data terakhir <span id="status-suhu-dan-kelembaban"></span></small>
               </div>
             </div>
           </div>
@@ -162,8 +159,7 @@
             <div class="card-body">
               <div id="chartStddevSuhu"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-suhu">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-suhu">-</span> data terakhir <span id="status-stddev-suhu"></span></small>
               </div>
             </div>
           </div>
@@ -183,8 +179,7 @@
             <div class="card-body">
               <div id="chartStddevKelembaban"></div>
               <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-kelembaban">-</span> data
-                  terakhir</small>
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span id="total-stddev-kelembaban">-</span> data terakhir <span id="status-stddev-kelembaban"></span></small>
               </div>
             </div>
           </div>
@@ -224,6 +219,50 @@
         markers: {
           size: 5
         },
+        noData: {
+          text: 'Tidak ada data yang masuk untuk ditampilkan hari ini (periksa riwayat data untuk lebih lanjut)',
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#888',
+            fontSize: '16px',
+            fontFamily: 'Helvetica'
+          }
+        }
+      }
+      let options2 = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        series: [{
+          name: '?',
+          data: []
+        }],
+        xaxis: {
+          type: 'datetime',
+          categories: []
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        markers: {
+          size: 5
+        },
+        noData: {
+          text: 'Tidak ada data yang masuk untuk ditampilkan hari ini (periksa riwayat data untuk lebih lanjut)',
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#888',
+            fontSize: '16px',
+            fontFamily: 'Helvetica'
+          }
+        }
       }
       let options2 = {
         chart: {

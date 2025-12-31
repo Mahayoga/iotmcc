@@ -12,9 +12,10 @@
         </div>
       </div>
 
+      <!-- Suhu Rata-rata Card -->
       <div class="row g-4 mb-4">
-        <div class="col-xl-6 col-lg-6 col-md-12">
-          <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
+        <div class="col-12">
+          <div class="card border-0 shadow-sm" style="border-radius: 18px;">
             <div class="card-header bg-transparent border-0">
               <h5 class="card-title mb-1 mt-2">Suhu Rata-Rata</h5>
               <small class="text-muted">Pantauan kondisi suhu alat bleaching</small>
@@ -47,226 +48,240 @@
             </div>
           </div>
         </div>
+      </div>
 
+      <!-- Timer dan Informasi Proses-->
+      <div class="row g-4 mb-4">
         <div class="col-xl-6 col-lg-6 col-md-12">
           <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
-            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
-              <div>
-                <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
-                <small class="text-muted">Perubahan suhu dalam 11 data terakhir</small>
-              </div>
-              <button type="button" class="btn btn-secondary" onclick="resetZoomChart()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset Zoom
-              </button>
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">Timer Bleaching</h5>
+              <small class="text-muted">Hitung mundur proses Bleaching dari database</small>
             </div>
-
-            <div class="card-body">
-              <canvas id="chartSuhu" height="150"></canvas>
-              <div class="p-4">
-                <small class="text-muted">*data yang ditampilkan 11 data terakhir</small>
-              </div>
+            <div class="card-body text-center">
+              <h1 id="timer-display" class="fw-bold display-3 text-danger mb-0">00:00</h1>
+              <small class="text-muted d-block mt-2">Waktu tersisa</small>
+              <button id="start-stop-timer-btn" class="btn btn-success btn-sm mt-3">
+                <i class="bi bi-play-fill"></i> <span id="start-stop-text-btn">Mulai Timer</span>
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- Timer dan informasi proses -->
-        <div class="row g-4 mb-4">
-          <div class="col-xl-6 col-lg-6 col-md-12">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
-              <div class="card-header bg-transparent border-0">
-                <h5 class="card-title mb-1 mt-2">Timer Bleaching</h5>
-                <small class="text-muted">Hitung mundur proses Bleaching dari database</small>
-              </div>
-              <div class="card-body text-center">
-                <h1 id="timer-display" class="fw-bold display-3 text-danger mb-0">00:00</h1>
-                <small class="text-muted d-block mt-2">Waktu tersisa</small>
-              </div>
+        <!-- Informasi Proses -->
+        <div class="col-xl-6 col-lg-6 col-md-12">
+          <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
+            <div class="card-header bg-transparent border-0">
+              <h5 class="card-title mb-1 mt-2">Informasi Proses</h5>
+              <small class="text-muted">Status proses bleaching otomatis</small>
             </div>
-          </div>
-
-          <!-- Informasi Proses -->
-          <div class="col-xl-6 col-lg-6 col-md-12">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 18px;">
-              <div class="card-header bg-transparent border-0">
-                <h5 class="card-title mb-1 mt-2">Informasi Proses</h5>
-                <small class="text-muted">Status proses bleaching otomatis</small>
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-6">
-                    <p><b>Waktu Mulai:</b> <span id="waktu-mulai">-</span></p>
-                    <p><b>Perkiraan Selesai:</b> <span id="waktu-selesai">-</span></p>
-                    <p><b>Status:</b> <span id="status-proses" class="badge bg-secondary">Menunggu</span></p>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <p><b>Waktu Mulai:</b> <span id="waktu-mulai">-</span></p>
+                  <p><b>Perkiraan Selesai:</b> <span id="waktu-selesai">-</span></p>
+                  <p><b>Status:</b> <span id="status-proses" class="badge bg-secondary">Menunggu</span></p>
+                </div>
+                <div class="col-md-6">
+                  <label for="durasi-input" class="form-label mb-2 fw-bold">Durasi Bleaching (menit)</label>
+                  <div class="input-group">
+                    <input type="number" id="durasi-input" class="form-control" placeholder="Masukkan durasi" min="1">
+                    <button id="set-timer-btn" class="btn btn-primary">
+                      <i class="bi bi-clock-fill"></i> Set Timer
+                    </button>
                   </div>
-                  <div class="col-md-6">
-                    <label for="durasi-input" class="form-label mb-2 fw-bold">Durasi Bleaching (menit)</label>
-                    <div class="input-group">
-                      <input type="number" id="durasi-input" class="form-control" placeholder="Masukkan durasi" min="1">
-                      <button id="set-timer-btn" class="btn btn-primary">
-                        <i class="bi bi-clock-fill"></i> Set Timer
-                      </button>
-                    </div>
-                    <small class="text-muted d-block mt-1">Timer akan berjalan otomatis dari database</small>
-                  </div>
+                  <small class="text-muted d-block mt-1">Timer akan berjalan otomatis dari database</small>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
+      <!-- Grafik Suhu -->
+      <div class="row mt-4">
+        <div class="col-lg-12 mb-4">
+          <div class="card border-0 shadow-sm" style="border-radius:18px; background:#ffffff;">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
+                <small class="text-muted">Perubahan Suhu di Alat Bleaching (Sensor 1 & 2)</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="chartSuhu"></div>
+              <div class="p-4">
+                <small class="text-muted">*data yang ditampilkan adalah rata rata selama 15 menit dengan total <span
+                    id="total-suhu">-</span> data terakhir <span id="status-suhu"></span></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 @endsection
 
 @section('script')
-
   <script>
 
-    function resetZoomChart() {
-      suhuChart.resetZoom();
-    }
+    // inisialisasi grafik
+    let apexSuhu = null;
 
-    const ctxSuhu = document.getElementById('chartSuhu')?.getContext('2d');
-
-    let suhuChart = new Chart(ctxSuhu, {
-      type: 'line',
-      data: {
-        datasets: [{
-          label: "Suhu (°C)",
-          data: [],
-          backgroundColor: '#C8F76A33',
-          borderColor: '#C8F76A',
-          pointBorderColor: '#0f172abf',
-          fill: true
+    function initializeCharts() {
+      let options = {
+        chart: {
+          type: 'line',
+          height: '350px',
+        },
+        series: [{
+          name: 'Suhu',
+          data: []
         }],
-        labels: []
-      },
-
-      options: {
-        responsive: true,
-        scales: {
-          y: { title: { display: true, text: 'Suhu (°C)', color: '#888' }, beginAtZero: true },
-          x: { title: { display: true, text: 'Waktu', color: '#888' } }
+        xaxis: {
+          categories: []
         },
-        animation: {
-          duration: 800,
+        stroke: {
+          curve: 'smooth',
+          width: 3
         },
-        plugins: {
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              pinch: {
-                enabled: true
-              },
-              drag: {
-                enabled: true
-              },
-              mode: 'xy',
-            }
+        markers: {
+          size: 5
+        },
+        dataLabels: {
+          enabled: false
+        },
+        colors: ['#00E396'],
+        legend: {
+          position: 'bottom',
+          horizontalAlign: 'center',
+          offsetY: 0,
+          fontSize: '14px',
+          fontWeight: 500,
+          markers: {
+            width: 12,
+            height: 12,
+            radius: 12,
+          },
+          itemMargin: {
+            horizontal: 15,
+            vertical: 5
+          }
+        },
+        tooltip: {
+          shared: true,
+          intersect: false,
+        },
+        noData: {
+          text: 'Tidak ada data yang masuk untuk ditampilkan hari ini (periksa riwayat data untuk lebih lanjut)',
+          align: 'center',
+          verticalAlign: 'middle',
+          style: {
+            color: '#888',
+            fontSize: '16px'
           }
         }
-      }
-    });
+      };
+
+      apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
+      apexSuhu.render();
+      apexSuhu.updateSeries([]);
+    }
 
     function getDataSensor() {
-      $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {
+      $.get('{{ route('alat-bleaching.getDataSensor', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', {},
+        function (data) {
+          if (data.status == true) {
+            let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
+            apexSuhu.updateSeries([]);
+            $('#suhu-rata-rata').text(data.currentSuhu);
+            let rataRataSuhu = parseFloat(data.currentSuhu);
+            if (rataRataSuhu > 20 && rataRataSuhu < 30) {
+              $('#status-suhu-ruangan').text('Normal');
+              classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+              classListSuhu.add('text-success');
+            } else if (rataRataSuhu > 30 && rataRataSuhu < 50) {
+              $('#status-suhu-ruangan').text('Peringatan');
+              classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+              classListSuhu.add('text-warning');
+            } else if (rataRataSuhu > 50) {
+              $('#status-suhu-ruangan').text('Bahaya');
+              classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+              classListSuhu.add('text-danger');
+            } else {
+              $('#status-suhu-ruangan').text('Peringatan');
+              classListSuhu.remove('text-success', 'text-warning', 'text-danger');
+              classListSuhu.add('text-warning');
+            }
 
-      }, function (data, status) {
-        let classListSuhu = document.getElementById('status-suhu-ruangan').classList;
-        let suhuTotal = 0;
-        let totalDataSuhu = 0;
-        data.dataSensor.forEach(sensor => {
-          if (sensor.flag_sensor.includes('suhu')) {
-            sensor.value.forEach(v => {
-              suhuTotal += parseFloat(v);
-              totalDataSuhu++;
+            data.dataSensor.forEach(element => {
+              $('#total-suhu').text(element.value.length);
+              if (element.flag_sensor == 'suhu_1') {
+                let dataGrafik = [];
+                data.dataWaktuSensor.forEach(w => {
+                  if (w.flag_sensor == 'suhu_1') {
+                    w.value.forEach(waktu => {
+                      dataGrafik.push({
+                        x: waktu,
+                        y: element.value[dataGrafik.length]
+                      });
+                    });
+                  }
+                });
+
+                apexSuhu.appendSeries({
+                  name: 'Suhu 1 (°C)',
+                  data: dataGrafik,
+                  color: '#00E396',
+                });
+
+              } else if (element.flag_sensor == 'suhu_2') {
+
+                let dataGrafik = [];
+                data.dataWaktuSensor.forEach(w => {
+                  if (w.flag_sensor == 'suhu_2') {
+                    w.value.forEach(waktu => {
+                      dataGrafik.push({
+                        x: waktu,
+                        y: element.value[dataGrafik.length]
+                      });
+                    });
+                  }
+                });
+
+                apexSuhu.appendSeries({
+                  name: 'Suhu 2 (°C)',
+                  data: dataGrafik,
+                  color: '#008FFB',
+                })
+              }
             });
           }
         });
-
-        let rataRataSuhu = (suhuTotal / totalDataSuhu).toFixed(2);
-        $('#suhu-rata-rata').text(rataRataSuhu);
-
-        if (rataRataSuhu > 20 && rataRataSuhu < 30) {
-          $('#status-suhu-ruangan')[0].innerHTML = 'Normal';
-          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-          classListSuhu.add('text-success');
-        } else if (rataRataSuhu > 30 && rataRataSuhu < 50) {
-          $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-          classListSuhu.add('text-warning');
-        } else if (rataRataSuhu > 50 && rataRataSuhu < 100) {
-          $('#status-suhu-ruangan')[0].innerHTML = 'Bahaya';
-          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-          classListSuhu.add('text-danger');
-        } else {
-          $('#status-suhu-ruangan')[0].innerHTML = 'Peringatan';
-          classListSuhu.remove('text-success', 'text-warning', 'text-danger');
-          classListSuhu.add('text-warning');
-        }
-
-        let suhuData = data.dataSensor.find(e => e.flag_sensor === 'suhu_1');
-        let waktuData = data.dataWaktuSensor.find(e => e.flag_sensor === 'suhu_1');
-
-        if (suhuData && waktuData) {
-          suhuChart.data.labels = waktuData.value.reverse();
-          suhuChart.data.datasets[0].data = suhuData.value.reverse().map(v => parseFloat(v));
-          suhuChart.update();
-        }
-      });
     }
 
-    //rada ngawur
-   function getDataTimer() {
+    function getDataTimer() {
       $.get('{{ route('alat-bleaching.getDataTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}', function (res) {
-        if (res.status && res.dataTimer.length > 0) {
-          let timer = res.dataTimer[0];
-          const nilai = parseInt(timer.nilai_timer);
-          const limit = parseInt(timer.limit_timer);
-          const sisa = Math.max(limit - nilai, 0);
-          
-          updateDisplay(sisa);
-
-          if (limit > 0) {
-            if (sisa <= 0) {
-              $('#status-proses')
-                .text('Selesai ✅')
-                .removeClass()
-                .addClass('badge bg-success');
-            } else {
-              $('#status-proses')
-                .text('Berlangsung ⏳')
-                .removeClass()
-                .addClass('badge bg-warning text-dark');
-            }
-
-            if (timer.updated_at) {
-              const waktuMulai = new Date(timer.updated_at);
-              const waktuSelesai = new Date(waktuMulai.getTime() + limit * 1000);
-              $('#waktu-mulai').text(waktuMulai.toLocaleTimeString('id-ID'));
-              $('#waktu-selesai').text(waktuSelesai.toLocaleTimeString('id-ID'));
-            }
-          } else {
-            // Tidak ada timer yang diset
-            $('#status-proses')
-              .text('Menunggu')
-              .removeClass()
-              .addClass('badge bg-secondary');
+        // console.log(res);
+        if (res.status) {
+          let data = res.dataTimer[0];
+          updateDisplay(parseInt(data.limit_timer) - parseInt(data.sisa_timer));
+          if (data.flag_timer == 'start') {
+            let startTime = new Date(parseInt(data.nilai_timer) * 1000);
+            let stopTime = new Date((parseInt(data.nilai_timer) + parseInt(data.limit_timer)) * 1000);
+            $('#waktu-mulai').text(startTime.toLocaleTimeString('id-ID'));
+            $('#waktu-selesai').text(stopTime.toLocaleTimeString('id-ID'));
+            $('#status-proses').text('Masih Berlangsung!').removeClass().addClass('badge bg-warning text-dark');
+            $('#start-stop-text-btn').text('Stop Timer');
+            $('#start-stop-timer-btn').removeClass().addClass('btn btn-danger btn-sm mt-3');
+          } else if (data.flag_timer == 'stop') {
             $('#waktu-mulai').text('-');
             $('#waktu-selesai').text('-');
+            $('#status-proses').text('Selesai!').removeClass().addClass('badge bg-success');
+            $('#start-stop-text-btn').text('Mulai Timer');
+            $('#start-stop-timer-btn').removeClass().addClass('btn btn-success btn-sm mt-3');
           }
-        } else {
-          // Tidak ada data
-          updateDisplay(0);
-          $('#waktu-mulai').text('-');
-          $('#waktu-selesai').text('-');
-          $('#status-proses')
-            .text('Menunggu')
-            .removeClass()
-            .addClass('badge bg-secondary');
         }
-      }).fail(function (xhr, status, error) {
-        console.error('Gagal mengambil data timer:', error);
       });
     }
 
@@ -276,49 +291,49 @@
       $('#timer-display').text(`${m}:${s}`);
     }
 
+    $('#start-stop-timer-btn').on('click', function () {
+      $.post('{{ route('alat-bleaching.startStopLimitTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}',
+        {
+          _token: '{{ csrf_token() }}'
+        }, function (data) {
+          console.log(data);
+          // if() {
+
+          // }
+        });
+    });
+
     $('#set-timer-btn').on('click', function () {
       const durasiMenit = parseInt($('#durasi-input').val());
-      
       if (isNaN(durasiMenit) || durasiMenit <= 0) {
         alert('Masukkan durasi yang valid (lebih dari 0 menit)');
         return;
       }
-
-    
       $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
 
-      $.ajax({
-        url: '{{ route('alat-bleaching.setLimitTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}',
-        method: 'POST',
-        data: {
+      $.post('{{ route('alat-bleaching.setLimitTimer', ['11dc76a4-3c99-4563-9bbe-e1916a4a4ff2']) }}',
+        {
+          _token: '{{ csrf_token() }}',
           limit_timer: durasiMenit,
-          flag_sensor: 'timer_1', 
-          _token: '{{ csrf_token() }}'
+          flag_sensor: 'timer_1'
         },
-        success: function (response) {
-          if (response.status) {
-            alert('Timer berhasil diset! Timer akan berjalan otomatis.');
-            $('#durasi-input').val('');
-            
-            getDataTimer();
+        function (data) {
+          if (data.status) {
+            alert('Durasi timer berhasil diset!');
           } else {
-            alert('Gagal set timer: ' + response.message);
+            alert('Gagal menyet durasi timer!');
           }
-        },
-        error: function (xhr, status, error) {
-          console.error('Error:', error);
-          alert('Terjadi kesalahan saat set timer');
-        },
-        complete: function () {
           $('#set-timer-btn').prop('disabled', false).html('<i class="bi bi-clock-fill"></i> Set Timer');
+          $('#durasi-input').val('');
         }
-      });
+      );
     });
 
-    setInterval(getDataSensor, 1000);
-    setInterval(getDataTimer, 1000);
-    
+    initializeCharts();
     getDataSensor();
     getDataTimer();
+    setInterval(getDataSensor, 60000);
+    setInterval(getDataTimer, 1000);
+
   </script>
 @endsection

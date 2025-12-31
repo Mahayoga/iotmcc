@@ -56,34 +56,50 @@ class RuanganFermentasiController extends Controller
                 $statusRuangan = $value->status_ruangan;
                 foreach($value->getDataSensor as $value2) {
                     $dateNow = '%' . date("Y-m-d") . '%';
+                    $isEmpty = false;
                     if($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
-                        $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->limit(1)->get();
-                        $dateNow = '%' . date('Y-m-d', Carbon::parse($temp[0]->created_at)->timestamp) . '%';
+                        // $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->limit(1)->get();
+                        // $dateNow = '%' . date('Y-m-d', Carbon::parse($temp[0]->created_at)->timestamp) . '%';
+                        array_push($dataSensor, [
+                            'type' => 'sensor',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => [],
+                            'avg' => 0,
+                            'stddev' => [],
+                        ]);
+                        array_push($dataWaktuSensor, [
+                            'type' => 'waktu',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => []
+                        ]);
+                        $isEmpty = true;
                     }
-                    foreach($value2->getDataNilaiSensor()->selectRaw($selectRawQuery)->where('created_at', 'LIKE', $dateNow)->groupBy('tgl', 'jam', 'menit_group')->orderBy('waktu_asli', 'DESC')->limit($this->LIMIT)->get() as $value3) {
-                        $nilaiSensorTemp[] = number_format($value3->avg_nilai, 2);
-                        $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
-                        $stddevTemp[] = [Carbon::parse($value3->waktu_asli)->valueOf(), number_format($value3->stddev, 2)];
-                    }
-                    foreach($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->orderBy('created_at', 'DESC')->limit(1)->get() as $value3) {
-                        if(str_contains($value2->flag_sensor, 'suhu')) {
-                            $currentSuhu += (int) $value3->nilai_sensor;
-                        } else if(str_contains($value2->flag_sensor, 'kelembaban')) {
-                            $currentKelembaban += (int) $value3->nilai_sensor;
+                    if(!$isEmpty) {
+                        foreach($value2->getDataNilaiSensor()->selectRaw($selectRawQuery)->where('created_at', 'LIKE', $dateNow)->groupBy('tgl', 'jam', 'menit_group')->orderBy('waktu_asli', 'DESC')->limit($this->LIMIT)->get() as $value3) {
+                            $nilaiSensorTemp[] = (int) number_format($value3->avg_nilai, 2);
+                            $waktuSensorTemp[] = date('G:i', Carbon::parse($value3->waktu_asli)->timestamp);
+                            $stddevTemp[] = [Carbon::parse($value3->waktu_asli)->valueOf(), number_format($value3->stddev, 2)];
                         }
+                        foreach($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->orderBy('created_at', 'DESC')->limit(1)->get() as $value3) {
+                            if(str_contains($value2->flag_sensor, 'suhu')) {
+                                $currentSuhu += (int) $value3->nilai_sensor;
+                            } else if(str_contains($value2->flag_sensor, 'kelembaban')) {
+                                $currentKelembaban += (int) $value3->nilai_sensor;
+                            }
+                        }
+                        array_push($dataSensor, [
+                            'type' => 'sensor',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => $nilaiSensorTemp,
+                            'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
+                            'stddev' => $stddevTemp,
+                        ]);
+                        array_push($dataWaktuSensor, [
+                            'type' => 'waktu',
+                            'flag_sensor' => $value2->flag_sensor,
+                            'value' => $waktuSensorTemp
+                        ]);
                     }
-                    array_push($dataSensor, [
-                        'type' => 'sensor',
-                        'flag_sensor' => $value2->flag_sensor,
-                        'value' => $nilaiSensorTemp,
-                        'avg' => number_format(array_sum($nilaiSensorTemp) / count($nilaiSensorTemp), 1),
-                        'stddev' => $stddevTemp,
-                    ]);
-                    array_push($dataWaktuSensor, [
-                        'type' => 'waktu',
-                        'flag_sensor' => $value2->flag_sensor,
-                        'value' => $waktuSensorTemp
-                    ]);
                     $nilaiSensorTemp = [];
                     $waktuSensorTemp = [];
                     $stddevTemp = [];
@@ -95,8 +111,8 @@ class RuanganFermentasiController extends Controller
             'status' => true,
             'dataSensor' => $dataSensor,
             'dataWaktuSensor' => $dataWaktuSensor,
-            'currentSuhu' => number_format($currentSuhu / 2, 2),
-            'currentKelembaban' => number_format($currentKelembaban / 2, 2)
+            'currentSuhu' => $currentSuhu !== null ? number_format($currentSuhu / 2, 2) : 0,
+            'currentKelembaban' => $currentKelembaban !== null ? number_format($currentKelembaban / 2, 2) : 0,
         ]);
 
     }
