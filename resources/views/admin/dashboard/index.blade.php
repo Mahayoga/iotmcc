@@ -10,6 +10,16 @@
         <div>
           <h1 class="h3 mb-0">Dashboard</h1>
           <p class="text-muted mb-0">Rekap Gudang Vanili Agrofilia Permata</p>
+          <p class="text-info small mb-0">
+            <i class="bi bi-info-circle me-1"></i>
+            Data ditampilkan berdasarkan pembacaan terbaru dari sensor
+          </p>
+        </div>
+        <div class="text-end">
+          <div class="badge bg-light text-dark border px-3 py-2">
+            <i class="bi bi-clock-history me-2"></i>
+            Data Terbaru: {{ $latestDates['overall_with_time'] ?? 'Belum ada data' }}
+          </div>
         </div>
       </div>
 
@@ -21,6 +31,12 @@
               <div>
                 <h5 class="card-title mb-1 mt-2">Rekap Ruang Gudang</h5>
                 <small class="text-muted">Pantauan Kondisi di Setiap Ruang Gudang Vanili</small>
+              </div>
+              <div class="text-end">
+                <small class="text-info">
+                  <i class="bi bi-info-circle me-1"></i>
+                  Data diambil dari pembacaan sensor terbaru
+                </small>
               </div>
             </div>
 
@@ -47,13 +63,29 @@
                       </span>
                     </div>
                     <div class="gudang-main mt-3">
-                      @if($dataRuangan[1]['suhu_bleaching'])
+                      @if ($dataRuangan[1]['suhu_bleaching'])
                         <h2 class="fw-bold mb-0">{{ $dataRuangan[1]['suhu_bleaching'] }}°C</h2>
-                        <p class="text-dark small mb-2"><strong>Suhu Terakhir (07:00 - 10:00)</strong></p>
+                        <p class="text-dark small mb-2">
+                        </p>
+                        <p class="text-info small mb-0">
+                          <i class="bi bi-info-circle me-1 mt-2"></i>
+                          Data diambil saat timer bleaching aktif hingga berhenti
+                        </p>
+                        @if ($dataRuangan[1]['latest_datetime'])
+                          <p class="text-muted small mb-0">
+                            <i class="bi bi-clock me-1"></i>
+                            Terakhir update: {{ $dataRuangan[1]['latest_datetime'] }}
+                          </p>
+                        @endif
                       @else
                         <h2 class="fw-bold mb-0 text-muted">-</h2>
-                        <p class="text-dark small mb-2"><strong>Suhu Terakhir (07:00 - 10:00)</strong></p>
-                        <p class="text-muted small mb-0"><i>Belum ada data hari ini</i></p>
+                        <p class="text-dark small mb-2"><strong>Suhu saat Bleaching
+                            Berjalan</strong></p>
+                        <p class="text-info small mb-0">
+                          <i class="bi bi-info-circle me-1"></i>
+                          Menunggu data dari bleaching
+                        </p>
+                        <p class="text-muted small mb-0"><i>Belum ada data bleaching</i></p>
                       @endif
                     </div>
                   </div>
@@ -84,6 +116,12 @@
                       <p class="text-dark small mb-2">
                         Kelembapan: <strong>{{ $dataRuangan[2]['kelembapan'] }}%</strong>
                       </p>
+                      @if ($dataRuangan[2]['latest_datetime'])
+                        <p class="text-muted small mb-0">
+                          <i class="bi bi-clock me-1"></i>
+                          Terakhir update: {{ $dataRuangan[2]['latest_datetime'] }}
+                        </p>
+                      @endif
                     </div>
                   </div>
                 </div>
@@ -113,6 +151,12 @@
                       <p class="text-dark small mb-2">
                         Kelembapan: <strong>{{ $dataRuangan[3]['kelembapan'] }}%</strong>
                       </p>
+                      @if ($dataRuangan[3]['latest_datetime'])
+                        <p class="text-muted small mb-0">
+                          <i class="bi bi-clock me-1"></i>
+                          Terakhir update: {{ $dataRuangan[3]['latest_datetime'] }}
+                        </p>
+                      @endif
                     </div>
                   </div>
                 </div>
@@ -131,16 +175,23 @@
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
               <div>
                 <h5 class="card-title mb-1 mt-2">Grafik Suhu Alat Bleaching</h5>
-                <small class="text-muted">Perubahan Suhu Alat (Jam 7-10 Pagi dengan Interval 5 Menit)</small>
+                <small class="text-muted">Perubahan suhu saat bleaching berjalan (dari timer aktif hingga
+                  berhenti)</small>
               </div>
               <div>
                 <small class="text-muted">
                   <i class="bi bi-calendar me-1"></i>
-                  Data: {{ $trendBleaching['latest_date'] ?? $latestDates['bleaching'] ?? 'Belum ada data' }}
+                  Data:
+                  {{ $trendBleaching['latest_date'] ?? ($latestDates['bleaching'] ?? 'Belum ada data') }}
                 </small>
               </div>
             </div>
             <div class="card-body">
+              <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Info:</strong> Data bleaching diambil saat timer aktif hingga berhenti!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
               <div id="chartBleaching"></div>
             </div>
           </div>
@@ -152,7 +203,7 @@
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
               <div>
                 <h5 class="card-title mb-1 mt-2">Grafik Suhu Ruangan</h5>
-                <small class="text-muted">Fermentasi & Pengeringan</small>
+                <small class="text-muted">Fermentasi & Pengeringan (Data real-time)</small>
               </div>
               <div>
                 <small class="text-muted">
@@ -173,7 +224,7 @@
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
               <div>
                 <h5 class="card-title mb-1 mt-2">Grafik Kelembapan</h5>
-                <small class="text-muted">Fermentasi & Pengeringan</small>
+                <small class="text-muted">Fermentasi & Pengeringan (Data real-time)</small>
               </div>
               <div>
                 <small class="text-muted">
@@ -197,6 +248,12 @@
               <h4 class="mb-0">Trend 14 Hari Terakhir</h4>
               <p class="text-muted small mb-0">Rata-rata harian suhu dan kelembapan per ruangan</p>
             </div>
+            <div>
+              <small class="text-info">
+                <i class="bi bi-info-circle me-1"></i>
+                Data dihitung berdasarkan pembacaan terbaru
+              </small>
+            </div>
           </div>
         </div>
 
@@ -209,10 +266,22 @@
                   <i class="bi bi-fire text-danger me-2"></i>
                   Trend Suhu {{ $trendBleaching['nama_ruangan'] ?? 'Bleaching' }}
                 </h5>
-                <small class="text-muted">Rata-rata suhu harian (07:00 - 10:00 WIB)</small>
+                <small class="text-muted">Rata-rata suhu harian saat bleaching berjalan</small>
+              </div>
+              <div>
+                @if ($trendBleaching['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendBleaching['latest_date'] }}
+                  </small>
+                @endif
               </div>
             </div>
             <div class="card-body" style="min-height: 360px;">
+              <div class="alert alert-info mb-3" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                Trend bleaching dihitung dari data saat timer aktif hingga berhenti
+              </div>
               <div id="trendBleaching"></div>
             </div>
           </div>
@@ -228,6 +297,14 @@
                   Trend Suhu {{ $trendFermentasiSuhu['nama_ruangan'] ?? 'Fermentasi' }}
                 </h5>
                 <small class="text-muted">Rata-rata suhu harian</small>
+              </div>
+              <div>
+                @if ($trendFermentasiSuhu['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendFermentasiSuhu['latest_date'] }}
+                  </small>
+                @endif
               </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
@@ -245,6 +322,14 @@
                   Trend Kelembapan {{ $trendFermentasiKelembapan['nama_ruangan'] ?? 'Fermentasi' }}
                 </h5>
                 <small class="text-muted">Rata-rata kelembapan harian</small>
+              </div>
+              <div>
+                @if ($trendFermentasiKelembapan['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendFermentasiKelembapan['latest_date'] }}
+                  </small>
+                @endif
               </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
@@ -264,6 +349,14 @@
                 </h5>
                 <small class="text-muted">Rata-rata suhu harian</small>
               </div>
+              <div>
+                @if ($trendPengeringanSuhu['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendPengeringanSuhu['latest_date'] }}
+                  </small>
+                @endif
+              </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
               <div id="trendPengeringanSuhu"></div>
@@ -280,6 +373,14 @@
                   Trend Kelembapan {{ $trendPengeringanKelembapan['nama_ruangan'] ?? 'Pengeringan' }}
                 </h5>
                 <small class="text-muted">Rata-rata kelembapan harian</small>
+              </div>
+              <div>
+                @if ($trendPengeringanKelembapan['latest_date'] ?? false)
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Data hingga {{ $trendPengeringanKelembapan['latest_date'] }}
+                  </small>
+                @endif
               </div>
             </div>
             <div class="card-body" style="min-height: 320px;">
@@ -308,18 +409,59 @@
       if (Object.keys(grafikBleaching).length > 0) {
         const labels = grafikBleaching[Object.keys(grafikBleaching)[0]].map(i => i.waktu);
         const series = Object.entries(grafikBleaching).map(([nama, data]) => ({
-          name: nama, data: data.map(i => i.nilai)
+          name: nama,
+          data: data.map(i => i.nilai)
         }));
 
         new ApexCharts(document.querySelector("#chartBleaching"), {
-          chart: { type: 'line', height: 330, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
-          stroke: { curve: 'monotoneCubic', width: 3 },
-          markers: { size: 4, strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
+          chart: {
+            type: 'line',
+            height: 330,
+            zoom: {
+              enabled: true,
+              type: 'x',
+              autoScaleYaxis: true
+            },
+            toolbar: {
+              show: true
+            }
+          },
+          stroke: {
+            curve: 'monotoneCubic',
+            width: 3
+          },
+          markers: {
+            size: 4,
+            strokeColors: '#fff',
+            strokeWidth: 2,
+            hover: {
+              size: 6
+            }
+          },
           series: series,
-          xaxis: { categories: labels, labels: { rotate: -45 } },
-          yaxis: { title: { text: 'Suhu (°C)' } },
+          xaxis: {
+            categories: labels,
+            labels: {
+              rotate: -45
+            }
+          },
+          yaxis: {
+            title: {
+              text: 'Suhu (°C)'
+            }
+          },
           colors: ['#00A86B', '#FF6B6B', '#FFD93D'],
-          legend: { position: 'top' }
+          legend: {
+            position: 'top'
+          },
+          title: {
+            text: 'Suhu Bleaching Saat Timer Aktif',
+            align: 'center',
+            style: {
+              fontSize: '14px',
+              fontWeight: 'bold'
+            }
+          }
         }).render();
       }
 
@@ -327,18 +469,51 @@
       if (Object.keys(grafikSuhu).length > 0) {
         const labels = grafikSuhu[Object.keys(grafikSuhu)[0]].map(i => i.waktu);
         const series = Object.entries(grafikSuhu).map(([nama, data]) => ({
-          name: nama, data: data.map(i => i.nilai)
+          name: nama,
+          data: data.map(i => i.nilai)
         }));
 
         new ApexCharts(document.querySelector("#chartSuhu"), {
-          chart: { type: 'line', height: 280, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
-          stroke: { curve: 'monotoneCubic', width: 3 },
-          markers: { size: 4, strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
+          chart: {
+            type: 'line',
+            height: 280,
+            zoom: {
+              enabled: true,
+              type: 'x',
+              autoScaleYaxis: true
+            },
+            toolbar: {
+              show: true
+            }
+          },
+          stroke: {
+            curve: 'monotoneCubic',
+            width: 3
+          },
+          markers: {
+            size: 4,
+            strokeColors: '#fff',
+            strokeWidth: 2,
+            hover: {
+              size: 6
+            }
+          },
           series: series,
-          xaxis: { categories: labels, labels: { rotate: -45 } },
-          yaxis: { title: { text: 'Suhu (°C)' } },
+          xaxis: {
+            categories: labels,
+            labels: {
+              rotate: -45
+            }
+          },
+          yaxis: {
+            title: {
+              text: 'Suhu (°C)'
+            }
+          },
           colors: ['#FF9800', '#4CAF50', '#03A9F4'],
-          legend: { position: 'top' }
+          legend: {
+            position: 'top'
+          }
         }).render();
       }
 
@@ -346,27 +521,62 @@
       if (Object.keys(grafikKelembapan).length > 0) {
         const labels = grafikKelembapan[Object.keys(grafikKelembapan)[0]].map(i => i.waktu);
         const series = Object.entries(grafikKelembapan).map(([nama, data]) => ({
-          name: nama, data: data.map(i => i.nilai)
+          name: nama,
+          data: data.map(i => i.nilai)
         }));
 
         new ApexCharts(document.querySelector("#chartKelembapan"), {
-          chart: { type: 'line', height: 280, zoom: { enabled: true, type: 'x', autoScaleYaxis: true }, toolbar: { show: true } },
-          stroke: { curve: 'monotoneCubic', width: 3 },
-          markers: { size: 4, strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
+          chart: {
+            type: 'line',
+            height: 280,
+            zoom: {
+              enabled: true,
+              type: 'x',
+              autoScaleYaxis: true
+            },
+            toolbar: {
+              show: true
+            }
+          },
+          stroke: {
+            curve: 'monotoneCubic',
+            width: 3
+          },
+          markers: {
+            size: 4,
+            strokeColors: '#fff',
+            strokeWidth: 2,
+            hover: {
+              size: 6
+            }
+          },
           series: series,
-          xaxis: { categories: labels, labels: { rotate: -45 } },
-          yaxis: { title: { text: 'Kelembapan (%)' } },
+          xaxis: {
+            categories: labels,
+            labels: {
+              rotate: -45
+            }
+          },
+          yaxis: {
+            title: {
+              text: 'Kelembapan (%)'
+            }
+          },
           colors: ['#03A9F4', '#8BC34A', '#FFC107'],
-          legend: { position: 'top' }
+          legend: {
+            position: 'top'
+          }
         }).render();
       }
 
       // bart chart bleaching
-      function renderTrendLineChart(elementId, dataObj, yAxisTitle, unit = '°C', color = '#3B82F6', minY = null, maxY = null) {
+      function renderTrendLineChart(elementId, dataObj, yAxisTitle, unit = '°C', color = '#3B82F6', minY =
+        null, maxY = null) {
         const container = document.querySelector(elementId);
 
         if (!dataObj || !dataObj.data || dataObj.data.length === 0) {
-          container.innerHTML = '<div class="text-center text-muted py-5"><i class="bi bi-info-circle me-2"></i>Belum ada data</div>';
+          container.innerHTML =
+            '<div class="text-center text-muted py-5"><i class="bi bi-info-circle me-2"></i>Belum ada data</div>';
           return;
         }
 
