@@ -51,16 +51,16 @@ class DashboardController extends Controller
       if (!$isBleaching) {
         $nilaiSuhu = [];
         $latestSensorDate = null;
-        
+
         foreach ($sensorSuhuList as $sensor) {
           $recentData = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
             ->orderBy('created_at', 'desc')
             ->take(11)
             ->get(['nilai_sensor', 'created_at']);
-          
+
           if ($recentData->isNotEmpty()) {
             $nilaiSuhu = array_merge($nilaiSuhu, $recentData->pluck('nilai_sensor')->toArray());
-            
+
             $sensorLatestDate = $recentData->first()->created_at;
             if (!$latestSensorDate || $sensorLatestDate > $latestSensorDate) {
               $latestSensorDate = $sensorLatestDate;
@@ -79,25 +79,21 @@ class DashboardController extends Controller
           $nilaiKelembapan = array_merge($nilaiKelembapan, $recentData);
         }
         $avgKelembapan = count($nilaiKelembapan) ? array_sum($nilaiKelembapan) / count($nilaiKelembapan) : null;
-        
+
         $latestDateForRoom = $latestSensorDate;
       } else {
-        $bleachingLatestDate = null;
         foreach ($sensorSuhuList as $sensor) {
           $suhuTerakhir = NilaiSensorModel::where('id_sensor', $sensor->id_sensor)
-            ->whereTime('created_at', '>=', '07:00:00')
-            ->whereTime('created_at', '<=', '10:00:00')
-            ->latest()
+            ->orderBy('created_at', 'desc')
             ->first();
 
           if ($suhuTerakhir) {
             $suhuBleaching = $suhuTerakhir->nilai_sensor;
-            $bleachingLatestDate = $suhuTerakhir->created_at;
+            $latestDateForRoom = $suhuTerakhir->created_at;
             break;
           }
         }
         $avgSuhu = $suhuBleaching;
-        $latestDateForRoom = $bleachingLatestDate;
       }
 
       $nilaiBlower = $sensorBlower
@@ -106,7 +102,7 @@ class DashboardController extends Controller
 
       $statusInfo = $this->getStatusInfo($tipeRuangan, $avgSuhu, $avgKelembapan);
 
-      $formattedDate = $latestDateForRoom 
+      $formattedDate = $latestDateForRoom
         ? Carbon::parse($latestDateForRoom)->format('d M Y')
         : 'Belum ada data';
 
@@ -140,7 +136,7 @@ class DashboardController extends Controller
             $latestDates['pengeringan'] = $latestDateForRoom;
           }
         }
-        
+
         if (!$latestDates['overall'] || $latestDateForRoom > $latestDates['overall']) {
           $latestDates['overall'] = $latestDateForRoom;
         }
@@ -148,7 +144,6 @@ class DashboardController extends Controller
 
       // Data untuk grafik
       if (!$isBleaching) {
-        // Grafik untuk fermentasi & pengeringan
         if ($sensorSuhuList->isNotEmpty()) {
           $firstSuhu = $sensorSuhuList->first();
           $grafikSuhu[$r->nama_ruangan] = collect(
@@ -183,32 +178,24 @@ class DashboardController extends Controller
       } else {
         if ($sensorSuhuList->isNotEmpty()) {
           $firstSuhu = $sensorSuhuList->first();
-          $latestDate = NilaiSensorModel::where('id_sensor', $firstSuhu->id_sensor)
-            ->whereTime('created_at', '>=', '07:00:00')
-            ->whereTime('created_at', '<=', '10:00:00')
-            ->latest('created_at')
-            ->value('created_at');
-
-          if ($latestDate) {
-            $grafikBleaching[$r->nama_ruangan] = collect(
-              NilaiSensorModel::where('id_sensor', $firstSuhu->id_sensor)
-                ->whereDate('created_at', Carbon::parse($latestDate)->format('Y-m-d'))
-                ->whereTime('created_at', '>=', '07:00:00')
-                ->whereTime('created_at', '<=', '10:00:00')
-                ->orderBy('created_at', 'asc')
-                ->get(['nilai_sensor', 'created_at'])
-            )
-              ->map(fn($row) => [
-                'nilai' => (float) $row->nilai_sensor,
-                'waktu' => Carbon::parse($row->created_at)->format('H:i'),
-              ]);
-          }
+          $grafikBleaching[$r->nama_ruangan] = collect(
+            NilaiSensorModel::where('id_sensor', $firstSuhu->id_sensor)
+              ->orderBy('created_at', 'desc')
+              ->take(20)
+              ->get(['nilai_sensor', 'created_at'])
+          )
+            ->reverse()
+            ->values()
+            ->map(fn($row) => [
+              'nilai' => (float) $row->nilai_sensor,
+              'waktu' => Carbon::parse($row->created_at)->format('H:i'),
+            ]);
         }
       }
     }
 
     // grafik trend 14 hari
-    $getDailyAverages = function ($sensorCollection, $timeStart = null, $timeEnd = null) {
+    $getDailyAverages = function ($sensorCollection, $isBleaching = false) {
       if ($sensorCollection->isEmpty()) {
         return [];
       }
@@ -216,13 +203,8 @@ class DashboardController extends Controller
       $sensorIds = $sensorCollection->pluck('id_sensor')->toArray();
 
       try {
-        $query = NilaiSensorModel::whereIn('id_sensor', $sensorIds);
-
-        if ($timeStart && $timeEnd) {
-          $query->whereRaw("TIME(created_at) BETWEEN ? AND ?", [$timeStart, $timeEnd]);
-        }
-
-        $allData = $query->orderBy('created_at', 'desc')
+        $allData = NilaiSensorModel::whereIn('id_sensor', $sensorIds)
+          ->orderBy('created_at', 'desc')
           ->take(20000)
           ->get(['nilai_sensor', 'created_at']);
 
@@ -260,7 +242,6 @@ class DashboardController extends Controller
       }
     };
 
-
     foreach ($ruangan as $r) {
       $sensorSuhuList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor ?? '', 'suhu'));
       $sensorKelembapanList = collect($r->getDataSensor)->filter(fn($s) => str_starts_with($s->flag_sensor ?? '', 'kelembaban'));
@@ -268,7 +249,7 @@ class DashboardController extends Controller
       if ($r->tipe_ruangan == 1) {
         $trendBleaching = [
           'nama_ruangan' => $r->nama_ruangan,
-          'data' => $getDailyAverages($sensorSuhuList, '07:00:00', '10:00:00'),
+          'data' => $getDailyAverages($sensorSuhuList, true),
           'latest_date' => $latestDates['bleaching'] ? Carbon::parse($latestDates['bleaching'])->format('d M Y') : null
         ];
       } elseif ($r->tipe_ruangan == 2) {
