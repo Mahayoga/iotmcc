@@ -264,26 +264,7 @@
           }
         }
       }
-      let options2 = {
-        chart: {
-          type: 'line',
-          height: '350px',
-        },
-        series: [{
-          name: '?',
-          data: []
-        }],
-        xaxis: {
-          type: 'datetime',
-          categories: []
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        markers: {
-          size: 5
-        },
-      }
+
       apexSuhu = new ApexCharts($('#chartSuhu')[0], options);
       apexKelembaban = new ApexCharts($('#chartKelembaban')[0], options);
       apexSuhuDanKelembaban = new ApexCharts($('#chartSuhuDanKelembaban')[0], options);

@@ -55,7 +55,7 @@ class RuanganFermentasiController extends Controller
             if($value->tipe_ruangan == 2) {
                 $statusRuangan = $value->status_ruangan;
                 foreach($value->getDataSensor as $value2) {
-                    $dateNow = '%' . date("Y-m-d") . '%';
+                    $dateNow = '%2025-12-23%';
                     $isEmpty = false;
                     if($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
                         // $temp = $value2->getDataNilaiSensor()->orderBy('created_at', 'DESC')->limit(1)->get();

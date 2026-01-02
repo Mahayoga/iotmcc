@@ -24,14 +24,14 @@ class AlatBleachingController extends Controller
         $waktuSensorTemp = [];
 
         $selectRawQuery = "
-            DATE(created_at) as tgl,
-            HOUR(created_at) as jam,
-            FLOOR(MINUTE(created_at)/15) as menit_group,
-            AVG(nilai_sensor) as avg_nilai,
-            MIN(created_at) as waktu_asli,
-            STDDEV_SAMP(nilai_sensor) as stddev,
-            MIN(nilai_sensor) as min_nilai,
-            MAX(nilai_sensor) as max_nilai
+            DATE(created_at) AS tgl,
+            HOUR(created_at) AS jam,
+            FLOOR((MINUTE(created_at) * 60 + SECOND(created_at)) / 30) AS detik_group,
+            AVG(nilai_sensor) AS avg_nilai,
+            MIN(created_at) AS waktu_asli,
+            STDDEV_SAMP(nilai_sensor) AS stddev,
+            MIN(nilai_sensor) AS min_nilai,
+            MAX(nilai_sensor) AS max_nilai
         ";
 
         $currentSuhu = null;
@@ -43,7 +43,7 @@ class AlatBleachingController extends Controller
                     if (str_contains($value2->flag_sensor, 'timer')) {
                         continue;
                     }
-                    $dateNow = '%' . date("Y-m-d") . '%';
+                    $dateNow = '%2025-12-23%';
                     $isEmpty = false;
                     if ($value2->getDataNilaiSensor()->where('created_at', 'LIKE', $dateNow)->get()->isEmpty()) {
                         array_push($dataSensor, [
@@ -64,7 +64,7 @@ class AlatBleachingController extends Controller
                         foreach ($value2->getDataNilaiSensor()
                             ->selectRaw($selectRawQuery)
                             ->where('created_at', 'LIKE', $dateNow)
-                            ->groupBy('tgl', 'jam', 'menit_group')
+                            ->groupBy('tgl', 'jam', 'detik_group')
                             ->orderBy('waktu_asli', 'DESC')
                             ->limit($this->LIMIT)
                             ->get() as $value3) {
